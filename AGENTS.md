@@ -105,6 +105,9 @@ src/pathfinder/
                              /api/search, /api/feedback, /api/region (with the profiles),
                              /tiles and /fonts, password gate, serves web/dist
   cli.py                     `pf` command
+field/<region>.csv           the team's field checks of blocking curbs (field/README.md); the only
+                             data kept in the repo, read as source <region>_field_checks
+tools/field_checks/          make_sheet.py: the field sheet from the blocked-trip worklist
 web/                         phone web app (React + TypeScript + MapLibre GL, built with Vite)
 tests/                       unit tests (synthetic) + data invariants (marked `data`)
 reports/<region>/            generated, committed, human-readable outputs (do not hand-edit)
@@ -134,6 +137,7 @@ reports/<region>/            generated, committed, human-readable outputs (do no
   pf crux --per-bin 334    # reports/<region>/phase0/crux.md (Frederick's fixed sample: --per-bin 100)
   python tools/blocked_trips/blocked_trips.py   # after crux: what blocks wheelchair trips,
                                                 # reports/<region>/blocked/ (internal)
+  python tools/field_checks/make_sheet.py --update   # new worklist places onto field/<region>.csv
   pf route 39.1434,-77.2014 39.1210,-77.2370 --profile manual_wheelchair   # one explained trip, JSON
   pf serve                 # API on 127.0.0.1:8000, plus the built web app if web/dist exists
   ```
@@ -274,6 +278,13 @@ reports/<region>/            generated, committed, human-readable outputs (do no
   `ramp_check_a/b` (passed / fails / no_tactile_pad). A failing ramp stays usable for routing
   (`PENALTIES["crossing"]["ramp_fails"]`) and is listed on the barrier map. Gaithersburg has
   no ramp inventory yet, so step-free routes there cannot be confirmed.
+- **Field checks** (`<region>_field_checks`, the `field_checks` role; Frederick from 2026-10-20):
+  the team's own visits, filled in `field/<region>.csv` and read by `pf fetch` (kind `local_csv`,
+  read again whenever the sheet's checksum changes). A corner answer is `verified`, dated by the
+  visit, and wins over every other source within `enrich.FIELD_CHECK_RADIUS_M` (3 m: the sheet's
+  coordinates are the graph's own); a junction answer replaces the ramp count and stays
+  `inferred`. A typo or an undated answer is an error (`roles.field_checks`). Not under rule 7.
+  The sheet is never rewritten by code: answered rows are evidence.
 - Census tracts (2020, TIGERweb, public domain) are each pilot's `report_districts`, keyed by
   `GEOID`: coverage and barriers break down by tract.
 - Imagery for inspection: MD iMAP `SixInch/SixInchImagery2023_2024_2025` (export in

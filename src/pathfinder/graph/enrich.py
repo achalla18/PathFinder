@@ -59,6 +59,10 @@ DRIVEWAY_SIGNAL_RADIUS_M = 15.0
 JUNCTION_ROAD_RADIUS_M = 15.0  # roadway inventory blocks meeting at the junction
 JUNCTION_RAMP_RADIUS_M = 20.0  # curb-ramp evidence at the corners of a junction
 JUNCTION_MIN_RAMPS = 2  # one crossing needs a ramp on each side
+# A field sheet's coordinates are the graph's own crossing ends and junction nodes (from the
+# blocked-trip worklist, rounded to 1e-6 degrees, about 0.1 m), so a tight radius matches its
+# place and never the curb across the street or the next junction.
+FIELD_CHECK_RADIUS_M = 3.0
 # The street a sidewalk runs beside, for wording only ("turn left onto K ST NW").
 ALONG_STREET_MAX_M = 30.0  # sidewalk to centerline: half of DC's widest avenues (160 ft) plus the planting strip
 ALONG_STREET_MAX_ANGLE_DEG = 30.0  # the sidewalk must run with the street, not across it
@@ -333,10 +337,15 @@ def _inventory_check(ramps: gpd.GeoDataFrame) -> pd.Series:
 
 def enrich_kerbs(edges: gpd.GeoDataFrame, osm_nodes: gpd.GeoDataFrame, ps: gpd.GeoDataFrame,
                  ramps2010: gpd.GeoDataFrame, ps_source: str | None = "project_sidewalk_dc",
-                 ramps_source: str | None = "sidewalk_ramps_2010") -> None:
+                 ramps_source: str | None = "sidewalk_ramps_2010",
+                 field: gpd.GeoDataFrame | None = None, field_source: str | None = None) -> None:
     """Curb condition at both outer ends of each physical crossing: ``kerb_a`` / ``kerb_b``
     in {lowered, flush, raised, ramp_present, no_ramp}, copied to every fragment of the
-    crossing. Passable for wheelchairs: KERB_PASSABLE."""
+    crossing. Passable for wheelchairs: KERB_PASSABLE.
+
+    The team's field checks come first: a curb seen on site is the most recent observation
+    of it. Where one says there is no ramp (or a flush curb), an inventory verdict on a ramp
+    nearby is not carried, since it describes a ramp that is not at this end."""
     m = edges["kind"] == "crossing"
     osm_as_of = _osm_as_of()
     groups, end_a, end_b = _crossing_outer_ends(edges)
@@ -355,16 +364,21 @@ def enrich_kerbs(edges: gpd.GeoDataFrame, osm_nodes: gpd.GeoDataFrame, ps: gpd.G
     r10 = ramps2010.assign(kval=_inventory_kerb(ramps2010), CHECK=_inventory_check(ramps2010),
                            as_of=_ms_to_date(ramps2010["CAPTUREYEAR"]))
 
+    c = field[field["KIND"].eq("corner")] if field is not None else None
+    fc = (gpd.GeoDataFrame({"kval": c["KERB"].to_numpy(), "as_of": c["VISITED"].to_numpy()}, geometry=c.geometry.values, crs=edges.crs)
+          if c is not None and len(c) else gpd.GeoDataFrame({"kval": [], "as_of": []}, geometry=[], crs=edges.crs))
+
     for end, pts in ends.items():
         attr = f"kerb_{end}"
         ev.init_unknown(edges, attr)
         p = gpd.GeoDataFrame({"grp": pts.index}, geometry=pts.values, crs=edges.crs)
         for src_gdf, radius, status, src in (
+            (fc, FIELD_CHECK_RADIUS_M, ev.VERIFIED, field_source),
             (kerb.assign(as_of=osm_as_of), KERB_ENDPOINT_RADIUS_M, ev.VERIFIED, OSM),
             (ps_ramp[["kval", "as_of", "geometry"]], PS_RAMP_RADIUS_M, ev.VERIFIED, ps_source),
             (r10[["kval", "as_of", "geometry"]], RAMP2010_RADIUS_M, ev.VERIFIED, ramps_source),
         ):
-            if src is None:  # the region has no such source
+            if src is None or src_gdf.empty:  # the region has no such source, or it holds nothing
                 continue
             j = gpd.sjoin_nearest(p, src_gdf, how="inner", max_distance=radius, distance_col="d")
             j = j.sort_values("d").drop_duplicates("grp").set_index("grp")
@@ -380,6 +394,10 @@ def enrich_kerbs(edges: gpd.GeoDataFrame, osm_nodes: gpd.GeoDataFrame, ps: gpd.G
                                   max_distance=RAMP2010_RADIUS_M, distance_col="d")
             j = j.sort_values("d").drop_duplicates("grp").set_index("grp")
             ev.fill_where_better(edges, check, m, groups.map(j["CHECK"]), ev.VERIFIED, ramps_source, groups.map(j["as_of"]))
+        seen_no_ramp = edges[f"{attr}_source"].eq(field_source) & edges[attr].ne("ramp_present") if field_source else None
+        if seen_no_ramp is not None and seen_no_ramp.any():
+            edges.loc[seen_no_ramp, [check, f"{check}_source", f"{check}_as_of"]] = None
+            edges.loc[seen_no_ramp, f"{check}_status"] = ev.UNKNOWN
 
 
 # ================================================================ accessibility
@@ -777,7 +795,8 @@ def _side_capture_dates(lines: gpd.GeoSeries, polys: gpd.GeoDataFrame) -> pd.Ser
 def enrich_implicit_crossings(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, signals: gpd.GeoDataFrame,
                               roadway: gpd.GeoDataFrame, ps: gpd.GeoDataFrame, ramps2010: gpd.GeoDataFrame,
                               ps_source: str | None = "project_sidewalk_dc",
-                              ramps_source: str | None = "sidewalk_ramps_2010") -> None:
+                              ramps_source: str | None = "sidewalk_ramps_2010",
+                              field: gpd.GeoDataFrame | None = None, field_source: str | None = None) -> None:
     """Flag the ends of street-centerline edges where the walker crosses a street that has no
     crossing edge, so the cost model and requirements can treat that crossing like any other.
 
@@ -807,6 +826,8 @@ def enrich_implicit_crossings(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, 
                           sources counted and their oldest record's date, or for "no_curb" OSM
                           (alley, service road, street without sidewalk) or the survey that
                           shows no sidewalk; null where the kerb is unknown
+    A field check of the junction (within FIELD_CHECK_RADIUS_M of its node) replaces the ramp
+    count there: it was seen on site, and is dated by the visit.
     Everything here is inferred; an implicit crossing never satisfies "verified only".
     """
     cl = edges["representation"].eq("street_centerline")
@@ -865,6 +886,13 @@ def enrich_implicit_crossings(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, 
     for value, e, hit in (("ramp_likely", ramps, ramps["n"] >= JUNCTION_MIN_RAMPS), ("no_ramp_reported", no_ramp, no_ramp["n"] > 0)):
         ids = e.index[hit]
         node_kerb[ids], node_src[ids], node_as_of[ids] = value, e.loc[ids, "src"], e.loc[ids, "as_of"]
+    if field is not None and field_source is not None:
+        fj = field[field["KIND"].eq("junction")]
+        if len(fj):
+            hit = gpd.sjoin_nearest(jn, fj[["KERB", "VISITED", "geometry"]], how="inner",
+                                    max_distance=FIELD_CHECK_RADIUS_M, distance_col="d")
+            hit = hit.sort_values("d").drop_duplicates("node_id").set_index("node_id")
+            node_kerb[hit.index], node_src[hit.index], node_as_of[hit.index] = hit["KERB"], field_source, hit["VISITED"]
 
     presence_known = edges["sidewalk_presence_status"].ne(ev.UNKNOWN)
     by_kind = shared | edges["kind"].eq("street_no_sidewalk")  # OSM says the walker is in the roadway
@@ -995,27 +1023,29 @@ def enrich() -> gpd.GeoDataFrame:
     roadway, roadway_src = roles.read("roadway")
     ramps, ramps_src = roles.read("ramps")
     ps, ps_src = _prepare_project_sidewalk()
+    field, field_src = roles.read("field_checks")
     # Without a roadway inventory the streets come from the region's own OSM extract
     # (roles.osm_streets); what they say is OSM's evidence, dated as the extract.
     if roadway_src == roles.OSM_ROADWAY:
         roadway_src, roadway_as_of = OSM, _osm_as_of()
     else:
         roadway_as_of = None
-    log.info("enrich %s: signals=%s planimetrics=%s roadway=%s ramps=%s project_sidewalk=%s",
-             REGION.id, signals_src, planim_src, roadway_src, ramps_src, ps_src)
+    log.info("enrich %s: signals=%s planimetrics=%s roadway=%s ramps=%s project_sidewalk=%s field_checks=%s (%d answered)",
+             REGION.id, signals_src, planim_src, roadway_src, ramps_src, ps_src, field_src, len(field))
 
     steps = [
         ("offstreet", lambda: enrich_offstreet(edges, roadway)),
         ("crossing control", lambda: enrich_crossing_control(edges, signals, planim, osm_nodes, signals_src, planim_src)),
         ("crossed road", lambda: enrich_crossed_road(edges, roadway, roadway_src, roadway_as_of)),
         ("street alongside", lambda: enrich_along_street(edges, roadway)),
-        ("kerbs", lambda: enrich_kerbs(edges, osm_nodes, ps, ramps, ps_src, ramps_src)),
+        ("kerbs", lambda: enrich_kerbs(edges, osm_nodes, ps, ramps, ps_src, ramps_src, field, field_src)),
         ("step-free", lambda: enrich_step_free(edges, planim, planim_src)),
         ("surface", lambda: enrich_surface(edges)),
         ("project sidewalk counts", lambda: enrich_project_sidewalk_counts(edges, ps)),
         ("centerline sidewalks", lambda: enrich_centerline_sidewalks(edges, planim, planim_src)),
         ("sidewalk condition", lambda: enrich_sidewalk_condition(edges, planim, planim_src)),
-        ("implicit crossings", lambda: enrich_implicit_crossings(edges, nodes, signals, roadway, ps, ramps, ps_src, ramps_src)),
+        ("implicit crossings", lambda: enrich_implicit_crossings(edges, nodes, signals, roadway, ps, ramps, ps_src, ramps_src,
+                                                                     field, field_src)),
         ("centerline traffic", lambda: enrich_centerline_traffic(edges, roadway, roadway_src, roadway_as_of)),
         ("slope", lambda: enrich_slope(edges)),
     ]

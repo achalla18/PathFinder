@@ -204,6 +204,24 @@ def _frederick_sidewalk_photos() -> Source:
     )
 
 
+def _field_checks(region_id: str) -> Source:
+    return Source(
+        id=f"{region_id}_field_checks",
+        kind="local_csv",
+        url=f"field/{region_id}.csv",
+        title="PathFinder field checks: curbs at the corners and junctions that block trips, seen on site",
+        license="The PathFinder team's own observations; no restrictions",
+        limitations=(
+            "Only the places on the sheet, as seen on the day of the visit (visited_on). Unvisited "
+            "rows and \"unclear\" carry nothing. A corner answer is what one curb has; a junction "
+            "answer covers every corner with a sidewalk and stays inferred, because which corners "
+            "a walker uses is not known. See field/README.md."
+        ),
+        verified_on=date(2026, 10, 20),
+        tags=("field_checks",),
+    )
+
+
 MONTGOMERY_SIGNALS = "https://services.arcgis.com/hdlG36cOubTzNDBb/arcgis/rest/services/Traffic_Signals_Bill_1123/FeatureServer/0"
 
 
@@ -300,7 +318,7 @@ GAITHERSBURG = _region("gaithersburg", "Gaithersburg, MD", "Gaithersburg",
 FREDERICK = _region("frederick", "Frederick, MD", "Frederick",
                     _FREDERICK_EXTENT, center=(-77.4105, 39.4143),
                     extra=(_frederick_sidewalks(), _frederick_sidewalk_photos(), _frederick_ramps(),
-                           _frederick_county_signals(_FREDERICK_EXTENT),
+                           _frederick_county_signals(_FREDERICK_EXTENT), _field_checks("frederick"),
                            _dtm("frederick", "frederick", _FREDERICK_EXTENT, "2021-12-14",
                                 "Frederick County bare-earth DEM, metres (USGS MD Western 2021 lidar; MD iMAP)",
                                 "Public domain (USGS 3DEP, contract G17PC00015), served by MD iMAP",
@@ -314,5 +332,6 @@ FREDERICK = _region("frederick", "Frederick, MD", "Frederick",
                     # Signals: 73 of 75 records inside the line sit within 50 m of an OSM signal
                     # (median 3 m), 2026-10-16. Coverage None: 45 of OSM's 116 signalized
                     # intersections have no record.
+                    # Field checks: the team's own visits to places that block trips (field/README.md)
                     roles={"planimetrics": "frederick_sidewalks", "dtm": "frederick_dtm", "ramps": "frederick_ramps",
-                           "signals": "frederick_county_signals"})
+                           "signals": "frederick_county_signals", "field_checks": "frederick_field_checks"})

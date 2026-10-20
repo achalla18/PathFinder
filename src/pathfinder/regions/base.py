@@ -32,6 +32,7 @@ ROLES = (
     "project_sidewalk",  # crowdsourced labels
     "dtm",               # bare-earth elevation tiles
     "report_districts",  # reporting units for the coverage report (DC: wards)
+    "field_checks",      # the team's own on-site observations of curbs: KIND, KERB, VISITED
 )
 
 # Families of "absence is evidence". Each is "boundary" (the inventory covers public streets
@@ -50,6 +51,8 @@ class Source:
     # | "pbf_clip" (a bounding-box cut of a larger OSM extract; see fetch.fetch_pbf_clip)
     # | "arcgis_first_date" (per ``group_field`` value, the earliest ``date_field``: dates a
     #   layer's records from a related layer too large to fetch, e.g. survey photos)
+    # | "local_csv" (a sheet kept in the repo, ``url`` relative to the repo root; refetched
+    #   whenever its checksum changes, see fetch.fetch_local_csv)
     kind: str
     url: str
     title: str

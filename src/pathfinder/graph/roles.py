@@ -41,6 +41,9 @@ CANONICAL: dict[str, tuple[str, ...]] = {
     "ramps": ("CAPTUREYEAR", "KERB", "CHECK"),
     "project_sidewalk": ("label_type", "median_severity", "avg_image_capture_date"),
     "report_districts": (),
+    # KIND: corner (one curb at the end of a mapped crossing) | junction (a street crossed
+    # where no crossing is mapped); KERB: enrich's value for that kind; VISITED: ISO day
+    "field_checks": ("KIND", "KERB", "VISITED"),
 }
 
 # Montgomery Planning's capture codes (SOURCE_CODE) -> capture year. The layer dates a
@@ -161,6 +164,39 @@ def frederick_county_signals(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     }, geometry=sig.geometry.values, crs=sig.crs).reset_index(drop=True)
 
 
+# What a field sheet's ``result`` may say, per kind of place, and the value enrich carries.
+# A corner is one curb: what is there. A junction is every corner a walker might use, so its
+# answer is one of the junction values enrich already uses (``enrich_implicit_crossings``).
+FIELD_RESULTS = {
+    "corner": {"ramp": "ramp_present", "flush": "flush", "no_ramp": "no_ramp"},
+    "junction": {"all_ramped": "ramp_likely", "missing_ramp": "no_ramp_reported"},
+}
+FIELD_NOT_ANSWERED = {"", "unclear"}  # not visited yet, or could not tell: no evidence either way
+
+
+def field_checks(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """The team's field sheet -> field_checks. Rows with no result (not visited) or
+    "unclear" carry nothing. Anything else must be a known result for its kind with a visit
+    day; a typo is an error, never a silent skip, because a skipped row would leave a corner
+    someone actually checked looking unrecorded."""
+    res = gdf["result"].fillna("").astype(str).str.strip().str.lower()
+    kind = gdf["kind"].fillna("").astype(str).str.strip().str.lower()
+    keep = ~res.isin(FIELD_NOT_ANSWERED)
+    kerb = pd.Series([FIELD_RESULTS.get(k, {}).get(r) for k, r in zip(kind, res)], index=gdf.index, dtype="object")
+    bad = keep & kerb.isna()
+    if bad.any():
+        rows = gdf.loc[bad, ["place", "kind", "result"]].to_dict("records")
+        raise ValueError(f"field sheet: unknown kind or result in {rows}; allowed: {FIELD_RESULTS} or blank/unclear")
+    day = pd.to_datetime(gdf["visited_on"].fillna("").astype(str).str.strip(), format="%Y-%m-%d", errors="coerce")
+    undated = keep & day.isna()
+    if undated.any():
+        raise ValueError(f"field sheet: a result needs visited_on as YYYY-MM-DD: {gdf.loc[undated, 'place'].tolist()}")
+    g = gdf[keep]
+    return gpd.GeoDataFrame({"KIND": kind[keep].to_numpy(), "KERB": kerb[keep].to_numpy(),
+                             "VISITED": day[keep].dt.date.astype(str).to_numpy()},
+                            geometry=g.geometry.values, crs=g.crs).reset_index(drop=True)
+
+
 # source id -> function turning that source's raw frame into the role's canonical columns.
 # DC's sources are the canonical schema and need none.
 ADAPTERS: dict[str, Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame]] = {
@@ -169,6 +205,7 @@ ADAPTERS: dict[str, Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame]] = {
     "frederick_ramps": frederick_ramps,
     "montgomery_signals": montgomery_signals,
     "frederick_county_signals": frederick_county_signals,
+    "frederick_field_checks": field_checks,
 }
 
 # OSM highway values that are streets for traffic (the roadway fallback). Service roads and

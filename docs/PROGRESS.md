@@ -18,7 +18,7 @@ See "How to update" at the bottom.
 | **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) and sidewalks from the surveys (both towns) in. Each town passes 3 of 5 accessibility criteria |
 | **Next** | Frederick is 7 trips short of criterion 4 and 3.2 points short of criterion 3. The City of Frederick allows internal use only and will supply nothing new (2026-10-20), so both gaps need field checks or mapping, and Phase E (testers) cannot see anything built on the city's data. Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
 | **Repo** | `C:\dev\PathFinder` (moved out of OneDrive 2026-10-19), its own git repository; no remote |
-| **Tests** | 222 pass on each town's graph (unit and data-invariant; 1 skipped by design), 2026-10-20 |
+| **Tests** | 226 pass on the Frederick graph (unit and data-invariant; 1 skipped by design), 2026-10-20 |
 
 ### Key metrics over time
 
@@ -770,6 +770,35 @@ first, and folded crossings into accessibility, removing after-dark and crime.
   cannot see routes or maps built on the city's data. Showing them anything in Frederick needs
   either the city's written permission later, or a Frederick built without the city's layers.
 
+### 2026-10-20 — Field checks: the team's own visits become a source
+
+- **Why:** the City of Frederick will not check the corners that block trips, so the team checks
+  them itself. Its observations have no other owner and are not held back under rule 7.
+- **Built:**
+  - `field/frederick.csv`: the sheet, made from the worklist by `tools/field_checks/make_sheet.py`.
+    It has 13 places (11 junctions, 2 crossing corners), each with a map link and blank `visited_on`,
+    `result` and `notes`. How to fill it is in `field/README.md`.
+  - Source `frederick_field_checks` (new kind `local_csv`, role `field_checks`). `pf fetch` records
+    the sheet's checksum and reads it again whenever the sheet changes.
+  - A corner answer (`ramp` / `flush` / `no_ramp`) is `verified`, dated by the visit, and comes
+    before every other source. Where it says no ramp or flush, the city's verdict on a nearby ramp
+    is not carried.
+  - A junction answer (`all_ramped` / `missing_ramp`) replaces the ramp count there and stays
+    `inferred`, as every junction claim does.
+  - Blank and `unclear` rows carry nothing. A typo or a missing date stops `pf enrich` with the row
+    named.
+- **Checked on the real data:**
+  - Each of the 13 sheet places matches its own junction node or crossing end within the 3 m
+    radius (0.00 to 0.06 m). The next junction or crossing end is at least 11.7 m away.
+  - The Tuscanny Drive corner matches two crossing ends at the same point: two crosswalks share
+    that curb, so one answer covers both.
+  - With the sheet blank, `pf enrich` writes a graph identical to the one before.
+  - An edited sheet is fetched again; an unchanged one is skipped.
+  - No answers are filled in yet, so no criterion has moved. The worklist estimate stands: the 13
+    places open the 7 trips criterion 4 needs only if every one has usable ramps.
+- Tests: 226 pass on the Frederick graph (new: field corner first and dated, radius, junction
+  override, a corner answer not read as a junction, sheet validation).
+
 ### 2026-10-19 — Web app: faster start and easier on phones
 
 - **Measured first** on an emulated phone (Chrome, 390×844, touch, 4× slower CPU, 1.6 Mbps and
@@ -855,6 +884,7 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 | 2026-10-19 | **The retrained imagery model is not used:** scored once, it failed the same bar ("sidewalk" 80.9% correct; "no sidewalk" 100% but only 26 answers, 30 needed). The frozen test set is now spent for imagery models; any further imagery model needs a new, independently labelled test set fixed before it is built | The protocol fixed the outcome of a fail before training; a third look at the same test set would let it tune the model |
 | 2026-10-19 | **Areas closed to the public (`landuse=military`) are not walkable:** edges at least half inside are removed; trips with an end there leave the sample by its existing rule | A route through a guarded gate is not a route; Fort Detrick's streets were mapped as public (`access=yes`). This corrects the network, not the bar |
 | 2026-10-19 | **Imagery sidewalk detection is closed (owner).** No new test set and no further models; effort moves to getting Frederick over the accessibility bar through the city's own data | Two models failed, in opposite ways; at six inches, under canopy and beside driveways, 95% looks out of reach, and a new hand-labelled test set would cost about as much as mapping the streets |
+| 2026-10-20 | **The team's field checks are a source:** a corner seen on site is verified and comes first; a junction answer stays inferred; typos stop the pipeline | A direct observation is the best evidence of a curb, but a junction answer cannot say which corners a walker uses; a silently skipped row would hide a check someone made |
 | 2026-10-20 | **City of Frederick layers stay internal** (the city's answer: internal use only, no further data) | Rule 7 unchanged: nothing built on them is shown outside the team |
 | 2026-10-20 | **Closed areas are cut at their boundary**, not removed by a share of each edge: only the parts of a walkway outside are kept, the cut ends are never bridged, and no connector may enter. A trip end inside one is told so | Review finding: the half-inside rule kept gate roads reaching up to 20 m behind the fence and corners walkable through the area |
 
@@ -897,9 +927,9 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 
 1. ~~City of Frederick brief~~ (answered 2026-10-20): internal use only; scope, report and
    corner check declined.
-   - Frederick's criterion 4 (7 trips short): a field check of the 13 worklist places
-     (`reports/frederick/blocked/worklist.csv`, 5 inside the city line), by the team or with
-     testers, recorded as a new dated source.
+   - Frederick's criterion 4 (7 trips short): visit the 13 places on `field/frederick.csv`
+     (instructions in `field/README.md`), then `pf fetch` → `pf enrich` → `pf coverage` →
+     `pf barriers` → `pf crux --fresh` → `tools/blocked_trips`. The source is ready (2026-10-20).
    - Testers in Frederick: decide whether to ask the city again later, or to show testers a
      Frederick built without the city's layers.
 2. Data requests (owner): MDOT SHA's ADA inventory (27 of Frederick's 145 blocked trips touch a

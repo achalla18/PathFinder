@@ -439,3 +439,83 @@ def test_estimated_sidewalk_lines_lie_on_the_survey_side_and_skip_a_side_osm_map
 def test_without_a_survey_no_sidewalk_lines_are_estimated():
     edges, _ = _one_side_streets(far_y=22.0)
     assert enrich.estimate_survey_sidewalk_lines(edges, gpd.GeoDataFrame(), None).empty
+
+
+# ---------------------------------------------------------------- field checks
+
+
+def _field(rows: list[tuple[str, str, float, float]]) -> gpd.GeoDataFrame:
+    """Canonical field checks: (kind, kerb, x, y), visited 2026-10-25."""
+    return gpd.GeoDataFrame({"KIND": [r[0] for r in rows], "KERB": [r[1] for r in rows], "VISITED": ["2026-10-25"] * len(rows)},
+                            geometry=[Point(r[2], r[3]) for r in rows], crs=ANALYSIS_CRS)
+
+
+def _one_crossing():
+    e = _edges([{"u": 0, "v": 1, "kind": "crossing", "representation": "pedestrian_way", "osm_way_id": 7}], {0: (0, 0), 1: (0, 15)})
+    osm_nodes = _points([], kerb=pd.Series(dtype=object), barrier=pd.Series(dtype=object))
+    ps = _points([], label_type=[], image_date=[])
+    # the city's ramp record sits 2 m from end a and says it passed
+    ramps = _points([(2.0, 0.0)], KERB=["ramp_present"], CHECK=["passed"], CAPTUREYEAR=[CAPTURE_MS])
+    return e, osm_nodes, ps, ramps
+
+
+def test_a_curb_seen_on_site_comes_first_and_is_dated_by_the_visit():
+    e, osm_nodes, ps, ramps = _one_crossing()
+    enrich.enrich_kerbs(e, osm_nodes, ps, ramps, None, "frederick_ramps",
+                        _field([("corner", "no_ramp", 0.5, 0.0), ("corner", "ramp_present", 0.0, 15.0)]), "frederick_field_checks")
+    row = e.iloc[0]
+    assert {row["kerb_a"], row["kerb_b"]} == {"no_ramp", "ramp_present"}  # which end is "a" is the crossing's own order
+    no_ramp_end = "a" if row["kerb_a"] == "no_ramp" else "b"
+    assert row[f"kerb_{no_ramp_end}_status"] == "verified" and row[f"kerb_{no_ramp_end}_source"] == "frederick_field_checks"
+    assert row[f"kerb_{no_ramp_end}_as_of"] == "2026-10-25"
+    # the city's "passed" describes a ramp that is not at this end: not carried
+    assert row[f"ramp_check_{no_ramp_end}_status"] == "unknown" and row[f"ramp_check_{no_ramp_end}"] is None
+
+
+def test_a_field_check_beyond_its_radius_matches_nothing():
+    e, osm_nodes, ps, ramps = _one_crossing()
+    enrich.enrich_kerbs(e, osm_nodes, ps, ramps, None, "frederick_ramps",
+                        _field([("corner", "no_ramp", 0.0, -5.0)]), "frederick_field_checks")
+    row = e.iloc[0]
+    end = "a" if row["kerb_a_source"] == "frederick_ramps" else "b"
+    assert row[f"kerb_{end}"] == "ramp_present" and row[f"ramp_check_{end}"] == "passed"  # the city's record stands
+    assert not (e[["kerb_a_source", "kerb_b_source"]] == "frederick_field_checks").any().any()
+
+
+def test_a_junction_seen_on_site_replaces_the_ramp_count():
+    #  0 --- 1 --- 2, with 3 above node 1: a three-way junction of street centerlines
+    xy = {0: (0, 0), 1: (100, 0), 2: (200, 0), 3: (100, 100)}
+    st = {"kind": "street_unknown", "representation": "street_centerline"}
+    e = _edges([{"u": 0, "v": 1, **st}, {"u": 1, "v": 2, **st}, {"u": 3, "v": 1, **st}], xy)
+    nodes = make_nodes(xy)
+    nodes["on_removed_road"] = False
+    ps = _points([(95.0, 5.0), (105.0, -5.0)], label_type=["CurbRamp", "CurbRamp"], image_date=["2023-06-01", "2023-06-01"])
+    empty = dict(signals=_points([], STATUS=[]), roadway=_points([], TOTALCROSSSECTIONWIDTH=[]))
+    enrich.enrich_implicit_crossings(e, nodes, empty["signals"], empty["roadway"], ps, _points([], CAPTUREYEAR=[]),
+                                     ramps_source=None, field=_field([("junction", "no_ramp_reported", 100.4, 0.3)]),
+                                     field_source="frederick_field_checks")
+    assert e["xing_v_kerb"].iat[0] == "no_ramp_reported"  # two ramps on record, but a corner without one was seen
+    assert (e["xing_v_kerb_source"].iat[0], e["xing_v_kerb_as_of"].iat[0]) == ("frederick_field_checks", "2026-10-25")
+    # a corner answer at the same spot says nothing about the junction
+    e2 = _edges([{"u": 0, "v": 1, **st}, {"u": 1, "v": 2, **st}, {"u": 3, "v": 1, **st}], xy)
+    enrich.enrich_implicit_crossings(e2, nodes, empty["signals"], empty["roadway"], ps, _points([], CAPTUREYEAR=[]),
+                                     ramps_source=None, field=_field([("corner", "no_ramp", 100.0, 0.0)]),
+                                     field_source="frederick_field_checks")
+    assert e2["xing_v_kerb"].iat[0] == "ramp_likely"
+
+
+def test_the_field_sheet_skips_unanswered_rows_and_refuses_typos():
+    from pathfinder.graph import roles
+
+    def sheet(**cols):
+        n = len(cols["result"])
+        base = {"place": [f"p{i}" for i in range(n)], "kind": ["corner"] * n, "visited_on": ["2026-10-25"] * n}
+        return gpd.GeoDataFrame({**base, **cols}, geometry=[Point(i, 0) for i in range(n)], crs=ANALYSIS_CRS)
+
+    out = roles.field_checks(sheet(result=["ramp", "", "unclear", "No_Ramp "], kind=["corner", "corner", "junction", "corner"],
+                                   visited_on=["2026-10-25", "", "", "2026-10-26"]))
+    assert out["KERB"].tolist() == ["ramp_present", "no_ramp"] and out["VISITED"].tolist() == ["2026-10-25", "2026-10-26"]
+    with pytest.raises(ValueError, match="unknown kind or result"):
+        roles.field_checks(sheet(result=["all_ramped"]))  # a junction answer on a corner
+    with pytest.raises(ValueError, match="visited_on"):
+        roles.field_checks(sheet(result=["ramp"], visited_on=["25/10/2026"]))

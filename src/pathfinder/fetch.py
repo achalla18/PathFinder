@@ -22,7 +22,7 @@ import pandas as pd
 import requests
 from shapely.geometry import shape
 
-from .config import RAW_DIR, SHARED_DIR, WGS84, ensure_dirs
+from .config import RAW_DIR, REPO_ROOT, SHARED_DIR, WGS84, ensure_dirs
 from .sources import REGION, SOURCES, Source
 
 log = logging.getLogger(__name__)
@@ -201,6 +201,33 @@ def fetch_http_file(source: Source) -> Path:
                 f.write(chunk)
     tmp.replace(out)
     _record(source, out, last_modified=r.headers.get("Last-Modified"), bytes=out.stat().st_size)
+    return out
+
+
+# --------------------------------------------------------------------------- sheets kept in the repo
+
+FIELD_SHEET_COLUMNS = ("place", "kind", "lat", "lon", "visited_on", "result")
+
+
+def _local_csv(source: Source) -> Path:
+    return REPO_ROOT / source.url
+
+
+def fetch_local_csv(source: Source) -> Path:
+    """A sheet kept in the repo (the team's field checks) -> raw parquet with point geometry
+    from its lat/lon. The sheet's own checksum goes in the manifest, so a result always traces
+    back to the exact sheet it came from; ``fetch`` reads it again whenever the sheet changes."""
+    src = _local_csv(source)
+    df = pd.read_csv(src, dtype=str, keep_default_na=False)
+    missing = [c for c in FIELD_SHEET_COLUMNS if c not in df]
+    if missing:
+        raise ValueError(f"{source.id}: {src} lacks columns {missing}")
+    lat, lon = pd.to_numeric(df["lat"], errors="coerce"), pd.to_numeric(df["lon"], errors="coerce")
+    if lat.isna().any() or lon.isna().any():
+        raise ValueError(f"{source.id}: rows without a numeric lat/lon: {df.loc[lat.isna() | lon.isna(), 'place'].tolist()}")
+    out = raw_path(source.id)
+    gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(lon, lat), crs=WGS84).to_parquet(out)
+    _record(source, out, sheet_sha256=_sha256(src), count=len(df))
     return out
 
 
@@ -514,6 +541,7 @@ _FETCHERS = {
     "glyphs": fetch_glyphs,
     "wmata_json": fetch_wmata_json,
     "live": _live_only,
+    "local_csv": fetch_local_csv,
 }
 
 
@@ -531,6 +559,8 @@ def fetch(source_ids: list[str] | None = None, *, force: bool = False) -> None:
             continue
         p = raw_path(sid)
         done = sid in load_manifest() and p.exists()
+        if done and s.kind == "local_csv":  # an edited sheet is a new version: read it again
+            done = load_manifest()[sid].get("sheet_sha256") == _sha256(_local_csv(s))
         if done and not force:
             log.info("skip %s (already fetched)", sid)
             continue

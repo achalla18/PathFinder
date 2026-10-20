@@ -23,7 +23,11 @@ def test_every_region_is_consistent():
 def test_a_pilot_names_only_inspected_sources_and_confirms_nothing_by_absence():
     fred = get("frederick")
     assert fred.roles == {"planimetrics": "frederick_sidewalks", "report_districts": "frederick_tracts", "dtm": "frederick_dtm",
-                          "ramps": "frederick_ramps", "signals": "frederick_county_signals"}
+                          "ramps": "frederick_ramps", "signals": "frederick_county_signals",
+                          "field_checks": "frederick_field_checks"}
+    # the team's own sheet, kept in the repo; not held back under rule 7
+    fc = fred.sources["frederick_field_checks"]
+    assert fc.kind == "local_csv" and fc.url == "field/frederick.csv" and "internal use" not in fc.license.lower()
     assert fred.sources["frederick_sidewalk_photos"].kind == "arcgis_first_date"
     gai = get("gaithersburg")
     # Montgomery's sidewalk survey plays planimetrics; the city's own layer is a cross-check only
