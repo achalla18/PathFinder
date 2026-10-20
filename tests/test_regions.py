@@ -120,7 +120,7 @@ def test_clip_keeps_ways_touching_the_box_complete_and_drops_the_rest(tmp_path):
         w.add_way(osmium.osm.mutable.Way(id=10, nodes=[1, 2, 3], tags={"highway": "footway"}))
         w.add_way(osmium.osm.mutable.Way(id=11, nodes=[4, 5], tags={"highway": "footway"}))
     counts = clip_pbf(src, out, (0.0, 0.0, 1.0, 1.0))
-    assert counts == {"ways": 1, "tagged_nodes_inside": 1, "nodes_inside": 2}
+    assert counts == {"ways": 1, "tagged_nodes_inside": 1, "nodes_inside": 2, "area_relations": 0}
 
     nodes, ways = {}, {}
     for o in osmium.FileProcessor(str(out)):
@@ -130,6 +130,35 @@ def test_clip_keeps_ways_touching_the_box_complete_and_drops_the_rest(tmp_path):
             ways[o.id] = [n.ref for n in o.nodes]
     assert ways == {10: [1, 2, 3]}
     assert set(nodes) == {1, 2, 3}  # node 3 lies outside the box but its way needs it
+
+
+def test_clip_keeps_a_military_area_relation_with_all_its_members(tmp_path):
+    """Fort Detrick is mapped only as a relation: the clip must keep it, and the member ways
+    that lie outside the box, or the area would be lost and its streets routed as public."""
+    import osmium
+
+    from pathfinder.fetch import clip_pbf
+
+    src, out = tmp_path / "all.osm.pbf", tmp_path / "clip.osm.pbf"
+    with osmium.SimpleWriter(str(src)) as w:
+        for nid, lon, lat in ((1, 0.5, 0.5), (2, 0.6, 0.5), (3, 2.0, 2.0), (4, 2.1, 2.0)):
+            w.add_node(osmium.osm.mutable.Node(id=nid, location=(lon, lat), tags={}))
+        w.add_way(osmium.osm.mutable.Way(id=20, nodes=[1, 2], tags={}))   # member inside the box
+        w.add_way(osmium.osm.mutable.Way(id=21, nodes=[3, 4], tags={}))   # member far outside it
+        w.add_relation(osmium.osm.mutable.Relation(
+            id=5, members=[("w", 20, "outer"), ("w", 21, "outer")],
+            tags={"type": "multipolygon", "landuse": "military", "name": "Base"}))
+        w.add_relation(osmium.osm.mutable.Relation(
+            id=6, members=[("w", 20, "outer")], tags={"type": "multipolygon", "landuse": "forest"}))
+    counts = clip_pbf(src, out, (0.0, 0.0, 1.0, 1.0))
+    assert counts["area_relations"] == 1
+    rels, ways = set(), set()
+    for o in osmium.FileProcessor(str(out)):
+        if o.is_relation():
+            rels.add(o.id)
+        elif o.is_way():
+            ways.add(o.id)
+    assert rels == {5} and ways == {20, 21}
 
 
 def test_frederick_sidewalks_are_dated_by_their_first_photo_and_undated_ones_dropped(monkeypatch, tmp_path):

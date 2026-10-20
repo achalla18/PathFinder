@@ -456,6 +456,34 @@ def label_components(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame) -> tuple[
     return edges, nodes
 
 
+def drop_restricted(edges: gpd.GeoDataFrame, areas: gpd.GeoDataFrame | None = None) -> tuple[gpd.GeoDataFrame, dict]:
+    """Remove edges lying mostly inside an area closed to the public (osm.RESTRICTED_AREA_TAGS).
+
+    A military installation's streets and paths are mapped like public ones, but a walker cannot
+    get past the gate: routing through one would invent a route, and trips inside it are not
+    trips anyone can take. Edges with at least half their length inside are removed, so a
+    public street along the fence stays. Returns the kept edges and what was removed, by area."""
+    if areas is None:
+        path = INTERIM_DIR / "osm_restricted_areas.parquet"
+        if not path.exists():
+            raise RuntimeError("osm_restricted_areas.parquet missing; rerun `pf extract-osm`")
+        areas = gpd.read_parquet(path)
+    if areas.empty:
+        return edges, {}
+    areas = areas.to_crs(edges.crs)
+    inside = np.zeros(len(edges))
+    removed: dict[str, dict] = {}
+    for name, geom in zip(areas["name"].fillna("unnamed"), areas.geometry):
+        share = edges.geometry.intersection(geom).length.to_numpy() / edges["length_m"].to_numpy()
+        hit = (share >= 0.5) & (inside < 0.5)
+        if hit.any():
+            removed[name] = {"edges": int(hit.sum()), "km": round(float(edges.loc[hit, "length_m"].sum()) / 1000, 1)}
+        inside = np.maximum(inside, share)
+    if removed:
+        log.info("restricted areas: removed %s", removed)
+    return edges[inside < 0.5].reset_index(drop=True), removed
+
+
 # ============================================================ entry point
 
 
@@ -489,6 +517,7 @@ def build() -> dict:
     keep = inside_len >= 0.5 * edges["length_m"]
     n_out = int((~keep).sum())
     edges = edges[keep].reset_index(drop=True)
+    edges, restricted = drop_restricted(edges)
     edges["outside_region"] = ~edges.geometry.within(boundary)
     edges, n_stubs = prune_removed_road_stubs(edges, removed_nodes)
     edges["edge_id"] = np.arange(len(edges), dtype=np.int64)
@@ -534,6 +563,7 @@ def build() -> dict:
         "near_miss_radius_m": SURFACE_GAP_MAX_M,
         "removed_road_stubs_pruned": n_stubs,
         "edges_dropped_outside_scope": n_out,
+        "edges_dropped_in_restricted_areas": restricted,
         "inferred_connectors": n_conn + n_surface,
         "inferred_connectors_across_mapped_sidewalk_surface": n_surface,
     }

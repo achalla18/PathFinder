@@ -72,11 +72,13 @@ src/pathfinder/
   sources.py                 the current region's registry of external datasets
   fetch.py                   downloads + provenance manifest (sha256, counts, fetch time);
                              pbf_clip cuts a town out of the statewide OSM extract
-  osm.py                     OSM PBF -> interim parquet (ways, tagged nodes, rail/water barriers)
+  osm.py                     OSM PBF -> interim parquet (ways, tagged nodes, rail/water barriers,
+                             areas closed to the public)
   evidence.py                value/status/source/as_of grading helpers + invariants
   graph/classify.py          walkability rules (pure functions over OSM tags)
   graph/build.py             topology: classify, separate-sidewalk detection, split,
-                             stub pruning, gap bridging, region scope clip, components
+                             stub pruning, gap bridging, region scope clip, closed areas
+                             removed, components
   graph/roles.py             reads the region's source for each role in canonical columns;
                              a missing role is an empty frame, so its attributes stay unknown;
                              without a roadway inventory the streets come from OSM
@@ -110,9 +112,10 @@ reports/<region>/            generated, committed, human-readable outputs (do no
 
 ## Environment and commands
 
-- Repo: `C:\Users\arjun\OneDrive\Desktop\CongoApp` (owner's choice). It is inside OneDrive,
-  so large data never goes here. Venv: `C:\Users\arjun\.venvs\pathfinder`. Install:
-  `python -m uv pip install --python C:/Users/arjun/.venvs/pathfinder/Scripts/python.exe -e ".[dev]"`.
+- Repo: `C:\dev\PathFinder`, moved out of OneDrive (`Desktop\CongoApp`) on 2026-10-19 so sync
+  cannot touch git internals. Large data still never goes here. Venv: `C:\Users\arjun\.venvs\pathfinder`
+  (it has no pip of its own). Install:
+  `py -m pip --python C:/Users/arjun/.venvs/pathfinder/Scripts/python.exe install -e ".[dev]"`.
 - Data directory: `PF_DATA_DIR`, default `~/.pathfinder/data`. Each region has
   `<data>/regions/<id>/` (raw, interim, graph, analysis); the statewide Geofabrik extract
   that every town is cut from lives once in `<data>/shared/`.
@@ -128,16 +131,17 @@ reports/<region>/            generated, committed, human-readable outputs (do no
   pf enrich                # writes graph/edges.parquet
   pf coverage              # reports/<region>/phase0/coverage.md + maps, and the accessibility bar
   pf barriers              # reports/<region>/barriers/barriers.md, by census tract, + map
-  pf crux --per-bin 334    # reports/<region>/phase0/crux.md
+  pf crux --per-bin 334    # reports/<region>/phase0/crux.md (Frederick's fixed sample: --per-bin 100)
+  python tools/blocked_trips/blocked_trips.py   # after crux: what blocks wheelchair trips,
+                                                # reports/<region>/blocked/ (internal)
   pf route 39.1434,-77.2014 39.1210,-77.2370 --profile manual_wheelchair   # one explained trip, JSON
   pf serve                 # API on 127.0.0.1:8000, plus the built web app if web/dist exists
   ```
   A change to `build.py` needs `pf build-graph` onward; a change to `enrich.py`,
   `elevation.py` or the cost model needs `pf enrich` onward and `pf crux --fresh`.
 - Web app: `cd web && npm install`, then `npm run dev` (page on :5173, proxies /api to
-  `pf serve`) or `npm run build` (output in `web/dist`, served by `pf serve`). The repo is in
-  OneDrive, so install and build in a copy outside it and copy `dist/` back; never put
-  `node_modules` here. Tabs: What matters (profile, triangle, requirements), Routes,
+  `pf serve`) or `npm run build` (output in `web/dist`, served by `pf serve`); `node_modules`
+  is git-ignored. Tabs: What matters (profile, triangle, requirements), Routes,
   Barriers (the city map for the current view). The dark theme follows the phone's setting. `pf serve`
   refuses any non-local host unless `PF_APP_PASSWORD` is set. The map opens at the region's
   centre (`/api/health`). MapLibre 6 needs its worker bundled (`MapView.tsx`).
@@ -198,6 +202,12 @@ reports/<region>/            generated, committed, human-readable outputs (do no
 
 - OSM: Geofabrik's Maryland extract (~216 MB) is cut per town by `fetch.clip_pbf`, keeping
   every way with a node in the box complete. Its Last-Modified date is every clip's `as_of`.
+  The only relations kept are `landuse=military` areas (`fetch.CLIP_RELATION_TAGS`).
+- **Closed areas are not walkable.** Fort Detrick, a closed Army post inside Frederick, is mapped
+  only as a relation, and its streets carry `access=yes`. Until 2026-10-19 its 60 km of streets
+  and paths were routed and sampled as public. `pf extract-osm` writes `osm_restricted_areas.parquet`
+  (`osm.RESTRICTED_AREA_TAGS`), and `build.drop_restricted` removes every edge with at least half
+  its length inside one. A public street along the fence stays.
 - OSM `crossing=marked` says a crossing is painted, not whether it is signalized; signals
   are in `crossing=traffic_signals`, `crossing:signals`, and the same tags on the node.
 - Without a roadway inventory, lanes and speed come from OSM `lanes` / `maxspeed` tags

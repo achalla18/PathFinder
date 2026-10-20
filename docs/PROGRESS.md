@@ -16,9 +16,9 @@ See "How to update" at the bottom.
 |---|---|
 | **Product** | **City accessibility app** (refocused 2026-10-15): step-free routes from mobility profiles first, plus a city barrier map. Dimensions: crossings & curbs / slope / sidewalk |
 | **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) and sidewalks from the surveys (both towns) in. Each town passes 3 of 5 accessibility criteria |
-| **Next** | Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (54.6%) needs mapping beyond the survey |
-| **Repo** | `C:\Users\arjun\OneDrive\Desktop\CongoApp`, its own git repository; no remote |
-| **Tests** | 210 pass on each pilot graph (unit and data-invariant; 1 skipped by design) |
+| **Next** | Frederick is 7 trips short of criterion 4 and 3.2 points short of criterion 3: a brief to the City of Frederick (data permission, survey scope, a corner check from `reports/frederick/blocked/`). Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
+| **Repo** | `C:\dev\PathFinder` (moved out of OneDrive 2026-10-19), its own git repository; no remote |
+| **Tests** | 213 pass on the Frederick graph (unit and data-invariant; 1 skipped by design) |
 
 ### Key metrics over time
 
@@ -37,13 +37,13 @@ See "How to update" at the bottom.
 **Accessibility bar** (fixed 2026-10-15, before any accessibility source; see Decisions log). All
 figures inside the city line:
 
-| Criterion | Gaithersburg 2026-10-15 | Gaithersburg 2026-10-16 | Frederick 2026-10-15 | Frederick 2026-10-16 |
-|---|---|---|---|---|
-| 1. Curb evidence at crossing ends, implicit included (≥ 60%) | 18.9% | 18.9% — misses (no ramp inventory) | 17.3% | **67.0%** (6,872 of 10,253) — passes |
-| 2. Slope verified (≥ 80% of walkable length) | 0% | **89.4%** — passes | 0% | **96.0%** — passes |
-| 3. Sidewalk evidence (≥ 60% of walkable length) | 51.4%* | 52.5% — misses; **61.7% — passes** with sidewalks from the survey (see below) | 47.6%* | 50.8% — misses; 54.6% — still misses with sidewalks from the survey |
-| 4. Manual-wheelchair route exists, allow likely (≥ 50% of trip sample) | — | **2.7%** of 300 trips — misses (no ramp inventory) | — | **44.0%** of 300 trips — misses |
-| 5. Main component (≥ 90%) | 97.9% | 97.9% — passes | 96.8% | 96.8% — passes |
+| Criterion | Gaithersburg 2026-10-15 | Gaithersburg 2026-10-16 | Frederick 2026-10-15 | Frederick 2026-10-16 | Frederick 2026-10-19 (Fort Detrick removed) |
+|---|---|---|---|---|---|
+| 1. Curb evidence at crossing ends, implicit included (≥ 60%) | 18.9% | 18.9% — misses (no ramp inventory) | 17.3% | **67.0%** (6,872 of 10,253) — passes | 69.3% (6,760 of 9,757) — passes |
+| 2. Slope verified (≥ 80% of walkable length) | 0% | **89.4%** — passes | 0% | **96.0%** — passes | 95.8% — passes |
+| 3. Sidewalk evidence (≥ 60% of walkable length) | 51.4%* | 52.5% — misses; **61.7% — passes** with sidewalks from the survey (see below) | 47.6%* | 50.8% — misses; 54.6% — still misses with sidewalks from the survey | 56.8% — misses |
+| 4. Manual-wheelchair route exists, allow likely (≥ 50% of trip sample) | — | **2.7%** of 300 trips — misses (no ramp inventory) | — | **44.0%** of 300 trips — misses | 47.5% of 276 trips — misses (7 short) |
+| 5. Main component (≥ 90%) | 97.9% | 97.9% — passes | 96.8% | 96.8% — passes | 96.9% — passes |
 
 \* computed then over the whole graph, buffer included; the 2026-10-16 figures count only the
 network inside the city line, as the other criteria do.
@@ -636,6 +636,58 @@ first, and folded crossings into accessibility, removing after-dark and crime.
   now also reports them on a third of the street sides that have none. Its "no sidewalk" answers
   were all right, but there were too few of them to pass the bar.
 
+### 2026-10-19 — Repo out of OneDrive; Fort Detrick removed from Frederick; what blocks wheelchair trips
+
+- **Repo:** first commit (`5139ac0`, branch `feature/initial-platform`), then moved from
+  `OneDrive\Desktop\CongoApp` to `C:\dev\PathFinder` (git clone; contents checked identical). The
+  venv's editable install points at the new path; 210 tests passed there before any change.
+- **What blocks the trips:** `tools/blocked_trips/blocked_trips.py` (new) reruns each trip with
+  no manual-wheelchair route under looser settings, and lists every place on the cheapest route that
+  fails the real requirement (`reports/frederick/blocked/`, internal).
+- **Fort Detrick bug, found by that breakdown:**
+  - The largest gap, tract 751201 with 240 trip links, was Fort Detrick, a closed Army post inside
+    the city. Its streets were routed and sampled as public walkways.
+  - On imagery, 6 of 10 sampled worklist corners were behind the base fence (boulder-lined roads,
+    pipe racks, guard posts).
+  - Cause: OSM maps the base only as a multipolygon relation (5872336, `landuse=military`), and the
+    town clip dropped every relation. Its streets carry `access=yes`.
+  - Fix: the clip keeps `landuse=military` relations. `pf extract-osm` writes them, and
+    `build.drop_restricted` removes every edge at least half inside. Frederick lost 805 edges
+    (60.3 km). Tests: 213 pass.
+  - Gaithersburg's clip touches no military area, so its network is unchanged.
+  - The OSM extract was not re-downloaded: same file, same 2026-10-15 date.
+- **Frederick's bar, rebuilt** (`pf build-graph` → `pf crux --fresh`):
+
+  | Criterion | Before | After |
+  |---|---|---|
+  | 1. Curb evidence | 67.0% (6,872 of 10,253) | **69.3%** (6,760 of 9,757) — passes |
+  | 2. Slope verified | 96.0% | 95.8% — passes |
+  | 3. Sidewalk evidence | 54.6% | **56.8%** — misses |
+  | 4. Manual-wheelchair route | 44.0% of 300 trips | **47.5% of 276** — misses |
+  | 5. Main component | 96.8% | 96.9% — passes |
+
+  - 24 of the 300 fixed trips had an end on the base and are left out by the sample's existing rule
+    (an end more than 30 m from the network).
+  - Barrier map: unrecorded crossing-end curbs 1,142 → 1,122, junction curbs 2,239 → 1,875,
+    steep edges 1,225 → 1,199.
+- **What blocks the 145 trips still without a route:**
+  - 73 trips are blocked only by places with no record: curbs at 380 places, slope unknown at 6.
+  - 67 trips also need a measured slope over 8.33%.
+  - 5 trips have no step-free route at all.
+  - Only 27 trips touch a trunk or primary road (mostly state roads). The missing MDOT SHA inventory
+    is not the main blocker.
+  - Inside the city line, 251 blocking curbs have no record, and 170 of them have no ramp-inventory
+    record within 50 m: the city's survey does not reach them. 74 trips touch places outside the
+    line, which the city does not survey.
+  - The worklist holds 14 places, 6 inside the line. They would open the 7 trips the bar needs if
+    every one had a usable ramp. Imagery of the 9 that loaded: 4 look likely to have ramps (newer
+    streets with crosswalks), 4 look unlikely (no sidewalk on one side). A realistic check is a few
+    dozen corners, and some of the gap is missing sidewalk, not missing records.
+  - Not a bug: 146 unknown crossing ends have a ramp record within 3 m of a crossing node. That
+    record is the ramp at the opposite curb; the city recorded one side only.
+  - Not changed: some crossing ends are 8–12 m from a city ramp record, beyond the 8 m match radius
+    calibrated on DC. Widening it needs an imagery check first.
+
 ---
 
 ## Decisions log
@@ -671,14 +723,13 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 | 2026-10-17 | **Imagery sidewalks (Tile2Net) are not used:** the pilot failed the fixed bar ("sidewalk" 85.7%, "no sidewalk" 83.7% correct; 95% needed) | Rule 5 and accuracy over coverage; the bar was fixed before any detection and is not moved |
 | 2026-10-17 | **Retraining protocol (owner: fine-tune on a Colab T4, labels from OSM on survey-picked chips), fixed before any training data is built.** *Test:* the same bar, decision rule (≥ 60% / ≤ 10% within 15 m), frozen test set and frozen `score.py`, scored **once** on the final model; then the 20-answer imagery check. No threshold or checkpoint is chosen on the test set. *Held out:* any chip within 250 m of a test cell is used for nothing. *Chips:* zoom-17 tiles (1024 px of zoom-19 imagery, MD iMAP 2023–25, fetched as one export per chip: identical to 16 stitched tiles up to resampling, mean 1.5 levels) lying wholly inside the Frederick or Gaithersburg city line (survey: Frederick's lines, Montgomery code 1206 polygons), with ≥ 150 m of OSM sidewalk where OSM and the town's survey agree: ≥ 90% of the survey's sidewalk lies within 5 m of an OSM sidewalk and ≥ 90% of the OSM sidewalk lies within 5 m of the survey. The survey only picks chips and never leaves the laptop. *Labels, from OSM alone:* sidewalk within half the tagged width (default 0.75 m) of an OSM sidewalk; ignored from there to 2.5 m and within 3 m of every other OSM footway, path, cycleway, steps or crossing; everything else is "not sidewalk". *Loss:* class-balanced binary loss on the sidewalk output only. *Split:* zoom-15 blocks, 20% of them validation, chosen by a fixed hash; the epoch is chosen by validation sidewalk F1. *Training:* from the released `satellite_2021` weights, SGD (momentum 0.9, lr 1e-3, poly decay, weight decay 1e-4), mixed precision, at most 15 epochs. *Result:* pass → used as `inferred`, dated by the imagery; fail → not used, and this test set is spent for imagery models | The test set has been used once already; one more look at it, with nothing tuned on it, keeps the measurement honest. OSM labels are open; the survey stays internal (rule 7) |
 | 2026-10-19 | **The retrained imagery model is not used:** scored once, it failed the same bar ("sidewalk" 80.9% correct; "no sidewalk" 100% but only 26 answers, 30 needed). The frozen test set is now spent for imagery models; any further imagery model needs a new, independently labelled test set fixed before it is built | The protocol fixed the outcome of a fail before training; a third look at the same test set would let it tune the model |
+| 2026-10-19 | **Areas closed to the public (`landuse=military`) are not walkable:** edges at least half inside are removed; trips with an end there leave the sample by its existing rule | A route through a guarded gate is not a route; Fort Detrick's streets were mapped as public (`access=yes`). This corrects the network, not the bar |
 | 2026-10-19 | **Imagery sidewalk detection is closed (owner).** No new test set and no further models; effort moves to getting Frederick over the accessibility bar through the city's own data | Two models failed, in opposite ways; at six inches, under canopy and beside driveways, 95% looks out of reach, and a new hand-labelled test set would cost about as much as mapping the streets |
 
 ---
 
 ## Open issues
 
-- The repo is inside OneDrive; syncing git internals can corrupt them and uses memory
-  (DistrictDirect moved out for this reason). Consider `C:\dev\PathFinder`.
 - No Maryland basemap tiles, elevation, signals, lights, crashes or crime are registered
   yet: every such attribute is unknown until Phase C.
 - Many parameters (radii, penalties, the 30 felt-second worth-showing bar) were calibrated
@@ -709,18 +760,19 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 
 ## Next steps
 
-1. Data requests (owner): MDOT SHA's ADA inventory; a Gaithersburg ramp inventory (it would
-   lift criterion 4 most: 199 of the blocked trips wait only on unrecorded curbs); MCDOT signals
-   with APS / LPI; the City of Frederick's survey report (index categories).
+1. **City of Frederick first** (owner): a one-page private brief (`docs/briefs/frederick-city.md`)
+   asks for (a) written permission to show what is built on the city's surveys outside the team
+   (rule 7), (b) the sidewalk survey's scope, which would let its silence count inside it
+   (criterion 3, 56.8%), (c) the survey report (condition categories), and (d) a check of the
+   blocking corners in `reports/frederick/blocked/worklist.csv` (criterion 4, 7 trips short).
+2. Data requests (owner): MDOT SHA's ADA inventory (27 of Frederick's 145 blocked trips touch a
+   major road); a Gaithersburg ramp inventory (it would lift criterion 4 most there: 199 of the
+   blocked trips wait only on unrecorded curbs); MCDOT signals with APS / LPI.
    No further open signal data in either town.
-2. Frederick's sidewalk evidence (54.6%): what is left is outside the survey (service roads,
-   lots, and streets the survey shows without a sidewalk). The survey failed its completeness
-   check (2026-10-16), so the way forward is the city's stated survey scope, or mapping with
-   partners. Imagery detection failed its bar twice, off the shelf (2026-10-17) and fine-tuned on
-   Maryland chips (2026-10-19), and the test set is spent. Its detections could still guide where
-   partners look, if the owner wants that.
-3. Phase E, starting with The Freedom Center: testers, and the profile numbers; then the
-   City of Frederick (owner of the ramp survey), with a one-page private brief.
+3. Frederick's sidewalk evidence beyond the survey: service roads, lots, and streets the survey shows
+   without a sidewalk; mapping with partners. Imagery detection is closed (2026-10-19).
+4. Phase E, The Freedom Center: testers and the profile numbers, once the city's permission
+   lets them see what is built on its data.
 
 ---
 

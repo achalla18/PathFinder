@@ -341,6 +341,10 @@ def _shared_download(url: str) -> tuple[Path, str | None]:
     return out, stamp.read_text().strip() or None
 
 
+# Multipolygon relations a town clip keeps: areas the network is clipped by (osm.RESTRICTED_AREA_TAGS).
+CLIP_RELATION_TAGS = (("landuse", "military"),)
+
+
 def clip_pbf(src: Path, out: Path, bbox: tuple[float, float, float, float]) -> dict:
     """Cut a bounding box out of an OSM extract, keeping every way that has a node inside it
     complete (with all its nodes, also those outside), plus tagged nodes inside it.
@@ -348,17 +352,20 @@ def clip_pbf(src: Path, out: Path, bbox: tuple[float, float, float, float]) -> d
     Streaming, without a node-location index: node coordinates are read directly, the ids
     of nodes inside the box are kept in memory (a town is a few hundred thousand), and the
     nodes the kept ways need from outside the box are added by ``BackReferenceWriter`` in a
-    second read of the file. Relations are left out; the pipeline reads ways and nodes only.
+    second read of the file. The only relations kept are the multipolygon areas in
+    ``CLIP_RELATION_TAGS`` with a member way in the box (the writer adds their other members):
+    Fort Detrick, a closed Army post inside Frederick, is mapped only as a relation.
     """
     import osmium
 
     xmin, ymin, xmax, ymax = bbox
     inside: set[int] = set()
-    n_ways = n_nodes = 0
+    kept_ways: set[int] = set()
+    n_ways = n_nodes = n_rels = 0
     tmp = out.with_suffix(".part.osm.pbf")
     tmp.unlink(missing_ok=True)
     with osmium.BackReferenceWriter(str(tmp), ref_src=str(src), overwrite=True) as writer:
-        for obj in osmium.FileProcessor(str(src), osmium.osm.NODE | osmium.osm.WAY):
+        for obj in osmium.FileProcessor(str(src), osmium.osm.NODE | osmium.osm.WAY | osmium.osm.RELATION):
             if obj.is_node():
                 loc = obj.location
                 if loc.valid() and xmin <= loc.lon <= xmax and ymin <= loc.lat <= ymax:
@@ -366,11 +373,17 @@ def clip_pbf(src: Path, out: Path, bbox: tuple[float, float, float, float]) -> d
                     if obj.tags:
                         writer.add_node(obj)
                         n_nodes += 1
-            elif any(n.ref in inside for n in obj.nodes):
-                writer.add_way(obj)
-                n_ways += 1
+            elif obj.is_way():
+                if any(n.ref in inside for n in obj.nodes):
+                    writer.add_way(obj)
+                    kept_ways.add(obj.id)
+                    n_ways += 1
+            elif any(obj.tags.get(k) == v for k, v in CLIP_RELATION_TAGS) and \
+                    any(m.type == "w" and m.ref in kept_ways for m in obj.members):
+                writer.add_relation(obj)
+                n_rels += 1
     tmp.replace(out)
-    return {"ways": n_ways, "tagged_nodes_inside": n_nodes, "nodes_inside": len(inside)}
+    return {"ways": n_ways, "tagged_nodes_inside": n_nodes, "nodes_inside": len(inside), "area_relations": n_rels}
 
 
 def fetch_pbf_clip(source: Source) -> Path:

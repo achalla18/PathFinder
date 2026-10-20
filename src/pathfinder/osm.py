@@ -4,6 +4,8 @@ Output (INTERIM_DIR):
 - ``osm_ways.parquet``  — every way with a ``highway`` tag: node refs, geometry, key tags.
 - ``osm_nodes.parquet`` — tagged nodes relevant to walking (kerbs, crossings, signals,
   elevators, subway entrances, street lamps, POIs with opening hours).
+- ``osm_restricted_areas.parquet`` — areas closed to the public (``RESTRICTED_AREA_TAGS``),
+  which ``graph.build`` removes the network from.
 
 Nothing is classified or filtered here beyond "has a highway tag"; walkability rules live in
 ``graph.build`` so they are testable and documented in one place.
@@ -18,6 +20,7 @@ from pathlib import Path
 import geopandas as gpd
 import osmium
 import pandas as pd
+from shapely import wkb
 from shapely.geometry import LineString, Point
 
 from .config import INTERIM_DIR, WGS84, ensure_dirs
@@ -52,6 +55,41 @@ def _relevant_node(tags) -> bool:
         or tags.get("railway") == "subway_entrance"
         or ("opening_hours" in tags and ("amenity" in tags or "shop" in tags))
     )
+
+
+# Areas the public cannot walk into: a military installation's streets are mapped like any
+# others (Fort Detrick's carry access=yes) but sit behind guarded gates.
+RESTRICTED_AREA_TAGS = (("landuse", "military"),)
+
+
+class _AreaHandler(osmium.SimpleHandler):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rows: list[dict] = []
+        self._wkb = osmium.geom.WKBFactory()
+
+    def area(self, a) -> None:
+        if not any(a.tags.get(k) == v for k, v in RESTRICTED_AREA_TAGS):
+            return
+        try:
+            geom = wkb.loads(self._wkb.create_multipolygon(a), hex=True)
+        except RuntimeError:  # an incomplete ring at the clip edge: skip rather than guess
+            log.warning("OSM: restricted area %s (%s) has an incomplete outline; skipped",
+                        a.orig_id(), a.tags.get("name"))
+            return
+        self.rows.append({"osm_id": a.orig_id(), "osm_type": "way" if a.from_way() else "relation",
+                          "name": a.tags.get("name"), "landuse": a.tags.get("landuse"),
+                          "operator": a.tags.get("operator"), "geometry": geom})
+
+
+def extract_restricted_areas(pbf: Path) -> gpd.GeoDataFrame:
+    h = _AreaHandler()
+    h.apply_file(str(pbf), locations=True)
+    cols = ["osm_id", "osm_type", "name", "landuse", "operator", "geometry"]
+    areas = gpd.GeoDataFrame(h.rows or None, columns=cols, geometry="geometry", crs=WGS84)
+    areas.to_parquet(INTERIM_DIR / "osm_restricted_areas.parquet")
+    log.info("OSM: %d restricted areas (%s)", len(areas), ", ".join(areas["name"].fillna("unnamed")))
+    return areas
 
 
 BARRIER_KEYS = ("railway", "waterway", "tunnel", "bridge", "layer", "cutting", "embankment")
@@ -124,4 +162,5 @@ def extract(pbf: Path | None = None) -> tuple[Path, Path]:
     bars_gdf = gpd.GeoDataFrame(bars, geometry=[LineString(c) for c in bars.pop("coords")], crs=WGS84)
     bars_gdf.to_parquet(INTERIM_DIR / "osm_barriers.parquet")
     log.info("OSM: %d railway/waterway ways", len(bars_gdf))
+    extract_restricted_areas(pbf)
     return ways_out, nodes_out

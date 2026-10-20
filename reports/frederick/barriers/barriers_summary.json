@@ -3,12 +3,12 @@
   "junction_curb_barrier": 157,
   "ramp_fails_check": 172,
   "ramp_no_tactile_pad": 1047,
-  "steep": 1225,
+  "steep": 1199,
   "steps": 57,
   "no_sidewalk": 18,
   "sidewalk_poor_condition": 325,
   "sidewalk_narrow": 5,
-  "curb_unknown": 1142,
-  "junction_curb_unknown": 2239,
-  "sidewalk_unknown": 2827
+  "curb_unknown": 1122,
+  "junction_curb_unknown": 1875,
+  "sidewalk_unknown": 2472
 }

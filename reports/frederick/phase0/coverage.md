@@ -8,11 +8,11 @@ Status meanings: **verified** = directly observed by a source (incl. confirmed a
 
 ## Network
 
-- Walkable edges: **28,693**, nodes: **21,697**
-- Largest connected component holds **96.8%** of walkable length (168 components in total; the rest are mostly private-lot service roads)
-- Length by representation (km): {'inferred_connector': 0.5, 'pedestrian_way': 508.5, 'street_centerline': 889.6} — sidewalk-level share of length: **36.4%**
-- Removed-road stubs pruned: 599; inferred gap connectors: 229 (each disclosed as `inferred_connector`), of which 9 bridge a wider gap across planimetric sidewalk surface
-- Pedestrian dead ends left unbridged: 1,518 lie within 15 m of another walkway with no evidence of a connection (near is not connected)
+- Walkable edges: **27,882**, nodes: **21,050**
+- Largest connected component holds **96.9%** of walkable length (150 components in total; the rest are mostly private-lot service roads)
+- Length by representation (km): {'inferred_connector': 0.5, 'pedestrian_way': 502.3, 'street_centerline': 835.5} — sidewalk-level share of length: **37.5%**
+- Removed-road stubs pruned: 599; inferred gap connectors: 225 (each disclosed as `inferred_connector`), of which 9 bridge a wider gap across planimetric sidewalk surface
+- Pedestrian dead ends left unbridged: 1,486 lie within 15 m of another walkway with no evidence of a connection (near is not connected)
 
 ## Accessibility bar (criteria 1, 2, 3, 5; criterion 4 is in crux.md)
 
@@ -20,10 +20,10 @@ Inside the region's line. Fixed on 2026-10-15 before any accessibility source wa
 
 | criterion | value_pct | bar_pct | result | counts |
 |---|---|---|---|---|
-| 1. Curb evidence at crossing ends, implicit included | 67.0 | 60.0 | passes | 6,872 of 10,253 ends |
-| 2. Slope verified, share of walkable length | 96.0 | 80.0 | passes |  |
-| 3. Sidewalk evidence, share of walkable length | 54.6 | 60.0 | misses | sidewalk-level ways 38.9%, streets with presence recorded 15.7% (of which a sidewalk on at least one side only: 3.9%) |
-| 5. Main component, share of length (whole graph) | 96.8 | 90.0 | passes |  |
+| 1. Curb evidence at crossing ends, implicit included | 69.3 | 60.0 | passes | 6,760 of 9,757 ends |
+| 2. Slope verified, share of walkable length | 95.8 | 80.0 | passes |  |
+| 3. Sidewalk evidence, share of walkable length | 56.8 | 60.0 | misses | sidewalk-level ways 40.3%, streets with presence recorded 16.5% (of which a sidewalk on at least one side only: 4.1%) |
+| 5. Main component, share of length (whole graph) | 96.9 | 90.0 | passes |  |
 
 - Estimated sidewalk lines (map layer only; the router walks the street centerline, which carries the same survey evidence): 2,369, 199.9 km. See `map_estimated_sidewalks.png`.
 
@@ -31,28 +31,28 @@ Inside the region's line. Fixed on 2026-10-15 before any accessibility source wa
 
 | attribute | scope | weighted_by | n | verified | inferred | unknown | top_sources | evidence_year_median | evidence_year_range |
 |---|---|---|---|---|---|---|---|---|---|
-| crossing_control | crossings | count | 1803 | 63.7 | 14.5 | 21.7 | osm_frederick 81%; derived:osm_marked_no_signal_inventory 15%; derived:osm_marked_signalization_not_recorded 4% | 2,026 | 2026–2026 |
+| crossing_control | crossings | count | 1793 | 64.0 | 14.6 | 21.4 | osm_frederick 81%; derived:osm_marked_no_signal_inventory 15%; derived:osm_marked_signalization_not_recorded 4% | 2,026 | 2026–2026 |
 | signal_lpi | signalized crossings | count | 34 | 0.0 | 0.0 | 100 |  |  |  |
 | signal_aps | signalized crossings | count | 34 | 0.0 | 0.0 | 100 |  |  |  |
 | signal_hawk | signalized crossings | count | 34 | 0.0 | 0.0 | 100 |  |  |  |
 | signal_all_ped_phase | signalized crossings | count | 34 | 0.0 | 0.0 | 100 |  |  |  |
-| crossed_lanes | crossings | count | 1803 | 22.3 | 0.0 | 77.7 | osm_frederick 100% | 2,026 | 2026–2026 |
-| crossed_width_m | crossings | count | 1803 | 0.0 | 0.0 | 100 |  |  |  |
-| crossed_speed_mph | crossings | count | 1803 | 15.8 | 0.0 | 84.2 | osm_frederick 100% | 2,026 | 2026–2026 |
-| crossed_aadt | crossings | count | 1803 | 0.0 | 0.0 | 100 |  |  |  |
-| kerb_a | crossings | count | 1803 | 67.6 | 0.0 | 32.4 | frederick_ramps 98%; osm_frederick 2% | 2,025 | 2025–2026 |
-| kerb_b | crossings | count | 1803 | 65.2 | 0.0 | 34.8 | frederick_ramps 98%; osm_frederick 2% | 2,025 | 2025–2026 |
-| ramp_check_a | crossings | count | 1803 | 65.9 | 0.0 | 34.1 | frederick_ramps 100% | 2,025 | 2025–2025 |
-| ramp_check_b | crossings | count | 1803 | 63.5 | 0.0 | 36.5 | frederick_ramps 100% | 2,025 | 2025–2025 |
-| step_free | all edges | length | 28693 | 0.0 | 100 | 0.0 | derived:absent_from_osm_steps_outside_inventory 80%; derived:absent_from_osm_steps_offstreet 19%; derived:inferred_connector_no_stairs_polygon 1% | 2,026 | 2026–2026 |
-| grade_avg_pct | all edges | length | 28693 | 95.6 | 4.3 | 0.1 | frederick_dtm 99%; derived:frederick_dtm_endpoints 1% | 2,021 | 2021–2021 |
-| grade_max_pct | all edges | length | 28693 | 95.6 | 4.3 | 0.1 | frederick_dtm 99%; derived:frederick_dtm_endpoints 1% | 2,021 | 2021–2021 |
-| surface_class | pedestrian ways | length | 12685 | 17.3 | 0.0 | 82.7 | osm_frederick 100% | 2,026 | 2026–2026 |
-| sidewalk_presence | street centerlines | length | 15779 | 23.4 | 0.0 | 76.6 | frederick_sidewalks 80%; osm_frederick 20% | 2,025 | 2025–2026 |
-| sidewalk_condition | sidewalks | length | 7760 | 37.8 | 24.7 | 37.5 | frederick_sidewalks 100% | 2,025 | 2025–2025 |
-| sidewalk_width_m | sidewalks | length | 7760 | 33.7 | 22.7 | 43.6 | frederick_sidewalks 100% | 2,025 | 2025–2025 |
-| street_lanes | street centerlines | length | 15779 | 11.5 | 0.0 | 88.5 | osm_frederick 100% | 2,026 | 2026–2026 |
-| street_speed_mph | street centerlines | length | 15779 | 10.2 | 0.0 | 89.8 | osm_frederick 100% | 2,026 | 2026–2026 |
+| crossed_lanes | crossings | count | 1793 | 22.3 | 0.0 | 77.7 | osm_frederick 100% | 2,026 | 2026–2026 |
+| crossed_width_m | crossings | count | 1793 | 0.0 | 0.0 | 100 |  |  |  |
+| crossed_speed_mph | crossings | count | 1793 | 15.9 | 0.0 | 84.1 | osm_frederick 100% | 2,026 | 2026–2026 |
+| crossed_aadt | crossings | count | 1793 | 0.0 | 0.0 | 100 |  |  |  |
+| kerb_a | crossings | count | 1793 | 68.0 | 0.0 | 32.0 | frederick_ramps 98%; osm_frederick 2% | 2,025 | 2025–2026 |
+| kerb_b | crossings | count | 1793 | 65.6 | 0.0 | 34.4 | frederick_ramps 98%; osm_frederick 2% | 2,025 | 2025–2026 |
+| ramp_check_a | crossings | count | 1793 | 66.3 | 0.0 | 33.7 | frederick_ramps 100% | 2,025 | 2025–2025 |
+| ramp_check_b | crossings | count | 1793 | 63.9 | 0.0 | 36.1 | frederick_ramps 100% | 2,025 | 2025–2025 |
+| step_free | all edges | length | 27882 | 0.0 | 100 | 0.0 | derived:absent_from_osm_steps_outside_inventory 79%; derived:absent_from_osm_steps_offstreet 20%; derived:inferred_connector_no_stairs_polygon 1% | 2,026 | 2026–2026 |
+| grade_avg_pct | all edges | length | 27882 | 95.5 | 4.5 | 0.1 | frederick_dtm 99%; derived:frederick_dtm_endpoints 1% | 2,021 | 2021–2021 |
+| grade_max_pct | all edges | length | 27882 | 95.5 | 4.5 | 0.1 | frederick_dtm 99%; derived:frederick_dtm_endpoints 1% | 2,021 | 2021–2021 |
+| surface_class | pedestrian ways | length | 12578 | 17.4 | 0.0 | 82.6 | osm_frederick 100% | 2,026 | 2026–2026 |
+| sidewalk_presence | street centerlines | length | 15079 | 24.9 | 0.0 | 75.1 | frederick_sidewalks 80%; osm_frederick 20% | 2,025 | 2025–2026 |
+| sidewalk_condition | sidewalks | length | 7738 | 37.9 | 24.7 | 37.4 | frederick_sidewalks 100% | 2,025 | 2025–2025 |
+| sidewalk_width_m | sidewalks | length | 7738 | 33.8 | 22.8 | 43.4 | frederick_sidewalks 100% | 2,025 | 2025–2025 |
+| street_lanes | street centerlines | length | 15079 | 11.9 | 0.0 | 88.1 | osm_frederick 100% | 2,026 | 2026–2026 |
+| street_speed_mph | street centerlines | length | 15079 | 10.7 | 0.0 | 89.3 | osm_frederick 100% | 2,026 | 2026–2026 |
 
 ## By census tract
 
@@ -68,17 +68,17 @@ Inside the region's line. Fixed on 2026-10-15 before any accessibility source wa
 | 24021750508 | 38.9 | 32.3 | 69 | 81.2 | 66.7 | 27.3 | 100 |
 | 24021750600 | 70.7 | 65.8 | 180 | 76.1 | 92.2 | 22.4 | 99.9 |
 | 24021750701 | 101.2 | 50.8 | 140 | 72.1 | 35.7 | 33.5 | 100 |
-| 24021750702 | 44.1 | 40.7 | 51 | 88.2 | 78.4 | 40.7 | 100 |
+| 24021750702 | 43.2 | 39.4 | 51 | 88.2 | 78.4 | 40.7 | 100 |
 | 24021750801 | 72.4 | 45.5 | 108 | 64.8 | 71.3 | 28.9 | 100 |
 | 24021750802 | 97.5 | 33.3 | 152 | 44.7 | 92.8 | 21.7 | 100 |
 | 24021750804 | 39.1 | 45.4 | 73 | 50.7 | 98.6 | 40.2 | 100 |
-| 24021750805 | 68.8 | 52.3 | 165 | 54.5 | 58.8 | 29.2 | 100 |
+| 24021750805 | 68.5 | 52.5 | 165 | 54.5 | 58.8 | 29.5 | 100 |
 | 24021751002 | 1.6 | 42.2 | 1 | 0.0 | 0.0 | 0.0 | 100 |
 | 24021751003 | 53.4 | 23.9 | 15 | 13.3 | 80.0 | 14.2 | 100 |
 | 24021751004 | 5.6 | 14.0 | 5 | 0.0 | 40.0 | 14.5 | 99.9 |
-| 24021751201 | 110.4 | 27.3 | 86 | 43.0 | 66.3 | 9.9 | 100 |
+| 24021751201 | 62.1 | 40.0 | 76 | 48.7 | 73.7 | 21.3 | 100 |
 | 24021751202 | 59.5 | 22.4 | 62 | 16.1 | 96.8 | 49.7 | 99.9 |
-| 24021751203 | 36.3 | 2.0 | 5 | 80.0 | 80.0 | 8.7 | 100 |
+| 24021751203 | 25.4 | 2.9 | 5 | 80.0 | 80.0 | 12.5 | 100 |
 | 24021751301 | 76.7 | 25.4 | 47 | 8.5 | 6.4 | 9.9 | 100 |
 | 24021751302 | 0.8 | 0.0 | 0 |  |  | 0.0 | 100 |
 | 24021751701 | 44.3 | 32.7 | 36 | 91.7 | 100 | 0.8 | 100 |
@@ -95,28 +95,28 @@ Verified / inferred / unknown shares per census tract are in `coverage_attribute
 
 | attribute | census tract 24021750100 | census tract 24021750200 | census tract 24021750300 | census tract 24021750504 | census tract 24021750505 | census tract 24021750506 | census tract 24021750507 | census tract 24021750508 | census tract 24021750600 | census tract 24021750701 | census tract 24021750702 | census tract 24021750801 | census tract 24021750802 | census tract 24021750804 | census tract 24021750805 | census tract 24021751002 | census tract 24021751003 | census tract 24021751004 | census tract 24021751201 | census tract 24021751202 | census tract 24021751203 | census tract 24021751301 | census tract 24021751302 | census tract 24021751701 | census tract 24021751902 | census tract 24021751904 | census tract 24021752602 | census tract 24021765100 | census tract 24021772200 | census tract 24021775600 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| crossing_control | 96.9 | 100 | 90.5 | 88.5 | 75.0 | 96.7 | 83.3 | 66.7 | 92.2 | 35.7 | 78.4 | 71.3 | 92.8 | 98.6 | 58.8 | 0.0 | 80.0 | 40.0 | 66.3 | 96.8 | 80.0 | 6.4 | 100 | 100 | 100 | 100 | 100 | 81.9 | 91.9 | 0.0 |
+| crossing_control | 96.9 | 100 | 90.5 | 88.5 | 75.0 | 96.7 | 83.3 | 66.7 | 92.2 | 35.7 | 78.4 | 71.3 | 92.8 | 98.6 | 58.8 | 0.0 | 80.0 | 40.0 | 73.7 | 96.8 | 80.0 | 6.4 | 100 | 100 | 100 | 100 | 100 | 81.9 | 91.9 | 0.0 |
 | signal_lpi | 100 | 0.0 | 100 | 0.0 | 0.0 | 0.0 | 0.0 | 100 | 0.0 | 0.0 | 100 | 100 | 0.0 | 100 | 100 | 100 | 0.0 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 |
 | signal_aps | 100 | 0.0 | 100 | 0.0 | 0.0 | 0.0 | 0.0 | 100 | 0.0 | 0.0 | 100 | 100 | 0.0 | 100 | 100 | 100 | 0.0 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 |
 | signal_hawk | 100 | 0.0 | 100 | 0.0 | 0.0 | 0.0 | 0.0 | 100 | 0.0 | 0.0 | 100 | 100 | 0.0 | 100 | 100 | 100 | 0.0 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 |
 | signal_all_ped_phase | 100 | 0.0 | 100 | 0.0 | 0.0 | 0.0 | 0.0 | 100 | 0.0 | 0.0 | 100 | 100 | 0.0 | 100 | 100 | 100 | 0.0 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 | 100 | 100 | 100 | 0.0 | 100 |
-| crossed_lanes | 57.8 | 73.6 | 47.6 | 24.8 | 12.5 | 5.4 | 8.3 | 8.7 | 30.6 | 14.3 | 13.7 | 13.9 | 38.8 | 5.5 | 10.3 | 0.0 | 40.0 | 0.0 | 16.3 | 1.6 | 60.0 | 4.3 | 100 | 38.9 | 100 | 100 | 100 | 23.6 | 27.9 | 0.0 |
+| crossed_lanes | 57.8 | 73.6 | 47.6 | 24.8 | 12.5 | 5.4 | 8.3 | 8.7 | 30.6 | 14.3 | 13.7 | 13.9 | 38.8 | 5.5 | 10.3 | 0.0 | 40.0 | 0.0 | 14.5 | 1.6 | 60.0 | 4.3 | 100 | 38.9 | 100 | 100 | 100 | 23.6 | 27.9 | 0.0 |
 | crossed_width_m | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 100 | 0.0 | 100 | 100 | 100 | 0.0 | 0.0 | 0.0 |
-| crossed_speed_mph | 20.3 | 33.3 | 35.7 | 13.3 | 4.2 | 4.3 | 8.3 | 7.2 | 18.3 | 19.3 | 2.0 | 9.3 | 12.5 | 12.3 | 26.1 | 0.0 | 20.0 | 0.0 | 39.5 | 4.8 | 20.0 | 2.1 | 100 | 5.6 | 100 | 100 | 100 | 16.7 | 27.0 | 0.0 |
+| crossed_speed_mph | 20.3 | 33.3 | 35.7 | 13.3 | 4.2 | 4.3 | 8.3 | 7.2 | 18.3 | 19.3 | 2.0 | 9.3 | 12.5 | 12.3 | 26.1 | 0.0 | 20.0 | 0.0 | 44.7 | 4.8 | 20.0 | 2.1 | 100 | 5.6 | 100 | 100 | 100 | 16.7 | 27.0 | 0.0 |
 | crossed_aadt | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 100 | 0.0 | 100 | 100 | 100 | 0.0 | 0.0 | 0.0 |
-| kerb_a | 71.9 | 89.7 | 66.7 | 56.6 | 87.5 | 59.8 | 87.5 | 87.0 | 77.2 | 72.9 | 88.2 | 65.7 | 47.4 | 57.5 | 73.9 | 0.0 | 26.7 | 0.0 | 44.2 | 58.1 | 80.0 | 10.6 | 100 | 97.2 | 100 | 100 | 100 | 94.4 | 72.1 | 0.0 |
-| kerb_b | 73.4 | 92.0 | 66.7 | 57.5 | 85.4 | 43.5 | 87.5 | 82.6 | 79.4 | 74.3 | 90.2 | 66.7 | 50.7 | 57.5 | 66.1 | 0.0 | 13.3 | 0.0 | 43.0 | 29.0 | 80.0 | 8.5 | 100 | 94.4 | 100 | 100 | 100 | 95.8 | 69.4 | 0.0 |
-| ramp_check_a | 71.9 | 88.5 | 61.9 | 56.6 | 87.5 | 57.6 | 83.3 | 81.2 | 75.0 | 70.7 | 86.3 | 62.0 | 47.4 | 54.8 | 73.9 | 0.0 | 26.7 | 0.0 | 44.2 | 58.1 | 80.0 | 10.6 | 100 | 97.2 | 100 | 100 | 100 | 88.9 | 70.3 | 0.0 |
-| ramp_check_b | 73.4 | 90.8 | 59.5 | 57.5 | 85.4 | 41.3 | 83.3 | 79.7 | 77.8 | 72.9 | 86.3 | 63.0 | 50.0 | 54.8 | 66.1 | 0.0 | 13.3 | 0.0 | 43.0 | 29.0 | 80.0 | 8.5 | 100 | 94.4 | 100 | 100 | 100 | 84.7 | 69.4 | 0.0 |
+| kerb_a | 71.9 | 89.7 | 66.7 | 56.6 | 87.5 | 59.8 | 87.5 | 87.0 | 77.2 | 72.9 | 88.2 | 65.7 | 47.4 | 57.5 | 73.9 | 0.0 | 26.7 | 0.0 | 50.0 | 58.1 | 80.0 | 10.6 | 100 | 97.2 | 100 | 100 | 100 | 94.4 | 72.1 | 0.0 |
+| kerb_b | 73.4 | 92.0 | 66.7 | 57.5 | 85.4 | 43.5 | 87.5 | 82.6 | 79.4 | 74.3 | 90.2 | 66.7 | 50.7 | 57.5 | 66.1 | 0.0 | 13.3 | 0.0 | 48.7 | 29.0 | 80.0 | 8.5 | 100 | 94.4 | 100 | 100 | 100 | 95.8 | 69.4 | 0.0 |
+| ramp_check_a | 71.9 | 88.5 | 61.9 | 56.6 | 87.5 | 57.6 | 83.3 | 81.2 | 75.0 | 70.7 | 86.3 | 62.0 | 47.4 | 54.8 | 73.9 | 0.0 | 26.7 | 0.0 | 50.0 | 58.1 | 80.0 | 10.6 | 100 | 97.2 | 100 | 100 | 100 | 88.9 | 70.3 | 0.0 |
+| ramp_check_b | 73.4 | 90.8 | 59.5 | 57.5 | 85.4 | 41.3 | 83.3 | 79.7 | 77.8 | 72.9 | 86.3 | 63.0 | 50.0 | 54.8 | 66.1 | 0.0 | 13.3 | 0.0 | 48.7 | 29.0 | 80.0 | 8.5 | 100 | 94.4 | 100 | 100 | 100 | 84.7 | 69.4 | 0.0 |
 | step_free | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 |
 | grade_avg_pct | 100 | 99.1 | 100 | 99.9 | 100 | 100 | 100 | 100 | 99.9 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 99.9 | 100 | 99.9 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 99.7 | 100 |
 | grade_max_pct | 100 | 99.1 | 100 | 99.9 | 100 | 100 | 100 | 100 | 99.9 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 99.9 | 100 | 99.9 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 100 | 99.7 | 100 |
-| surface_class | 4.6 | 30.0 | 15.9 | 10.6 | 2.7 | 10.1 | 3.0 | 11.7 | 30.0 | 5.3 | 13.9 | 4.7 | 36.0 | 9.1 | 62.3 | 0.0 | 6.4 | 0.0 | 15.1 | 6.2 | 0.0 | 6.6 | 100 | 5.6 | 78.1 | 100 | 100 | 10.9 | 18.6 | 0.0 |
-| sidewalk_presence | 13.0 | 24.5 | 16.7 | 30.3 | 36.2 | 41.2 | 28.8 | 27.3 | 22.4 | 33.5 | 40.7 | 28.9 | 21.7 | 40.2 | 29.2 | 0.0 | 14.2 | 14.5 | 9.9 | 49.7 | 8.7 | 9.9 | 0.0 | 0.8 | 0.0 | 0.0 | 0.0 | 30.9 | 14.1 | 0.0 |
-| sidewalk_condition | 28.6 | 35.5 | 62.6 | 62.9 | 64.8 | 43.3 | 65.8 | 67.1 | 65.7 | 73.0 | 80.8 | 79.6 | 50.0 | 60.5 | 68.7 | 0.0 | 43.6 | 35.8 | 55.8 | 75.9 | 43.2 | 49.4 | 100 | 7.1 | 0.0 | 100 | 100 | 76.2 | 55.1 | 0.0 |
-| sidewalk_width_m | 30.7 | 38.3 | 77.0 | 70.8 | 36.0 | 27.5 | 71.9 | 75.5 | 74.6 | 74.0 | 17.5 | 75.1 | 62.7 | 52.3 | 61.0 | 0.0 | 18.8 | 0.0 | 63.6 | 36.3 | 65.4 | 35.5 | 100 | 8.2 | 0.0 | 100 | 100 | 79.2 | 53.0 | 0.0 |
-| street_lanes | 36.5 | 31.7 | 5.4 | 13.1 | 6.2 | 14.6 | 3.0 | 7.8 | 6.8 | 13.6 | 5.9 | 9.8 | 19.2 | 4.7 | 9.7 | 50.1 | 6.1 | 5.2 | 10.7 | 9.0 | 12.8 | 17.4 | 0.0 | 10.4 | 55.5 | 100 | 0.0 | 9.1 | 10.2 | 20.2 |
-| street_speed_mph | 11.1 | 8.4 | 2.3 | 7.3 | 2.7 | 8.8 | 12.3 | 13.6 | 3.7 | 13.6 | 0.1 | 11.7 | 7.3 | 13.4 | 12.7 | 0.0 | 11.5 | 1.3 | 7.2 | 8.8 | 9.7 | 17.5 | 0.0 | 5.0 | 0.0 | 100 | 0.0 | 8.5 | 20.4 | 1.4 |
+| surface_class | 4.6 | 30.0 | 15.9 | 10.6 | 2.7 | 10.1 | 3.0 | 11.7 | 30.0 | 5.3 | 14.7 | 4.7 | 36.0 | 9.1 | 62.3 | 0.0 | 6.4 | 0.0 | 15.9 | 6.2 | 0.0 | 6.6 | 100 | 5.6 | 78.1 | 100 | 100 | 10.9 | 18.6 | 0.0 |
+| sidewalk_presence | 13.0 | 24.5 | 16.7 | 30.3 | 36.2 | 41.2 | 28.8 | 27.3 | 22.4 | 33.5 | 40.7 | 28.9 | 21.7 | 40.2 | 29.5 | 0.0 | 14.2 | 14.5 | 21.3 | 49.7 | 12.5 | 9.9 | 0.0 | 0.8 | 0.0 | 0.0 | 0.0 | 30.9 | 14.1 | 0.0 |
+| sidewalk_condition | 28.6 | 35.5 | 62.6 | 62.9 | 64.8 | 43.3 | 65.8 | 67.1 | 65.7 | 73.0 | 80.8 | 79.6 | 50.0 | 60.5 | 68.7 | 0.0 | 43.6 | 35.8 | 59.5 | 75.9 | 43.2 | 49.4 | 100 | 7.1 | 0.0 | 100 | 100 | 76.2 | 55.1 | 0.0 |
+| sidewalk_width_m | 30.7 | 38.3 | 77.0 | 70.8 | 36.0 | 27.5 | 71.9 | 75.5 | 74.6 | 74.0 | 17.5 | 75.1 | 62.7 | 52.3 | 61.0 | 0.0 | 18.8 | 0.0 | 67.8 | 36.3 | 65.4 | 35.5 | 100 | 8.2 | 0.0 | 100 | 100 | 79.2 | 53.0 | 0.0 |
+| street_lanes | 36.5 | 31.7 | 5.4 | 13.1 | 6.2 | 14.6 | 3.0 | 7.8 | 6.8 | 13.6 | 5.9 | 9.8 | 19.2 | 4.7 | 9.8 | 50.1 | 6.1 | 5.2 | 13.6 | 9.0 | 18.3 | 17.4 | 0.0 | 10.4 | 55.5 | 100 | 0.0 | 9.1 | 10.2 | 20.2 |
+| street_speed_mph | 11.1 | 8.4 | 2.3 | 7.3 | 2.7 | 8.8 | 12.3 | 13.6 | 3.7 | 13.6 | 0.1 | 11.7 | 7.3 | 13.4 | 12.8 | 0.0 | 11.5 | 1.3 | 11.7 | 8.8 | 13.9 | 17.5 | 0.0 | 5.0 | 0.0 | 100 | 0.0 | 8.5 | 20.4 | 1.4 |
 
 ## Cross-source conflicts and quality flags
 
@@ -128,10 +128,10 @@ Verified / inferred / unknown shares per census tract are in `coverage_attribute
 - `unmapped_stairs_found_via_planimetrics`: 0
 - `kerb_evidence_from_project_sidewalk_pre_2018`: 0
 - `grade_readings_downgraded_suspect`: 101
-- `grade_readings_downgraded_not_repeatable`: 715
+- `grade_readings_downgraded_not_repeatable`: 714
 - `edges_with_grade_separation_masking`: 134
-- `implicit_crossing_edge_ends`: 7,729
-- `implicit_crossing_ends_with_unknown_kerb`: 2,855
+- `implicit_crossing_edge_ends`: 7,253
+- `implicit_crossing_ends_with_unknown_kerb`: 2,491
 - `edges_outside_region_inventory_coverage_on_street`: 1,675
 - `grade_readings_discarded_dtm_discontinuity`: 2
 

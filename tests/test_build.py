@@ -10,6 +10,7 @@ from pathfinder.graph.build import (
     SURFACE_GAP_MAX_M,
     SURFACE_GAP_REASON,
     bridge_gaps,
+    drop_restricted,
     near_miss_dead_ends,
     node_table,
     prune_removed_road_stubs,
@@ -151,3 +152,30 @@ def test_near_miss_dead_ends_are_counted_not_bridged():
     e = _gap_fixture(8.0)
     assert near_miss_dead_ends(e, node_table(e), SURFACE_GAP_MAX_M) == 1
     assert near_miss_dead_ends(e, node_table(e), 5.0) == 0
+
+
+def test_restricted_area_removes_edges_mostly_inside_and_keeps_the_fence_street():
+    """Fort Detrick: streets behind the gate are mapped like public ones; none may be routed."""
+    base = box(0, 0, 100, 100)
+    areas = gpd.GeoDataFrame({"name": ["Base"]}, geometry=[base], crs=ANALYSIS_CRS)
+    ways = _ways([
+        {"osm_way_id": 1, "kind": "street_unknown", "representation": "street_centerline",
+         "node_refs": [1, 2], "coords": [(10, 50), (90, 50)]},            # inside the base
+        {"osm_way_id": 2, "kind": "street_unknown", "representation": "street_centerline",
+         "node_refs": [3, 4], "coords": [(-5, 0), (-5, 100)]},            # public road along the fence
+        {"osm_way_id": 3, "kind": "street_unknown", "representation": "street_centerline",
+         "node_refs": [5, 6], "coords": [(-40, 50), (20, 50)]},           # gate road: a third inside
+    ])
+    e = split_into_edges(ways)
+    kept, removed = drop_restricted(e, areas)
+    assert sorted(kept["osm_way_id"]) == [2, 3]
+    assert removed == {"Base": {"edges": 1, "km": 0.1}}
+
+
+def test_no_restricted_areas_keeps_everything():
+    ways = _ways([{"osm_way_id": 1, "kind": "sidewalk", "representation": "pedestrian_way",
+                   "node_refs": [1, 2], "coords": [(0, 0), (10, 0)]}])
+    e = split_into_edges(ways)
+    empty = gpd.GeoDataFrame({"name": []}, geometry=[], crs=ANALYSIS_CRS)
+    kept, removed = drop_restricted(e, empty)
+    assert len(kept) == 1 and removed == {}

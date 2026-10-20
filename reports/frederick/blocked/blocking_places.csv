@@ -1,0 +1,490 @@
+place,reason,detail,major_road,outside_line,nearest_ramp_record_m,n_trips,trips,GEOID,lon,lat
+edge:8164,steeper than 8.33%,8.4% (verified),False,False,31.8,13,"11,17,23,112,173,181,215,217,219,233,260,269,278",24021750505,-77.446206,39.416449
+junction:103008716,"curb unknown, unmarked junction crossing",Tuscarora Lane,False,True,258.4,8,"131,141,174,201,204,213,221,245",24021751201,-77.442682,39.464989
+junction:102889892,"curb unknown, unmarked junction crossing",Starhill Lane,False,True,273.7,8,"131,141,174,201,204,213,221,245",24021751201,-77.44434,39.464827
+edge:918,steeper than 8.33%,9.4% (verified),False,False,23.9,8,"17,23,173,181,215,219,260,278",24021750504,-77.444325,39.417743
+junction:1229527719,"curb unknown, unmarked junction crossing",Tuscanny Drive,False,False,11.6,8,"25,26,30,33,41,156,201,249",24021751202,-77.442823,39.446031
+junction:103033551,"curb unknown, unmarked junction crossing",Liberty Road,True,True,15.1,8,"40,122,135,147,158,192,209,296",24021750802,-77.377209,39.450938
+corner:23509:kerb_a,"curb unknown, marked crossing",Poole Jones Road,False,True,232.0,8,"81,204,213,221,227,245,282,294",24021751201,-77.431296,39.465458
+corner:23509:kerb_b,"curb unknown, marked crossing",Poole Jones Road,False,True,234.2,8,"81,204,213,221,227,245,282,294",24021751201,-77.431356,39.465465
+junction:103070667,"curb unknown, unmarked junction crossing",Hollyberry Way,False,False,41.3,7,"105,112,173,181,215,260,278",24021750505,-77.444451,39.41009
+junction:11589045682,"curb unknown, unmarked junction crossing",Willowbrook Road,False,True,374.1,7,"9,18,102,182,227,267,282",24021751301,-77.412343,39.473178
+junction:103000233,"curb unknown, unmarked junction crossing",Willowbrook Road,False,True,337.2,7,"9,18,102,182,227,267,282",24021751301,-77.412361,39.472844
+junction:103074345,"curb unknown, unmarked junction crossing",Old Willowbrook Road,False,False,518.9,7,"9,18,102,182,227,267,282",24021751301,-77.412326,39.474506
+junction:11007242303,"curb unknown, unmarked junction crossing",Walter Martz Road,False,True,329.0,7,"131,141,174,204,213,221,245",24021751201,-77.436917,39.466269
+junction:10732695525,"curb unknown, unmarked junction crossing",Walter Martz Road,False,False,413.3,7,"131,141,174,201,204,213,221",24021751201,-77.447212,39.46444
+corner:21104:kerb_a,"curb unknown, marked crossing",Walter Martz Road,False,False,443.1,6,"131,141,201,204,213,249",24021751201,-77.447529,39.464298
+junction:2840943219,"curb unknown, unmarked junction crossing",Frontline Drive,False,False,82.9,6,"11,23,217,219,233,269",24021750505,-77.447315,39.415912
+edge:11375,steeper than 8.33%,34.9% (inferred),False,False,47.3,6,"86,106,142,186,259,274",24021750802,-77.388247,39.45775
+edge:11373,steeper than 8.33%,32.0% (inferred),False,False,86.6,6,"86,106,142,186,259,274",24021750802,-77.387574,39.458582
+edge:11372,steeper than 8.33%,9.4% (inferred),False,False,44.6,6,"86,106,142,186,259,274",24021750802,-77.387146,39.458853
+corner:21104:kerb_b,"curb unknown, marked crossing",Walter Martz Road,False,False,438.4,6,"131,141,201,204,213,249",24021751201,-77.447595,39.4644
+junction:6810073008,"curb unknown, unmarked junction crossing",Pedigree Street,False,False,563.0,6,"131,141,201,204,213,249",24021751201,-77.444575,39.461815
+corner:23320:kerb_a,"curb unknown, marked crossing",,False,True,534.7,6,"131,141,201,204,213,249",24021751201,-77.446094,39.462723
+corner:23320:kerb_b,"curb unknown, marked crossing",,False,True,532.4,6,"131,141,201,204,213,249",24021751201,-77.445954,39.4626
+corner:23508:kerb_b,"curb unknown, marked crossing",Poole Jones Road,False,True,239.7,6,"81,204,213,221,227,245",24021751201,-77.431493,39.465479
+corner:23502:kerb_a,"curb unknown, marked crossing",Christophers Crossing,False,True,219.6,6,"81,204,213,221,227,245",24021751201,-77.431744,39.465716
+corner:23510:kerb_b,"curb unknown, marked crossing",Poole Jones Road,False,True,234.2,6,"81,204,213,221,227,245",24021751201,-77.431356,39.465465
+corner:23507:kerb_b,"curb unknown, marked crossing",Poole Jones Road,False,True,239.7,6,"81,204,213,221,227,245",24021751201,-77.431493,39.465479
+corner:23510:kerb_a,"curb unknown, marked crossing",Poole Jones Road,False,True,232.0,6,"81,204,213,221,227,245",24021751201,-77.431296,39.465458
+corner:23507:kerb_a,"curb unknown, marked crossing",Poole Jones Road,False,True,236.5,6,"81,204,213,221,227,245",24021751201,-77.431414,39.465471
+corner:23508:kerb_a,"curb unknown, marked crossing",Poole Jones Road,False,True,236.5,6,"81,204,213,221,227,245",24021751201,-77.431414,39.465471
+corner:23502:kerb_b,"curb unknown, marked crossing",Christophers Crossing,False,True,227.8,6,"81,204,213,221,227,245",24021751201,-77.431749,39.465642
+junction:9996189968,"curb unknown, unmarked junction crossing",Mount Phillip Road,False,False,161.9,6,"5,64,160,183,195,230",24021750506,-77.466579,39.418706
+junction:103014759,"curb unknown, unmarked junction crossing",River Run Court,False,True,87.3,5,"40,135,147,158,192",24021750802,-77.377452,39.451829
+junction:103008756,"curb unknown, unmarked junction crossing",Walter Martz Road,False,True,355.1,5,"141,204,213,221,245",24021751201,-77.434165,39.465362
+junction:103004745,"curb unknown, unmarked junction crossing",Boysenberry Lane,False,False,38.9,5,"105,173,181,215,278",24021750505,-77.44369,39.409422
+junction:12039016463,"curb unknown, unmarked junction crossing",Longmeadow Drive,True,True,49.9,5,"122,135,192,209,296",24021750802,-77.384086,39.449716
+junction:103073886,"curb unknown, unmarked junction crossing",Longmeadow Drive,True,True,46.5,5,"122,135,192,209,296",24021750802,-77.383856,39.449782
+junction:6810073003,"curb unknown, unmarked junction crossing",Futurity Street,False,True,636.9,5,"131,141,201,204,249",24021751202,-77.442301,39.460846
+junction:6810072998,"curb unknown, unmarked junction crossing",Futurity Street,False,True,640.5,5,"131,141,201,204,249",24021751201,-77.442216,39.460802
+junction:103008811,"curb unknown, unmarked junction crossing",Jordan Valley Way,False,True,357.5,5,"81,204,213,221,245",24021751201,-77.434117,39.465298
+corner:19856:kerb_a,"curb unknown, marked crossing",Liberty Road,True,False,41.2,5,"77,107,157,163,241",24021750801,-77.395669,39.445025
+junction:2812542243,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,True,695.9,4,"141,201,204,249",24021751201,-77.439966,39.458951
+junction:4515936024,"curb unknown, unmarked junction crossing",Tuscanny Drive,False,False,12.6,4,"25,156,201,249",24021751202,-77.442935,39.446091
+edge:11658,steeper than 8.33%,29.1% (inferred),False,False,74.4,4,"61,252,264,285",24021765100,-77.417815,39.398903
+corner:27517:kerb_b,"curb unknown, marked crossing",Rainbow Lane,False,True,204.6,4,"60,185,204,263",24021750701,-77.416156,39.459961
+junction:103062865,"curb unknown, unmarked junction crossing",Tuscarora Drive,False,True,161.0,4,"26,33,73,249",24021751202,-77.43583,39.448761
+edge:7344,steeper than 8.33%,41.6% (inferred),False,False,279.5,4,"61,252,264,285",24021751003,-77.418931,39.397195
+corner:27517:kerb_a,"curb unknown, marked crossing",Rainbow Lane,False,True,221.5,4,"60,185,204,263",24021750701,-77.416208,39.459814
+junction:6282983774,"curb unknown, unmarked junction crossing",Walter Martz Road,False,True,184.8,4,"20,144,282,294",24021751201,-77.431127,39.465885
+junction:103033255,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,True,72.9,4,"26,33,73,249",24021751202,-77.434177,39.448621
+junction:103008758,"curb unknown, unmarked junction crossing",Walter Martz Road,False,False,123.4,4,"20,144,282,294",24021751201,-77.431115,39.466562
+corner:13448:kerb_a,"curb unknown, marked crossing",Chestnut Lane,False,False,11.6,4,"26,30,33,41",24021751202,-77.442823,39.446031
+junction:294391363,"curb unknown, unmarked junction crossing",Bowmans Farm Road,True,True,328.8,4,"4,79,154,206",24021772200,-77.384456,39.405204
+corner:19861:kerb_b,"curb unknown, marked crossing",,False,False,71.6,4,"77,107,157,163",24021750801,-77.395382,39.444502
+junction:6282983768,"curb unknown, unmarked junction crossing",Poole Jones Road,False,True,218.1,4,"20,144,282,294",24021751201,-77.431233,39.465575
+junction:102867727,"curb unknown, unmarked junction crossing",South McCain Drive,False,False,9.2,4,"94,219,286,288",24021750506,-77.453504,39.409858
+corner:19861:kerb_a,"curb unknown, marked crossing",,False,False,55.2,4,"77,107,157,163",24021750801,-77.395304,39.444367
+edge:3785,steeper than 8.33%,35.7% (inferred),True,True,319.2,4,"4,79,154,206",24021772200,-77.384315,39.404958
+edge:11026,steeper than 8.33%,10.0% (verified),False,False,240.9,4,"5,64,195,230",24021750506,-77.467815,39.416677
+corner:19136:kerb_a,"curb unknown, marked crossing",East 7th Street,False,False,10.4,3,"214,257,291",24021750100,-77.409503,39.422696
+corner:23562:kerb_a,"curb unknown, marked crossing",Monocacy Boulevard,False,False,11.0,3,"192,263,296",24021750802,-77.390324,39.452221
+junction:103002161,"curb unknown, unmarked junction crossing",Hawthorne Drive,False,True,99.4,3,"33,73,249",24021751202,-77.437465,39.448895
+edge:7215,steeper than 8.33%,32.3% (inferred),False,True,723.3,3,"252,264,285",24021751003,-77.421635,39.392764
+junction:6810050451,"curb unknown, unmarked junction crossing",Christophers Crossing,False,True,680.6,3,"141,201,249",24021751202,-77.439882,39.458644
+junction:10732695506,"curb unknown, unmarked junction crossing",Walter Martz Road,False,False,458.5,3,"65,221,249",24021751201,-77.447676,39.464214
+junction:6810050473,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,True,683.6,3,"141,201,249",24021751202,-77.43987,39.458676
+junction:3113536298,"curb unknown, unmarked junction crossing",Storage Way,True,False,140.0,3,"4,79,85",24021772200,-77.386631,39.406695
+junction:102849382,"curb unknown, unmarked junction crossing",Red Wing Court,False,True,125.8,3,"91,147,158",24021750802,-77.380493,39.454467
+corner:11697:kerb_b,"curb unknown, marked crossing",Sebastian Boulevard,False,False,9.5,3,"40,147,158",24021750805,-77.376812,39.449751
+junction:12736091589,"curb unknown, unmarked junction crossing",Stoddert Alley,False,False,28.0,3,"101,229,254",24021750504,-77.44172,39.42405
+junction:294391383,"curb unknown, unmarked junction crossing",Bowmans Farm Road,True,True,368.4,3,"85,154,206",24021772200,-77.384022,39.405369
+junction:294359465,"curb unknown, unmarked junction crossing",East Patrick Street,True,True,279.9,3,"4,79,85",24021772200,-77.38526,39.406013
+junction:103018051,"curb unknown, unmarked junction crossing",Riverside Way,True,True,70.5,3,"77,255,263",24021750802,-77.387918,39.44772
+edge:27480,steeper than 8.33%,37.5% (inferred),True,True,313.7,3,"4,154,206",24021751003,-77.383581,39.403753
+corner:9520:kerb_b,"curb unknown, marked crossing",Opossumtown Pike,False,False,22.1,3,"9,18,267",24021751201,-77.414076,39.468197
+junction:102979236,"curb unknown, unmarked junction crossing",Bull Rush Court; Quay Court,False,True,87.9,3,"40,135,192",24021750802,-77.377797,39.451745
+corner:12980:kerb_a,"curb unknown, marked crossing",Wheyfield Drive,False,False,8.4,2,"40,255",24021750805,-77.376157,39.447645
+corner:12976:kerb_a,"curb unknown, marked crossing",Sebastian Boulevard,False,False,9.5,2,"40,158",24021750805,-77.376812,39.449751
+junction:3200343955,"curb unknown, unmarked junction crossing",Schifferstadt Boulevard,False,False,213.8,2,"34,256",24021750804,-77.387318,39.428495
+corner:21168:kerb_a,"curb unknown, marked crossing",Rocky Springs Road,False,False,501.4,2,"174,218",24021751202,-77.448189,39.464055
+junction:7053273319,"curb unknown, unmarked junction crossing",Monocacy Boulevard,False,False,243.2,2,"190,256",24021772200,-77.382947,39.427636
+corner:15109:kerb_b,"curb unknown, marked crossing",Mohican Drive,False,False,10.7,2,"34,256",24021750804,-77.390505,39.429773
+junction:102864388,"curb unknown, unmarked junction crossing",Grove Hill Road,False,True,143.6,2,"286,288",24021750506,-77.457538,39.417921
+junction:4547288041,"curb unknown, unmarked junction crossing",,False,False,49.6,2,"286,288",24021750506,-77.454039,39.417676
+junction:103070971,"curb unknown, unmarked junction crossing",Ditto Avenue,False,True,276.8,2,"201,222",24021751201,-77.431861,39.449626
+junction:103002650,"curb unknown, unmarked junction crossing",Runnymeade Drive,False,True,879.4,2,"201,222",24021751201,-77.424224,39.450717
+corner:13449:kerb_a,"curb unknown, marked crossing",Chestnut Lane,False,False,12.6,2,"25,156",24021751202,-77.442935,39.446091
+corner:26792:kerb_b,"curb unknown, marked crossing",South Jefferson Street,True,False,17.6,2,"200,215",24021765100,-77.4221,39.41127
+corner:23563:kerb_a,"curb unknown, marked crossing",Monocacy Boulevard,False,False,11.0,2,"263,296",24021750802,-77.390324,39.452221
+corner:23772:kerb_b,"curb unknown, marked crossing",Butterfly Lane,False,False,17.1,2,"286,288",24021750506,-77.453646,39.40918
+junction:102864378,"curb unknown, unmarked junction crossing",South McCain Drive,False,False,36.2,2,"286,288",24021750506,-77.453823,39.417587
+edge:3974,steeper than 8.33%,10.2% (verified),False,False,16.6,2,"286,288",24021750506,-77.453873,39.417406
+corner:23777:kerb_b,"curb unknown, marked crossing",,False,False,8.3,2,"286,288",24021750505,-77.448661,39.407541
+junction:103045291,"curb unknown, unmarked junction crossing",Grove Hill Road,False,True,100.8,2,"286,288",24021750506,-77.457604,39.418304
+edge:9836,steeper than 8.33%,9.5% (verified),False,True,122.2,2,"286,288",24021750506,-77.457571,39.418113
+junction:13478325740,"curb unknown, unmarked junction crossing",Compass Way,False,False,249.0,2,"129,231",24021772200,-77.387034,39.415065
+junction:8397143549,"curb unknown, unmarked junction crossing",Union Street,False,False,163.5,2,"129,231",24021772200,-77.386079,39.415279
+junction:10732695513,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,False,460.2,2,"65,221",24021751201,-77.447681,39.464195
+junction:12030565902,"curb unknown, unmarked junction crossing",Blacksmith Way,False,False,74.4,2,"151,230",24021751203,-77.461259,39.432428
+corner:21996:kerb_a,"curb unknown, marked crossing",,False,False,17.1,2,"134,212",24021750702,-77.411061,39.439779
+junction:11007242239,"curb unknown, unmarked junction crossing",Apollo Drive,False,False,381.6,2,"131,174",24021751201,-77.436074,39.466866
+junction:11007242241,"curb unknown, unmarked junction crossing",Pomona Way,False,False,313.6,2,"131,174",24021751201,-77.43693,39.466919
+corner:21996:kerb_b,"curb unknown, marked crossing",,False,False,17.9,2,"134,212",24021750702,-77.41121,39.439758
+corner:10351:kerb_b,"curb unknown, marked crossing",Opossumtown Pike,False,True,22.8,2,"60,204",24021750701,-77.414957,39.457147
+corner:10352:kerb_a,"curb unknown, marked crossing",Opossumtown Pike,False,True,31.0,2,"60,204",24021751201,-77.415148,39.456872
+corner:10352:kerb_b,"curb unknown, marked crossing",Opossumtown Pike,False,True,22.8,2,"60,204",24021750701,-77.414957,39.457147
+junction:103031622,"curb unknown, unmarked junction crossing",Rocky Springs Road,False,False,413.5,2,"174,218",24021751202,-77.451755,39.463956
+corner:23511:kerb_a,"curb unknown, marked crossing",Christophers Crossing,False,False,207.8,2,"141,227",24021751201,-77.431737,39.465824
+corner:23511:kerb_b,"curb unknown, marked crossing",Christophers Crossing,False,False,216.5,2,"141,227",24021751201,-77.431742,39.465745
+junction:103033566,"curb unknown, unmarked junction crossing",Black Haw Court; River Run Road,False,True,236.6,2,"147,158",24021750802,-77.379302,39.453929
+junction:12030565883,"curb unknown, unmarked junction crossing",Iron Forge Road,False,False,70.2,2,"151,230",24021751203,-77.460986,39.432212
+edge:4086,steeper than 8.33%,10.6% (verified),False,False,53.8,2,"45,158",24021750802,-77.38177,39.458737
+corner:10351:kerb_a,"curb unknown, marked crossing",Opossumtown Pike,False,True,31.0,2,"60,204",24021751201,-77.415148,39.456872
+junction:103054116,"curb unknown, unmarked junction crossing",Jefferson Pike,False,True,93.3,2,"42,105",24021765100,-77.437296,39.401143
+junction:102925657,"curb unknown, unmarked junction crossing",Mansion Drive,False,False,115.2,2,"42,286",24021750505,-77.441086,39.404638
+junction:102887389,"curb unknown, unmarked junction crossing",Old National Pike,True,True,229.8,2,"154,206",24021772200,-77.377879,39.402457
+edge:4087,steeper than 8.33%,9.7% (verified),False,False,149.8,2,"45,158",24021750802,-77.38181,39.457789
+corner:21168:kerb_b,"curb unknown, marked crossing",Rocky Springs Road,False,False,497.1,2,"174,218",24021751202,-77.448253,39.46416
+junction:103063722,"curb unknown, unmarked junction crossing",Spout Spring Road,False,True,99.8,2,"201,222",24021751201,-77.433248,39.448403
+junction:103002668,"curb unknown, unmarked junction crossing",Runnymeade Drive,False,True,749.7,2,"201,222",24021751201,-77.423304,39.453959
+junction:103063732,"curb unknown, unmarked junction crossing",West Hills Drive,False,True,223.2,2,"201,222",24021751201,-77.432495,39.449438
+junction:1229373959,"curb unknown, unmarked junction crossing",Opossumtown Pike,False,False,22.1,2,"115,134",24021751201,-77.411887,39.448653
+corner:27594:kerb_b,"curb unknown, marked crossing",Rainbow Lane,False,True,204.6,2,"60,204",24021750701,-77.416156,39.459961
+corner:11523:kerb_b,"curb unknown, marked crossing",Liberty Road,True,True,22.4,2,"72,188",24021750802,-77.386256,39.448622
+corner:11523:kerb_a,"curb unknown, marked crossing",Liberty Road,True,True,46.8,2,"72,188",24021750802,-77.386405,39.44881
+corner:24229:kerb_a,"curb unknown, marked crossing",Apollo Drive,False,False,117.6,2,"70,174",24021751201,-77.43267,39.467752
+corner:24229:kerb_b,"curb unknown, marked crossing",Apollo Drive,False,False,111.8,2,"70,174",24021751201,-77.432603,39.467878
+corner:23540:kerb_a,"curb unknown, marked crossing",Shorebird Street,False,False,36.8,2,"89,209",24021750802,-77.393304,39.448465
+edge:8879,steeper than 8.33%,8.7% (verified),False,True,568.2,2,"92,221",24021751301,-77.419672,39.470866
+junction:102994994,"curb unknown, unmarked junction crossing",Fairfield Drive,False,False,23.2,2,"104,134",24021751201,-77.411376,39.445159
+junction:12736091593,"curb unknown, unmarked junction crossing",Abell Alley,False,False,66.7,2,"101,229",24021750504,-77.441985,39.42464
+junction:3732351802,"curb unknown, unmarked junction crossing",Quandary Drive,False,True,478.2,2,"92,221",24021751301,-77.419098,39.470149
+junction:103002012,"curb unknown, unmarked junction crossing",Road B,False,False,65.0,2,"75,181",24021750505,-77.441506,39.415967
+edge:143,steeper than 8.33%,11.1% (verified),False,False,43.3,2,"75,181",24021750505,-77.441481,39.416168
+edge:144,steeper than 8.33%,9.3% (verified),False,False,11.5,2,"75,181",24021750505,-77.441444,39.416461
+junction:3207997369,"curb unknown, unmarked junction crossing",Butterfly Lane,False,False,72.6,2,"105,286",24021750506,-77.446578,39.406274
+junction:103064288,"curb unknown, unmarked junction crossing",Meadowbrooke Drive,False,True,662.8,2,"92,221",24021751301,-77.420862,39.47237
+junction:103090303,"curb unknown, unmarked junction crossing",Meadowbrooke Drive,False,True,607.1,2,"92,221",24021751301,-77.421409,39.472103
+corner:27594:kerb_a,"curb unknown, marked crossing",Rainbow Lane,False,True,221.5,2,"60,204",24021750701,-77.416208,39.459814
+corner:10350:kerb_a,"curb unknown, marked crossing",Opossumtown Pike,False,True,31.0,2,"126,212",24021751201,-77.415148,39.456872
+corner:10350:kerb_b,"curb unknown, marked crossing",Opossumtown Pike,False,True,22.8,2,"126,212",24021750701,-77.414957,39.457147
+junction:102980113,"curb unknown, unmarked junction crossing",Beaver Pond Alley; Timber View Court,False,False,40.5,2,"121,274",24021750701,-77.407132,39.462464
+corner:23523:kerb_b,"curb unknown, marked crossing",Shorebird Street,False,False,192.7,2,"89,209",24021750802,-77.391765,39.449229
+edge:3415,steeper than 8.33%,12.9% (verified),False,True,370.8,2,"20,144",24021751201,-77.431013,39.463956
+junction:9936029982,"curb unknown, unmarked junction crossing",Poole Jones Road,False,True,255.1,2,"20,144",24021751201,-77.431435,39.465279
+corner:13468:kerb_b,"curb unknown, marked crossing",Birch Bay Court,False,False,8.9,2,"26,33",24021751202,-77.443125,39.449049
+corner:23523:kerb_a,"curb unknown, marked crossing",Shorebird Street,False,False,196.1,2,"89,209",24021750802,-77.391676,39.449163
+corner:23607:kerb_a,"curb unknown, marked crossing",,False,False,187.0,2,"89,209",24021750802,-77.392044,39.449454
+corner:23607:kerb_b,"curb unknown, marked crossing",,False,False,186.3,2,"89,209",24021750802,-77.391975,39.449375
+junction:103078632,"curb unknown, unmarked junction crossing",Aynsley Court,False,False,29.0,2,"23,94",24021750505,-77.450276,39.416105
+corner:13466:kerb_b,"curb unknown, marked crossing",Weybridge Road,False,False,8.9,2,"26,33",24021751202,-77.443125,39.449049
+corner:23540:kerb_b,"curb unknown, marked crossing",Shorebird Street,False,False,38.9,2,"89,209",24021750802,-77.393266,39.448409
+junction:65804359,"curb unknown, unmarked junction crossing",Monocacy Boulevard,False,False,20.3,2,"79,295",24021772200,-77.393934,39.40442
+junction:102958012,"curb unknown, unmarked junction crossing",North Market Street,True,False,287.7,2,"77,255",24021750802,-77.391873,39.445777
+junction:103083890,"curb unknown, unmarked junction crossing",Poole Jones Road,False,True,346.6,2,"20,144",24021751201,-77.429278,39.46339
+junction:2845714711,"curb unknown, unmarked junction crossing",Wynfield Court,False,False,10.4,2,"7,141",24021751202,-77.45002,39.458974
+corner:26223:kerb_a,"curb unknown, marked crossing",,False,False,227.7,2,"5,183",24021750506,-77.465271,39.417979
+edge:12116,steeper than 8.33%,8.4% (verified),False,False,105.6,2,"11,269",24021750504,-77.446943,39.419196
+corner:26223:kerb_b,"curb unknown, marked crossing",,False,False,228.4,2,"5,183",24021750506,-77.465088,39.417947
+junction:102990654,"curb unknown, unmarked junction crossing",Banner Hill Road,False,False,85.2,1,7,24021751202,-77.455177,39.454949
+corner:10933:kerb_a,"curb unknown, marked crossing",,False,False,10.4,1,296,24021750805,-77.372262,39.450019
+edge:8569,steeper than 8.33%,10.4% (verified),False,False,18.7,1,285,24021765100,-77.428037,39.404142
+edge:4543,steeper than 8.33%,10.0% (verified),False,False,13.1,1,278,24021750600,-77.426997,39.419476
+corner:10803:kerb_b,"curb unknown, marked crossing",Wheyfield Drive,False,False,10.1,1,255,24021750805,-77.373469,39.447104
+corner:10776:kerb_b,"curb unknown, marked crossing",River Mist Court,False,False,10.1,1,255,24021750805,-77.373469,39.447104
+edge:9626,steeper than 8.33%,28.0% (inferred),False,False,107.6,1,294,24021751201,-77.431363,39.469207
+corner:9501:kerb_b,"curb unknown, marked crossing",McClellan Drive,False,False,34.4,1,267,24021750701,-77.40698,39.462478
+corner:23453:kerb_b,"curb unknown, marked crossing",,False,False,9.0,1,285,24021751003,-77.437808,39.394462
+junction:2845714727,"curb unknown, unmarked junction crossing",Wynfield Court,False,False,66.8,1,7,24021751202,-77.450618,39.459491
+edge:2475,steeper than 8.33%,11.6% (verified),False,True,10.7,1,19,24021751203,-77.465904,39.431538
+edge:17814,steeper than 8.33%,23.9% (verified),False,True,45.6,1,19,24021751203,-77.466315,39.431515
+corner:25267:kerb_a,"curb unknown, marked crossing",Madison Street,False,False,12.1,1,264,24021765100,-77.41301,39.407779
+junction:102885855,"curb unknown, unmarked junction crossing",McCutcheon Alley,False,False,90.6,1,270,24021772200,-77.404777,39.411804
+junction:11170912710,"curb unknown, unmarked junction crossing",Potting Shed Way,False,False,819.8,1,282,24021751301,-77.415826,39.476621
+corner:10937:kerb_b,"curb unknown, marked crossing",Wheyfield Drive,False,False,10.4,1,296,24021750805,-77.372262,39.450019
+corner:9499:kerb_a,"curb unknown, marked crossing",Timber View Court,False,False,31.5,1,267,24021750701,-77.407091,39.462378
+corner:9499:kerb_b,"curb unknown, marked crossing",Timber View Court,False,False,35.0,1,267,24021750701,-77.407006,39.462473
+junction:671059145,"curb unknown, unmarked junction crossing",Timber View Court,False,False,10.0,1,267,24021750701,-77.406721,39.462139
+junction:103019487,"curb unknown, unmarked junction crossing",Liberty Road,True,True,18.5,1,263,24021750802,-77.386509,39.448371
+junction:103019486,"curb unknown, unmarked junction crossing",Monocacy Boulevard,True,True,42.4,1,263,24021750802,-77.386656,39.448558
+junction:5856936725,"curb unknown, unmarked junction crossing",Monocacy Boulevard,True,True,38.6,1,263,24021750802,-77.386494,39.448636
+junction:102969468,"curb unknown, unmarked junction crossing",Indian Summer Lane; Morning Dew Lane,False,True,238.1,1,263,24021750701,-77.412501,39.458875
+edge:19782,steeper than 8.33%,15.5% (inferred),False,False,40.3,1,260,24021750505,-77.441584,39.410111
+edge:6697,steeper than 8.33%,9.1% (verified),False,False,32.3,1,257,24021750801,-77.40305,39.432587
+edge:6679,steeper than 8.33%,8.5% (inferred),False,False,23.6,1,257,24021750801,-77.403334,39.432387
+junction:9966892202,"curb unknown, unmarked junction crossing",Corn Crib Place,False,False,223.9,1,65,24021751202,-77.449792,39.461046
+edge:5199,steeper than 8.33%,9.0% (verified),False,False,47.4,1,70,24021751301,-77.439957,39.470742
+edge:8880,steeper than 8.33%,12.3% (verified),False,True,415.0,1,92,24021751301,-77.418192,39.46974
+junction:5648665032,"curb unknown, unmarked junction crossing",,False,False,339.5,1,99,24021750802,-77.399716,39.460008
+junction:102929725,"curb unknown, unmarked junction crossing",Dominion Drive,False,False,67.7,1,100,24021751202,-77.448478,39.452793
+junction:12736091594,"curb unknown, unmarked junction crossing",Marquis Street,False,False,131.5,1,101,24021750504,-77.441029,39.424898
+junction:5648663119,"curb unknown, unmarked junction crossing",,True,False,261.8,1,102,24021750701,-77.402139,39.461209
+edge:3444,steeper than 8.33%,13.4% (verified),False,True,145.0,1,83,24021750506,-77.471068,39.420855
+edge:3445,steeper than 8.33%,12.3% (verified),False,False,92.3,1,83,24021750506,-77.470315,39.422288
+edge:3446,steeper than 8.33%,12.6% (verified),False,True,54.4,1,83,24021750506,-77.469754,39.423518
+junction:4384569333,"curb unknown, unmarked junction crossing",Bear Den Road,False,False,32.5,1,86,24021750802,-77.388758,39.454827
+junction:4384569334,"curb unknown, unmarked junction crossing",Sherwood,False,False,51.1,1,86,24021750802,-77.389735,39.455233
+edge:15358,steeper than 8.33%,11.4% (verified),False,False,102.1,1,81,24021751201,-77.423206,39.465227
+edge:945,steeper than 8.33%,8.4% (verified),False,False,14.4,1,23,24021750504,-77.443082,39.417417
+edge:5295,steeper than 8.33%,8.5% (verified),False,False,30.4,1,23,24021750504,-77.443108,39.417561
+junction:5536620122,"curb unknown, unmarked junction crossing",Pearson Drive,False,False,201.3,1,18,24021751301,-77.409152,39.472982
+corner:22055:kerb_b,"curb unknown, marked crossing",,False,False,105.9,1,107,24021750801,-77.409979,39.434592
+corner:22053:kerb_a,"curb unknown, marked crossing",,False,False,61.6,1,107,24021750801,-77.410101,39.434203
+corner:22053:kerb_b,"curb unknown, marked crossing",,False,False,76.4,1,107,24021750801,-77.410097,39.434337
+corner:22054:kerb_a,"curb unknown, marked crossing",,False,False,41.5,1,107,24021750801,-77.410038,39.434008
+corner:15337:kerb_a,"curb unknown, marked crossing",,False,False,225.1,1,89,24021750802,-77.388916,39.449316
+corner:15337:kerb_b,"curb unknown, marked crossing",,False,False,211.3,1,89,24021750802,-77.388736,39.449426
+junction:103061727,"curb unknown, unmarked junction crossing",Linden Avenue,False,False,131.8,1,75,24021750505,-77.43972,39.412841
+edge:2845,steeper than 8.33%,12.6% (verified),False,False,182.7,1,75,24021750505,-77.439864,39.412396
+edge:2989,steeper than 8.33%,14.0% (verified),False,False,155.9,1,75,24021750505,-77.440606,39.413025
+edge:140,steeper than 8.33%,8.5% (verified),False,False,92.9,1,75,24021750505,-77.441435,39.414082
+junction:102839431,"curb unknown, unmarked junction crossing",Rock Hill Drive,False,False,39.9,1,75,24021750505,-77.441587,39.415433
+edge:142,steeper than 8.33%,12.2% (verified),False,False,69.0,1,75,24021750505,-77.441536,39.415699
+junction:5800060613,"curb unknown, unmarked junction crossing",Hawes Court,False,True,380.8,1,81,24021751201,-77.432858,39.464454
+junction:102999231,"curb unknown, unmarked junction crossing",Covenant Court,False,True,386.3,1,81,24021751201,-77.432444,39.4643
+junction:103061867,"curb unknown, unmarked junction crossing",Brandt Court,False,True,381.1,1,81,24021751201,-77.433693,39.464776
+junction:9742644374,"curb unknown, unmarked junction crossing",Double Bank Road,False,False,390.6,1,65,24021751202,-77.44794,39.462136
+corner:23575:kerb_b,"curb unknown, marked crossing",,False,False,71.7,1,110,24021750802,-77.39129,39.451756
+corner:23576:kerb_a,"curb unknown, marked crossing",,False,False,54.4,1,110,24021750802,-77.391108,39.45182
+corner:23576:kerb_b,"curb unknown, marked crossing",,False,False,71.7,1,110,24021750802,-77.39129,39.451756
+junction:103038596,"curb unknown, unmarked junction crossing",Purple Leaf Court,False,True,219.2,1,117,24021751003,-77.428275,39.394479
+junction:10845526862,"curb unknown, unmarked junction crossing",Wirksworth Alley,False,False,73.0,1,123,24021750802,-77.393258,39.448931
+junction:10845526867,"curb unknown, unmarked junction crossing",Hopton Lane,False,False,99.1,1,123,24021750802,-77.393033,39.449097
+junction:6515448724,"curb unknown, unmarked junction crossing",Jefferson Pike,False,True,89.4,1,105,24021750506,-77.439181,39.402807
+edge:3498,steeper than 8.33%,8.7% (inferred),False,True,173.2,1,105,24021750506,-77.438195,39.402258
+edge:3499,steeper than 8.33%,48.7% (inferred),False,True,146.9,1,105,24021765100,-77.437505,39.4016
+edge:11872,steeper than 8.33%,8.6% (verified),False,False,80.9,1,107,24021750701,-77.409727,39.446605
+corner:11875:kerb_a,"curb unknown, marked crossing",Heather Lane,False,False,88.9,1,107,24021750701,-77.409755,39.446154
+corner:11875:kerb_b,"curb unknown, marked crossing",Heather Lane,False,False,105.1,1,107,24021750701,-77.409522,39.446199
+junction:103025467,"curb unknown, unmarked junction crossing",Heather Lane,False,False,100.1,1,107,24021750701,-77.409637,39.44611
+junction:103025457,"curb unknown, unmarked junction crossing",Heather Lane,False,False,120.1,1,107,24021750701,-77.410774,39.447689
+edge:6442,steeper than 8.33%,19.1% (inferred),False,False,151.8,1,107,24021750801,-77.410073,39.435016
+corner:22055:kerb_a,"curb unknown, marked crossing",,False,False,96.6,1,107,24021750801,-77.410098,39.434519
+edge:26664,steeper than 8.33%,12.9% (verified),False,False,73.8,1,119,24021750507,-77.466829,39.42883
+edge:26665,steeper than 8.33%,13.3% (verified),False,False,56.9,1,119,24021750507,-77.466604,39.428961
+edge:16753,steeper than 8.33%,13.5% (verified),False,False,192.4,1,121,24021751301,-77.405175,39.4684
+corner:9619:kerb_a,"curb unknown, marked crossing",,False,False,146.7,1,121,24021751301,-77.407966,39.470051
+corner:9619:kerb_b,"curb unknown, marked crossing",,False,False,141.5,1,121,24021751301,-77.407841,39.470091
+edge:9618,steeper than 8.33%,9.1% (verified),False,False,201.1,1,121,24021751301,-77.40727,39.468782
+edge:14417,steeper than 8.33%,26.4% (inferred),False,True,64.3,1,121,24021750701,-77.4108,39.457053
+corner:22054:kerb_b,"curb unknown, marked crossing",,False,False,47.2,1,107,24021750801,-77.410107,39.434072
+corner:6360:kerb_a,"curb unknown, marked crossing",,False,False,75.0,1,107,24021750801,-77.404309,39.43478
+corner:6360:kerb_b,"curb unknown, marked crossing",,False,False,68.4,1,107,24021750801,-77.404185,39.434745
+corner:11321:kerb_a,"curb unknown, marked crossing",Island Grove Boulevard,False,False,8.2,1,110,24021750802,-77.387426,39.460755
+junction:1863697132,"curb unknown, unmarked junction crossing",Mill Island Parkway,False,False,69.1,1,110,24021750802,-77.387479,39.458721
+edge:3978,steeper than 8.33%,38.5% (inferred),False,False,80.1,1,110,24021750802,-77.387565,39.458647
+edge:7622,steeper than 8.33%,30.1% (inferred),False,False,42.8,1,110,24021750802,-77.388332,39.457737
+corner:23564:kerb_a,"curb unknown, marked crossing",Monocacy Boulevard,False,False,11.0,1,110,24021750802,-77.390324,39.452221
+corner:23575:kerb_a,"curb unknown, marked crossing",,False,False,54.4,1,110,24021750802,-77.391108,39.45182
+corner:12939:kerb_a,"curb unknown, marked crossing",,False,True,240.4,1,128,24021751003,-77.408913,39.399295
+corner:12939:kerb_b,"curb unknown, marked crossing",,False,True,230.1,1,128,24021751003,-77.408965,39.39938
+edge:12940,steeper than 8.33%,41.6% (inferred),False,True,212.5,1,128,24021751003,-77.409064,39.399524
+edge:12941,steeper than 8.33%,31.2% (inferred),False,False,64.5,1,128,24021772200,-77.409675,39.400796
+junction:71933815,"curb unknown, unmarked junction crossing",Stadium Drive,False,False,21.0,1,128,24021765100,-77.416926,39.399115
+edge:77,steeper than 8.33%,28.5% (inferred),False,False,113.7,1,128,24021765100,-77.417954,39.398493
+junction:10901230194,"curb unknown, unmarked junction crossing",Carroll Walk Avenue,False,False,470.2,1,129,24021772200,-77.389337,39.419015
+junction:10901244610,"curb unknown, unmarked junction crossing",Herringbone Way,False,False,482.2,1,129,24021772200,-77.389598,39.418851
+junction:10845526871,"curb unknown, unmarked junction crossing",Ratingen Alley,False,False,126.8,1,123,24021750802,-77.3928,39.449273
+junction:4512495992,"curb unknown, unmarked junction crossing",Monocacy Boulevard,False,False,73.7,1,123,24021750802,-77.389253,39.450954
+edge:1502,steeper than 8.33%,10.9% (verified),False,False,77.1,1,119,24021750507,-77.466903,39.429659
+corner:26645:kerb_a,"curb unknown, marked crossing",Andover Lane,False,False,76.5,1,119,24021750507,-77.467909,39.429028
+corner:26645:kerb_b,"curb unknown, marked crossing",Andover Lane,False,False,76.6,1,119,24021750507,-77.467858,39.428986
+edge:26648,steeper than 8.33%,9.9% (verified),False,False,78.3,1,119,24021750507,-77.467716,39.428848
+edge:26666,slope unknown,,False,False,86.2,1,119,24021750507,-77.46755,39.42869
+edge:26663,steeper than 8.33%,15.1% (verified),False,False,103.0,1,119,24021750507,-77.467166,39.428754
+junction:10861758566,"curb unknown, unmarked junction crossing",Union Street,False,False,283.4,1,129,24021772200,-77.386006,39.417989
+junction:10901230188,"curb unknown, unmarked junction crossing",Foundry Street,False,False,223.8,1,129,24021772200,-77.384433,39.417828
+junction:65240135,"curb unknown, unmarked junction crossing",Highland Street; Hughes Ford Road,False,False,15.3,1,129,24021772200,-77.391135,39.412536
+corner:14431:kerb_a,"curb unknown, marked crossing",Arrowhead Court,False,True,129.3,1,121,24021750701,-77.411563,39.456946
+corner:14431:kerb_b,"curb unknown, marked crossing",Arrowhead Court,False,True,144.9,1,121,24021750701,-77.411733,39.457112
+edge:14095,steeper than 8.33%,8.8% (verified),False,True,275.1,1,128,24021751003,-77.40855,39.399059
+edge:21202,steeper than 8.33%,16.4% (verified),False,False,302.5,1,70,24021751201,-77.434625,39.468776
+edge:1777,steeper than 8.33%,9.1% (verified),False,False,38.0,1,73,24021751202,-77.441271,39.450669
+junction:103029182,"curb unknown, unmarked junction crossing",Oak Street,False,False,112.9,1,75,24021750505,-77.438347,39.412771
+edge:5396,steeper than 8.33%,10.7% (verified),False,False,191.9,1,75,24021750505,-77.438573,39.412081
+edge:8269,steeper than 8.33%,12.8% (verified),False,False,250.0,1,75,24021750505,-77.438864,39.411315
+edge:8275,steeper than 8.33%,12.3% (verified),False,False,232.9,1,75,24021750505,-77.439053,39.411267
+edge:8274,steeper than 8.33%,12.5% (verified),False,False,213.0,1,75,24021750505,-77.439342,39.411328
+edge:8273,steeper than 8.33%,11.0% (verified),False,False,190.8,1,75,24021750505,-77.439688,39.411398
+junction:103037350,"curb unknown, unmarked junction crossing",Birch Street,False,False,211.4,1,75,24021750505,-77.440009,39.411951
+edge:12938,steeper than 8.33%,8.4% (verified),False,True,257.0,1,128,24021751003,-77.408821,39.399159
+edge:22156,steeper than 8.33%,32.8% (inferred),False,False,105.9,1,133,24021751701,-77.378939,39.441429
+edge:3741,steeper than 8.33%,36.9% (inferred),False,True,101.9,1,137,24021751701,-77.382149,39.442123
+edge:22825,steeper than 8.33%,40.8% (inferred),False,False,102.2,1,137,24021750805,-77.382609,39.445477
+edge:17900,steeper than 8.33%,12.6% (verified),False,False,107.2,1,144,24021751201,-77.431454,39.4692
+junction:3128673657,"curb unknown, unmarked junction crossing",Guilford Drive,False,True,337.6,1,61,24021751003,-77.41907,39.396644
+junction:65805753,"curb unknown, unmarked junction crossing",Guilford Drive,False,True,325.6,1,61,24021751003,-77.419014,39.396744
+corner:24103:kerb_a,"curb unknown, marked crossing",,False,False,62.5,1,62,24021750804,-77.395805,39.422263
+corner:24103:kerb_b,"curb unknown, marked crossing",,False,False,57.2,1,62,24021750804,-77.395831,39.422148
+junction:10732695524,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,False,481.6,1,65,24021751202,-77.447381,39.463763
+junction:9742644351,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,False,503.5,1,65,24021751202,-77.446877,39.463291
+junction:9742644352,"curb unknown, unmarked junction crossing",Yankeeland Avenue,False,False,498.6,1,65,24021751202,-77.447364,39.463001
+junction:9742644353,"curb unknown, unmarked junction crossing",Yankeeland Avenue,False,False,481.2,1,65,24021751202,-77.447783,39.462987
+junction:102957065,"curb unknown, unmarked junction crossing",Waterside Court,False,True,310.5,1,45,24021750802,-77.378364,39.454772
+junction:103033533,"curb unknown, unmarked junction crossing",River Run Road,False,True,244.6,1,45,24021750802,-77.379191,39.453975
+junction:102849384,"curb unknown, unmarked junction crossing",Waterside Drive,False,True,125.5,1,45,24021750802,-77.3805,39.454574
+junction:10901230190,"curb unknown, unmarked junction crossing",Tiller Street,False,False,401.3,1,129,24021772200,-77.388074,39.418259
+junction:9966892204,"curb unknown, unmarked junction crossing",Bluegrass Way,False,False,248.6,1,174,24021751202,-77.45243,39.462503
+junction:9966892205,"curb unknown, unmarked junction crossing",Heartland Circle,False,False,332.0,1,174,24021751202,-77.452051,39.463243
+corner:10736:kerb_b,"curb unknown, marked crossing",Wheyfield Drive,False,False,9.5,1,147,24021750805,-77.376812,39.449751
+junction:103047718,"curb unknown, unmarked junction crossing",Cardwell,False,False,23.6,1,147,24021750802,-77.386505,39.451904
+junction:13509912596,"curb unknown, unmarked junction crossing",Damascus Alley,False,False,115.8,1,151,24021751203,-77.460918,39.432705
+corner:14575:kerb_b,"curb unknown, marked crossing",Carroll Creek View Court,False,False,9.0,1,156,24021751202,-77.441481,39.443655
+corner:14580:kerb_b,"curb unknown, marked crossing",Eagle Rock Lane,False,False,9.1,1,156,24021751202,-77.442768,39.441259
+corner:14584:kerb_b,"curb unknown, marked crossing",Eagle Rock Lane,False,False,9.1,1,156,24021751202,-77.442768,39.441259
+junction:102887956,"curb unknown, unmarked junction crossing",North Market Street,True,False,49.4,1,157,24021750805,-77.396928,39.441701
+edge:19053,steeper than 8.33%,10.8% (inferred),False,False,16.7,1,153,24021750100,-77.407727,39.422563
+edge:5910,steeper than 8.33%,8.6% (verified),False,False,486.5,1,154,24021772200,-77.370912,39.405641
+junction:294361720,"curb unknown, unmarked junction crossing",Bowmans Farm Road,False,True,341.6,1,154,24021772200,-77.381311,39.404649
+junction:830820185,"curb unknown, unmarked junction crossing",Bowmans Farm Road,True,True,384.2,1,154,24021772200,-77.381811,39.404485
+junction:103010694,"curb unknown, unmarked junction crossing",Harvest Drive,False,False,214.0,1,132,24021750701,-77.407501,39.44836
+corner:14441:kerb_a,"curb unknown, marked crossing",Honey Clover Court,False,True,71.1,1,132,24021750701,-77.414002,39.457104
+corner:14441:kerb_b,"curb unknown, marked crossing",Honey Clover Court,False,True,87.2,1,132,24021750701,-77.41381,39.457092
+edge:1129,steeper than 8.33%,16.1% (verified),False,False,449.4,1,155,24021750506,-77.474063,39.416629
+edge:8323,steeper than 8.33%,16.8% (verified),False,True,309.5,1,155,24021750506,-77.470834,39.41874
+junction:102966853,"curb unknown, unmarked junction crossing",Old National Pike,True,True,122.2,1,155,24021750506,-77.469238,39.420273
+junction:102997006,"curb unknown, unmarked junction crossing",Old National Pike,True,True,12.8,1,155,24021750506,-77.467765,39.42015
+corner:19897:kerb_a,"curb unknown, marked crossing",,False,False,132.2,1,163,24021750805,-77.39835,39.438126
+corner:19897:kerb_b,"curb unknown, marked crossing",,False,False,155.9,1,163,24021750805,-77.398073,39.438065
+corner:23806:kerb_a,"curb unknown, marked crossing",Broadford Park Street,False,False,171.3,1,160,24021750506,-77.466523,39.418599
+corner:23806:kerb_b,"curb unknown, marked crossing",Broadford Park Street,False,False,153.8,1,160,24021750506,-77.466433,39.418742
+corner:14563:kerb_a,"curb unknown, marked crossing",Tuscanny Drive,False,False,9.0,1,41,24021751202,-77.441481,39.443655
+edge:15434,steeper than 8.33%,9.2% (inferred),False,True,181.1,1,42,24021750506,-77.438286,39.402155
+edge:15433,steeper than 8.33%,68.8% (inferred),False,True,143.6,1,42,24021765100,-77.437631,39.401518
+corner:14439:kerb_a,"curb unknown, marked crossing",,False,True,169.5,1,60,24021750701,-77.412844,39.457031
+corner:14439:kerb_b,"curb unknown, marked crossing",,False,True,180.9,1,60,24021750701,-77.412711,39.457022
+corner:13462:kerb_a,"curb unknown, marked crossing",Chestnut Lane,False,False,12.2,1,30,24021751202,-77.442469,39.44743
+corner:13461:kerb_a,"curb unknown, marked crossing",Chestnut Lane,False,False,16.4,1,30,24021751202,-77.44239,39.447384
+edge:23993,steeper than 8.33%,9.2% (verified),False,False,0.3,1,173,24021750505,-77.439467,39.408337
+junction:10732695515,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,False,475.3,1,174,24021751202,-77.448091,39.464312
+junction:10732695509,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,False,454.1,1,174,24021751201,-77.447857,39.4644
+junction:10732692699,"curb unknown, unmarked junction crossing",Walter Martz Road,False,False,451.6,1,174,24021751201,-77.447792,39.464381
+junction:11007242234,"curb unknown, unmarked junction crossing",Apollo Drive,False,False,334.9,1,174,24021751201,-77.435198,39.467835
+junction:11007242282,"curb unknown, unmarked junction crossing",Veritas Lane,False,False,236.9,1,174,24021751201,-77.434058,39.467834
+junction:11007242233,"curb unknown, unmarked junction crossing",Fauna Drive,False,False,159.0,1,174,24021751201,-77.433154,39.467836
+junction:6404350384,"curb unknown, unmarked junction crossing",Butterfly Lane,False,False,18.8,1,178,24021750506,-77.447607,39.406559
+junction:2840051881,"curb unknown, unmarked junction crossing",Chestnut Street,False,False,50.1,1,178,24021750505,-77.437024,39.413496
+junction:2840051877,"curb unknown, unmarked junction crossing",Oak Street,False,False,137.2,1,178,24021750505,-77.437418,39.412591
+junction:11174467729,"curb unknown, unmarked junction crossing",,False,False,42.8,1,180,24021751301,-77.431363,39.472117
+junction:12787810694,"curb unknown, unmarked junction crossing",,False,False,222.6,1,180,24021751301,-77.429267,39.472013
+junction:13040579931,"curb unknown, unmarked junction crossing",,False,False,349.6,1,180,24021751301,-77.427736,39.472672
+edge:8533,steeper than 8.33%,17.0% (verified),False,False,98.6,1,181,24021750505,-77.443066,39.415911
+junction:103019811,"curb unknown, unmarked junction crossing",East Patrick Street,True,True,400.2,1,154,24021772200,-77.381996,39.404503
+junction:103037587,"curb unknown, unmarked junction crossing",Quinn Orchard Road,False,True,278.3,1,154,24021751003,-77.378154,39.402058
+junction:103018298,"curb unknown, unmarked junction crossing",Edmont Drive,False,True,299.4,1,154,24021751003,-77.376762,39.401828
+corner:14432:kerb_a,"curb unknown, marked crossing",Arrowhead Court,False,True,129.3,1,212,24021750701,-77.411563,39.456946
+junction:102996830,"curb unknown, unmarked junction crossing",Rock Hill Drive,False,False,68.7,1,181,24021750505,-77.442571,39.416116
+corner:16851:kerb_b,"curb unknown, marked crossing",Fieldstone Way,False,False,8.1,1,185,24021750701,-77.408565,39.463036
+edge:3412,steeper than 8.33%,9.2% (verified),False,True,137.2,1,185,24021751201,-77.420841,39.459743
+edge:3413,steeper than 8.33%,11.9% (verified),False,True,101.0,1,185,24021751201,-77.423268,39.461677
+junction:4384569375,"curb unknown, unmarked junction crossing",Bear Den Road,False,False,35.0,1,188,24021750802,-77.388889,39.454623
+corner:11525:kerb_a,"curb unknown, marked crossing",Liberty Road,True,True,18.0,1,188,24021750802,-77.386228,39.448589
+corner:11526:kerb_a,"curb unknown, marked crossing",Liberty Road,True,True,18.0,1,188,24021750802,-77.386228,39.448589
+junction:2835218289,"curb unknown, unmarked junction crossing",Monocacy Boulevard,False,True,98.0,1,190,24021772200,-77.384486,39.427088
+junction:103014751,"curb unknown, unmarked junction crossing",Cat Tail Court,False,True,157.5,1,192,24021750802,-77.379043,39.451496
+junction:103014753,"curb unknown, unmarked junction crossing",Clipper Court,False,True,123.0,1,192,24021750802,-77.378549,39.451598
+edge:21786,steeper than 8.33%,8.9% (verified),False,False,207.5,1,193,24021772200,-77.385952,39.418917
+corner:14316:kerb_b,"curb unknown, marked crossing",Hillcrest Drive,False,True,9.7,1,195,24021750506,-77.461824,39.410721
+corner:15111:kerb_a,"curb unknown, marked crossing",,False,False,8.4,1,197,24021750804,-77.391699,39.431179
+corner:15107:kerb_a,"curb unknown, marked crossing",Dogwood Drive,False,False,11.0,1,197,24021750804,-77.392011,39.429543
+junction:10732695522,"curb unknown, unmarked junction crossing",Rocky Springs Road,False,False,482.9,1,174,24021751202,-77.448116,39.464235
+edge:12477,steeper than 8.33%,14.4% (inferred),False,False,62.1,1,200,24021750504,-77.441008,39.420367
+junction:103016106,"curb unknown, unmarked junction crossing",Fox Hunt Court; Glen Heather Drive,False,True,628.0,1,204,24021751201,-77.438232,39.461738
+junction:103016126,"curb unknown, unmarked junction crossing",Fox Hunt Lane,False,True,745.5,1,204,24021751201,-77.439315,39.460449
+junction:103033371,"curb unknown, unmarked junction crossing",Stone Ridge Drive,False,True,791.7,1,204,24021751201,-77.438148,39.460216
+junction:6810050459,"curb unknown, unmarked junction crossing",Christophers Crossing,False,True,701.9,1,204,24021751201,-77.439668,39.458741
+corner:13461:kerb_b,"curb unknown, marked crossing",Chestnut Lane,False,False,12.2,1,30,24021751202,-77.442469,39.44743
+junction:294327149,"curb unknown, unmarked junction crossing",East South Street,False,False,8.8,1,38,24021772200,-77.403453,39.409719
+corner:22196:kerb_a,"curb unknown, marked crossing",South Wisner Street,False,False,106.5,1,38,24021772200,-77.403467,39.410741
+corner:22196:kerb_b,"curb unknown, marked crossing",South Wisner Street,False,False,108.1,1,38,24021772200,-77.40353,39.41075
+junction:13021561573,"curb unknown, unmarked junction crossing",Blacksmith Way,False,False,140.6,1,19,24021751203,-77.46208,39.433082
+junction:13021561572,"curb unknown, unmarked junction crossing",Elevation Road,False,False,112.6,1,19,24021750507,-77.462758,39.432541
+junction:1439983142,"curb unknown, unmarked junction crossing",Shookstown Road,False,True,246.8,1,19,24021750507,-77.463862,39.433396
+junction:103026124,"curb unknown, unmarked junction crossing",Scott Chase Drive,False,True,5.8,1,19,24021751203,-77.465781,39.431632
+junction:6810050464,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,True,700.1,1,204,24021751201,-77.4397,39.458747
+corner:14442:kerb_a,"curb unknown, marked crossing",Honey Clover Court,False,True,71.1,1,204,24021750701,-77.414002,39.457104
+corner:14442:kerb_b,"curb unknown, marked crossing",Honey Clover Court,False,True,87.2,1,204,24021750701,-77.41381,39.457092
+corner:14418:kerb_a,"curb unknown, marked crossing",Morning Dew Lane,False,True,186.3,1,212,24021750701,-77.412662,39.457169
+corner:14418:kerb_b,"curb unknown, marked crossing",Morning Dew Lane,False,True,171.8,1,212,24021750701,-77.412834,39.457183
+junction:103045830,"curb unknown, unmarked junction crossing",Hayward Road; Morning Dew Lane,False,True,177.2,1,212,24021750701,-77.41276,39.457109
+corner:23315:kerb_a,"curb unknown, marked crossing",Futurity Street,False,False,593.3,1,213,24021751201,-77.441899,39.461807
+corner:23315:kerb_b,"curb unknown, marked crossing",Futurity Street,False,False,595.6,1,213,24021751201,-77.441984,39.461797
+junction:6810073006,"curb unknown, unmarked junction crossing",Futurity Street,False,False,508.7,1,213,24021751201,-77.442038,39.462603
+junction:102951892,"curb unknown, unmarked junction crossing",Liberty Road,True,False,16.2,1,209,24021750802,-77.373856,39.451342
+junction:103073944,"curb unknown, unmarked junction crossing",Liberty Road,True,False,19.2,1,209,24021750805,-77.374509,39.451206
+corner:24626:kerb_a,"curb unknown, marked crossing",East Church Street,False,False,116.2,1,211,24021772200,-77.40334,39.41591
+corner:24626:kerb_b,"curb unknown, marked crossing",East Church Street,False,False,115.3,1,211,24021750200,-77.403407,39.41599
+corner:25990:kerb_a,"curb unknown, marked crossing",,False,False,59.9,1,211,24021750100,-77.413762,39.42263
+corner:25990:kerb_b,"curb unknown, marked crossing",,False,False,66.1,1,211,24021750600,-77.413861,39.422655
+edge:14162,slope unknown,Rock Creek Trail,False,False,129.3,1,217,24021750504,-77.429351,39.424535
+edge:14158,steeper than 8.33%,19.0% (inferred),False,False,113.3,1,217,24021750504,-77.42893,39.424485
+junction:103031379,"curb unknown, unmarked junction crossing",Indian Springs Road,False,True,741.7,1,218,24021751301,-77.459867,39.465692
+corner:12476:kerb_a,"curb unknown, marked crossing",,False,False,9.5,1,200,24021750504,-77.441901,39.420248
+edge:4669,steeper than 8.33%,11.2% (verified),False,True,683.0,1,218,24021751301,-77.458198,39.465449
+edge:4670,steeper than 8.33%,11.5% (verified),False,True,621.9,1,218,24021751301,-77.45668,39.465245
+junction:103007621,"curb unknown, unmarked junction crossing",Fountain Drive,False,False,552.1,1,218,24021751301,-77.455101,39.465045
+junction:103031620,"curb unknown, unmarked junction crossing",Fence Buster Court,False,False,469.6,1,218,24021751301,-77.453501,39.464475
+edge:4672,steeper than 8.33%,11.1% (verified),False,False,515.5,1,218,24021751301,-77.454252,39.464844
+corner:21167:kerb_a,"curb unknown, marked crossing",Rocky Springs Road,False,False,501.4,1,218,24021751202,-77.448189,39.464055
+corner:21167:kerb_b,"curb unknown, marked crossing",Rocky Springs Road,False,False,497.1,1,218,24021751202,-77.448253,39.46416
+corner:21166:kerb_a,"curb unknown, marked crossing",Rocky Springs Road,False,False,501.4,1,218,24021751202,-77.448189,39.464055
+corner:21166:kerb_b,"curb unknown, marked crossing",Rocky Springs Road,False,False,497.1,1,218,24021751202,-77.448253,39.46416
+corner:21178:kerb_a,"curb unknown, marked crossing",,False,False,514.2,1,218,24021751202,-77.447011,39.463237
+corner:21178:kerb_b,"curb unknown, marked crossing",,False,False,519.8,1,218,24021751202,-77.44688,39.463126
+corner:21179:kerb_a,"curb unknown, marked crossing",,False,False,514.2,1,218,24021751202,-77.447011,39.463237
+corner:21179:kerb_b,"curb unknown, marked crossing",,False,False,519.8,1,218,24021751202,-77.44688,39.463126
+junction:11173224584,"curb unknown, unmarked junction crossing",Yankeeland Avenue,False,True,507.0,1,218,24021751202,-77.446801,39.463224
+edge:16363,steeper than 8.33%,11.0% (verified),False,True,121.6,1,218,24021751202,-77.448724,39.459287
+corner:14432:kerb_b,"curb unknown, marked crossing",Arrowhead Court,False,True,144.9,1,212,24021750701,-77.411733,39.457112
+edge:20227,steeper than 8.33%,8.4% (verified),False,False,28.7,1,218,24021751202,-77.452968,39.447413
+junction:103031697,"curb unknown, unmarked junction crossing",Kemp Lane,False,True,16.5,1,218,24021751203,-77.453857,39.448158
+edge:20228,steeper than 8.33%,8.4% (verified),False,True,29.2,1,218,24021751202,-77.453575,39.447895
+edge:17368,slope unknown,,False,False,152.3,1,218,24021751202,-77.454385,39.449977
+edge:25403,slope unknown,,False,False,30.6,1,214,24021750200,-77.411073,39.412771
+edge:25404,slope unknown,,False,False,22.1,1,214,24021750200,-77.411067,39.41286
+edge:19564,steeper than 8.33%,9.4% (verified),False,False,94.5,1,214,24021750801,-77.406469,39.426464
+junction:9742644367,"curb unknown, unmarked junction crossing",Moon Shot Lane,False,False,241.9,1,221,24021751202,-77.450345,39.461753
+junction:9742644368,"curb unknown, unmarked junction crossing",Damsire Mews,False,False,286.0,1,221,24021751202,-77.450764,39.462508
+junction:9742644355,"curb unknown, unmarked junction crossing",Yankeeland Avenue,False,False,397.8,1,221,24021751202,-77.449772,39.463212
+junction:3905879569,"curb unknown, unmarked junction crossing",Bluegrass Way,False,False,453.5,1,221,24021751202,-77.449743,39.463793
+junction:3905879581,"curb unknown, unmarked junction crossing",Rocky Springs Road,False,False,528.9,1,221,24021751202,-77.44857,39.463991
+junction:10732692702,"curb unknown, unmarked junction crossing",Rocky Springs Road,False,False,487.4,1,221,24021751202,-77.447985,39.464079
+junction:10732692704,"curb unknown, unmarked junction crossing",Yellow Springs Road,False,False,479.4,1,221,24021751202,-77.447836,39.464072
+edge:15058,steeper than 8.33%,22.7% (verified),False,False,247.4,1,221,24021751201,-77.420173,39.467388
+junction:103031603,"curb unknown, unmarked junction crossing",Colt Lane,False,True,691.6,1,218,24021751301,-77.458503,39.465492
+edge:15369,steeper than 8.33%,9.1% (verified),False,False,334.8,1,221,24021751301,-77.419865,39.468498
+junction:5800060575,"curb unknown, unmarked junction crossing",Conundrum Court; Conundrum Terrace,False,True,416.4,1,221,24021751301,-77.419624,39.469427
+edge:10387,steeper than 8.33%,11.9% (verified),False,True,520.3,1,222,24021751201,-77.420699,39.455627
+corner:23512:kerb_a,"curb unknown, marked crossing",Christophers Crossing,False,False,207.8,1,227,24021751201,-77.431737,39.465824
+corner:23512:kerb_b,"curb unknown, marked crossing",Christophers Crossing,False,False,216.5,1,227,24021751201,-77.431742,39.465745
+corner:23501:kerb_a,"curb unknown, marked crossing",Christophers Crossing,False,True,219.6,1,227,24021751201,-77.431744,39.465716
+corner:23501:kerb_b,"curb unknown, marked crossing",Christophers Crossing,False,True,227.8,1,227,24021751201,-77.431749,39.465642
+corner:21471:kerb_a,"curb unknown, marked crossing",Lindley Road,False,False,90.8,1,228,24021750804,-77.395849,39.421171
+corner:21471:kerb_b,"curb unknown, marked crossing",Lindley Road,False,False,105.5,1,228,24021750804,-77.396035,39.421172
+corner:24109:kerb_a,"curb unknown, marked crossing",,False,False,100.6,1,228,24021750804,-77.397435,39.418464
+corner:24109:kerb_b,"curb unknown, marked crossing",,False,False,118.2,1,228,24021750804,-77.397618,39.418391
+corner:24107:kerb_a,"curb unknown, marked crossing",County Lane,False,False,126.7,1,228,24021750804,-77.397707,39.418357
+corner:24107:kerb_b,"curb unknown, marked crossing",County Lane,False,False,140.3,1,228,24021750804,-77.397852,39.418307
+junction:294327143,"curb unknown, unmarked junction crossing",Water Street,False,False,10.9,1,231,24021772200,-77.405024,39.40998
+corner:14362:kerb_a,"curb unknown, marked crossing",Swallowtail Drive,False,False,10.4,1,233,24021750506,-77.463875,39.408113
+corner:14311:kerb_a,"curb unknown, marked crossing",Hunting Ridge Drive,False,False,8.4,1,233,24021750506,-77.464454,39.408794
+corner:9501:kerb_a,"curb unknown, marked crossing",McClellan Drive,False,False,45.7,1,267,24021750701,-77.407163,39.462556
+corner:14315:kerb_b,"curb unknown, marked crossing",Hunting Ridge Drive,False,False,9.7,1,233,24021750506,-77.461824,39.410721
+edge:12114,steeper than 8.33%,8.6% (verified),False,False,20.2,1,233,24021750504,-77.447318,39.418313
+corner:26447:kerb_a,"curb unknown, marked crossing",Stoddert Alley,False,False,79.2,1,229,24021750504,-77.442012,39.424802
+corner:26447:kerb_b,"curb unknown, marked crossing",Stoddert Alley,False,False,71.2,1,229,24021750504,-77.442104,39.424772
+junction:12030565904,"curb unknown, unmarked junction crossing",Carbon Lane,False,False,76.6,1,230,24021751203,-77.461309,39.432467
+junction:13509912594,"curb unknown, unmarked junction crossing",Hammer Drive,False,False,107.3,1,230,24021751203,-77.461734,39.432802
+corner:25204:kerb_a,"curb unknown, marked crossing",,False,False,80.1,1,239,24021750300,-77.414002,39.410194
+corner:25204:kerb_b,"curb unknown, marked crossing",,False,False,72.9,1,239,24021750300,-77.413812,39.410186
+edge:16721,slope unknown,,False,False,4.1,1,239,24021750600,-77.414781,39.41398
+junction:103054142,"curb unknown, unmarked junction crossing",Tuscarora Lane,False,True,396.7,1,245,24021751201,-77.442474,39.463752
+junction:103072813,"curb unknown, unmarked junction crossing",Sunset Drive,False,True,411.6,1,245,24021751201,-77.444152,39.463569
+junction:9488468197,"curb unknown, unmarked junction crossing",Wormans Mill Road,False,True,179.3,1,241,24021750802,-77.399309,39.452121
+junction:9488468209,"curb unknown, unmarked junction crossing",Armenia Oak Drive,False,False,146.1,1,241,24021750802,-77.398392,39.452013
+corner:26458:kerb_a,"curb unknown, marked crossing",Stoddert Alley,False,False,34.6,1,254,24021750504,-77.441622,39.423992
+corner:26458:kerb_b,"curb unknown, marked crossing",Stoddert Alley,False,False,23.6,1,254,24021750504,-77.441742,39.42396
+edge:26457,steeper than 8.33%,13.1% (verified),False,False,45.2,1,254,24021750504,-77.441516,39.424045
+edge:15322,steeper than 8.33%,8.7% (inferred),False,True,83.0,1,256,24021751701,-77.377825,39.434145
+corner:20014:kerb_a,"curb unknown, marked crossing",,False,False,252.5,1,256,24021772200,-77.382908,39.427754
+corner:20014:kerb_b,"curb unknown, marked crossing",,False,False,225.1,1,256,24021772200,-77.38318,39.427623
+corner:7952:kerb_a,"curb unknown, marked crossing",,False,False,78.7,1,259,24021750701,-77.404077,39.447244
+corner:7952:kerb_b,"curb unknown, marked crossing",,False,False,70.6,1,259,24021750701,-77.404169,39.447272
+corner:22584:kerb_a,"curb unknown, marked crossing",,False,False,218.1,1,18,24021751301,-77.407667,39.473647
+corner:22584:kerb_b,"curb unknown, marked crossing",,False,False,213.5,1,18,24021751301,-77.407588,39.473608
+corner:22583:kerb_a,"curb unknown, marked crossing",Pearson Boulevard,False,False,213.5,1,18,24021751301,-77.407588,39.473608
+corner:18122:kerb_b,"curb unknown, marked crossing",Tydings Park Road,False,False,306.0,1,5,24021750506,-77.467385,39.417168
+junction:1652962640,"curb unknown, unmarked junction crossing",Maxwell Square,False,False,26.7,1,291,24021750100,-77.409614,39.419999
+edge:9622,steeper than 8.33%,15.9% (inferred),False,False,79.9,1,294,24021751301,-77.431395,39.469456
+corner:23458:kerb_b,"curb unknown, marked crossing",,False,True,159.9,1,285,24021751003,-77.438447,39.393005
+edge:7952,steeper than 8.33%,16.2% (verified),False,False,74.7,1,259,24021750701,-77.404123,39.447258
+edge:23158,steeper than 8.33%,13.9% (inferred),False,False,17.6,1,260,24021750600,-77.423159,39.41628
+edge:23159,steeper than 8.33%,14.1% (inferred),False,False,2.3,1,260,24021750600,-77.42341,39.415992
+corner:16826:kerb_a,"curb unknown, marked crossing",Homewood Circle,False,False,191.3,1,18,24021751301,-77.409071,39.472918
+corner:16826:kerb_b,"curb unknown, marked crossing",Homewood Circle,False,False,201.0,1,18,24021751301,-77.409067,39.47304
+junction:4545367270,"curb unknown, unmarked junction crossing",Old National Pike,True,True,138.5,1,83,24021750506,-77.469736,39.420329
+junction:102997508,"curb unknown, unmarked junction crossing",Old National Pike,True,True,187.7,1,83,24021750506,-77.471324,39.42048
+corner:22583:kerb_b,"curb unknown, marked crossing",Pearson Boulevard,False,False,222.3,1,18,24021751301,-77.407517,39.473688
+junction:13481138025,"curb unknown, unmarked junction crossing",Mandrel Lane,False,False,179.6,1,19,24021751203,-77.462417,39.433378
+junction:13021561567,"curb unknown, unmarked junction crossing",Casting Way,False,False,222.3,1,19,24021751203,-77.462314,39.433796
+junction:13509912588,"curb unknown, unmarked junction crossing",Chisel Way,False,False,171.5,1,19,24021751203,-77.462348,39.433318
+corner:23454:kerb_b,"curb unknown, marked crossing",,False,False,9.0,1,285,24021751003,-77.437808,39.394462
+edge:24475,steeper than 8.33%,9.2% (verified),False,False,35.1,1,3,24021750504,-77.433809,39.421015
+edge:10292,steeper than 8.33%,9.1% (verified),False,False,43.6,1,278,24021750504,-77.437336,39.416124
+corner:23458:kerb_a,"curb unknown, marked crossing",,False,True,168.3,1,285,24021751003,-77.438478,39.392931
+corner:18122:kerb_a,"curb unknown, marked crossing",Tydings Park Road,False,False,323.7,1,5,24021750506,-77.467292,39.417313
+corner:12030:kerb_a,"curb unknown, marked crossing",Willow Road,False,False,149.3,1,9,24021751301,-77.405749,39.471016
+corner:12030:kerb_b,"curb unknown, marked crossing",Willow Road,False,False,121.9,1,9,24021751301,-77.40559,39.470774
+edge:26458,steeper than 8.33%,12.7% (verified),False,False,31.8,1,254,24021750504,-77.441653,39.423984
