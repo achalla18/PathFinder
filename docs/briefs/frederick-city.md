@@ -1,5 +1,10 @@
 # PathFinder and the City of Frederick: four requests
 
+> **Outcome (2026-10-20, owner):** the city's data may be used for internal use only, so
+> request 1 (use outside the team) is not granted. The city will not supply anything beyond
+> what it already publishes: no survey scope, no survey report, no corner check (requests 2
+> to 4). See `docs/PROGRESS.md`.
+
 *Private draft for the owner to edit and send. Figures as of 2026-10-19; sources in
 `docs/PROGRESS.md` and `reports/frederick/`.*
 

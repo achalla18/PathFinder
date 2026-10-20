@@ -16,7 +16,7 @@ See "How to update" at the bottom.
 |---|---|
 | **Product** | **City accessibility app** (refocused 2026-10-15): step-free routes from mobility profiles first, plus a city barrier map. Dimensions: crossings & curbs / slope / sidewalk |
 | **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) and sidewalks from the surveys (both towns) in. Each town passes 3 of 5 accessibility criteria |
-| **Next** | Frederick is 7 trips short of criterion 4 and 3.2 points short of criterion 3: a brief to the City of Frederick (data permission, survey scope, a corner check from `reports/frederick/blocked/`). Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
+| **Next** | Frederick is 7 trips short of criterion 4 and 3.2 points short of criterion 3. The City of Frederick allows internal use only and will supply nothing new (2026-10-20), so both gaps need field checks or mapping, and Phase E (testers) cannot see anything built on the city's data. Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
 | **Repo** | `C:\dev\PathFinder` (moved out of OneDrive 2026-10-19), its own git repository; no remote |
 | **Tests** | 222 pass on each town's graph (unit and data-invariant; 1 skipped by design), 2026-10-20 |
 
@@ -726,7 +726,7 @@ first, and folded crossings into accessibility, removing after-dark and crime.
     - The worklist is now 13 places, 5 inside the line.
   - The brief to the city is updated.
 
-### 2026-10-20 — Junction curb claims carry their source and date
+### 2026-10-20 — Junction curb claims carry their source and date (`5f68281`)
 
 - **Gap (open issue, rule 4):** at a junction crossed without a crossing edge, the curb claim
   (`ramp_likely`, `no_ramp_reported`, `no_curb`) reached the trip and the barrier map as
@@ -750,6 +750,25 @@ first, and folded crossings into accessibility, removing after-dark and crime.
   - The cost model is unchanged, so routes, crux results and the bar cannot move. Coverage and
     barrier reports regenerate byte-identical.
 - Tests: 222 pass on each town's graph (1 skipped by design); `npm run build` is clean.
+
+### 2026-10-20 — City of Frederick: internal use only, nothing new
+
+- **The city's answer** (owner): the city's data may be used for internal use only. The city will
+  supply nothing beyond what it already publishes.
+  - Request 1 (use outside the team): not granted.
+  - Requests 2 to 4 (survey scope, survey report, corner check): declined.
+- **Unchanged:** the city's three layers (`frederick_sidewalks`, `frederick_sidewalk_photos`,
+  `frederick_ramps`) stay "Internal use only" under rule 7, and so do Frederick's barrier report and
+  map. Frederick County's signal layer is a separate owner and stays internal as well.
+- **What it means for the bar:**
+  - Criterion 3 (56.8%, bar 60%): survey silence stays unknown. Without the city's scope, the
+    sidewalk evidence has to come from mapping.
+  - Criterion 4 (47.5%, 7 trips short): no city check of the blocking corners. The worklist
+    (`reports/frederick/blocked/worklist.csv`) needs a field check or mapping by someone else.
+  - Condition bands stay numbers only: no survey report.
+- **What stays blocked:** Phase E. Testers at The Freedom Center are outside the team, so they
+  cannot see routes or maps built on the city's data. Showing them anything in Frederick needs
+  either the city's written permission later, or a Frederick built without the city's layers.
 
 ### 2026-10-19 — Web app: faster start and easier on phones
 
@@ -836,6 +855,7 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 | 2026-10-19 | **The retrained imagery model is not used:** scored once, it failed the same bar ("sidewalk" 80.9% correct; "no sidewalk" 100% but only 26 answers, 30 needed). The frozen test set is now spent for imagery models; any further imagery model needs a new, independently labelled test set fixed before it is built | The protocol fixed the outcome of a fail before training; a third look at the same test set would let it tune the model |
 | 2026-10-19 | **Areas closed to the public (`landuse=military`) are not walkable:** edges at least half inside are removed; trips with an end there leave the sample by its existing rule | A route through a guarded gate is not a route; Fort Detrick's streets were mapped as public (`access=yes`). This corrects the network, not the bar |
 | 2026-10-19 | **Imagery sidewalk detection is closed (owner).** No new test set and no further models; effort moves to getting Frederick over the accessibility bar through the city's own data | Two models failed, in opposite ways; at six inches, under canopy and beside driveways, 95% looks out of reach, and a new hand-labelled test set would cost about as much as mapping the streets |
+| 2026-10-20 | **City of Frederick layers stay internal** (the city's answer: internal use only, no further data) | Rule 7 unchanged: nothing built on them is shown outside the team |
 | 2026-10-20 | **Closed areas are cut at their boundary**, not removed by a share of each edge: only the parts of a walkway outside are kept, the cut ends are never bridged, and no connector may enter. A trip end inside one is told so | Review finding: the half-inside rule kept gate roads reaching up to 20 m behind the fence and corners walkable through the area |
 
 ---
@@ -855,8 +875,10 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 - Gaithersburg has no published curb-ramp inventory; without one no step-free route can be
   confirmed there.
 - The City of Frederick sidewalk survey is not complete (88.9% of OSM's public-street
-  sidewalk, bar 95%), so its silence proves nothing; its scope from the city would let silence
-  count inside that scope.
+  sidewalk, bar 95%), so its silence proves nothing. *2026-10-20:* the city declined to give
+  its scope, so silence stays unknown.
+- The City of Frederick allows internal use only (2026-10-20): nothing built on its layers can
+  reach testers or the public, which blocks Phase E in Frederick.
 - MDOT SHA's ADA inventory (state-road curb cuts, pedestrian signals with APS) is internal;
   state roads in both towns stay without it until SHA shares it.
 - Condition bands are product judgments; Frederick's survey report (O'Connell & Lawrence)
@@ -873,20 +895,21 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 
 ## Next steps
 
-1. **City of Frederick first** (owner): a one-page private brief (`docs/briefs/frederick-city.md`)
-   asks for (a) written permission to show what is built on the city's surveys outside the team
-   (rule 7), (b) the sidewalk survey's scope, which would let its silence count inside it
-   (criterion 3, 56.8%), (c) the survey report (condition categories), and (d) a check of the
-   blocking corners in `reports/frederick/blocked/worklist.csv` (criterion 4, 7 trips short; 13
-   places, 5 inside the city line).
+1. ~~City of Frederick brief~~ (answered 2026-10-20): internal use only; scope, report and
+   corner check declined.
+   - Frederick's criterion 4 (7 trips short): a field check of the 13 worklist places
+     (`reports/frederick/blocked/worklist.csv`, 5 inside the city line), by the team or with
+     testers, recorded as a new dated source.
+   - Testers in Frederick: decide whether to ask the city again later, or to show testers a
+     Frederick built without the city's layers.
 2. Data requests (owner): MDOT SHA's ADA inventory (27 of Frederick's 145 blocked trips touch a
    major road); a Gaithersburg ramp inventory (it would lift criterion 4 most there: 199 of the
    blocked trips wait only on unrecorded curbs); MCDOT signals with APS / LPI.
    No further open signal data in either town.
 3. Frederick's sidewalk evidence beyond the survey: service roads, lots, and streets the survey shows
    without a sidewalk; mapping with partners. Imagery detection is closed (2026-10-19).
-4. Phase E, The Freedom Center: testers and the profile numbers, once the city's permission
-   lets them see what is built on its data.
+4. Phase E, The Freedom Center: testers and the profile numbers. Blocked in Frederick while the
+   city's data is internal only (2026-10-20).
 
 ---
 
