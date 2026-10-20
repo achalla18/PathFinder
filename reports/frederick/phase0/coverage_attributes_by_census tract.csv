@@ -1,0 +1,661 @@
+ward,attribute,scope,weighted_by,n,verified,inferred,unknown
+24021750100,crossing_control,crossings,count,64,76.6,20.3,3.1
+24021750100,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021750100,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021750100,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021750100,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021750100,crossed_lanes,crossings,count,64,57.8,0.0,42.2
+24021750100,crossed_width_m,crossings,count,64,0.0,0.0,100.0
+24021750100,crossed_speed_mph,crossings,count,64,20.3,0.0,79.7
+24021750100,crossed_aadt,crossings,count,64,0.0,0.0,100.0
+24021750100,kerb_a,crossings,count,64,71.9,0.0,28.1
+24021750100,kerb_b,crossings,count,64,73.4,0.0,26.6
+24021750100,ramp_check_a,crossings,count,64,71.9,0.0,28.1
+24021750100,ramp_check_b,crossings,count,64,73.4,0.0,26.6
+24021750100,step_free,all edges,length,578,0.0,100.0,0.0
+24021750100,grade_avg_pct,all edges,length,578,96.8,3.2,0.0
+24021750100,grade_max_pct,all edges,length,578,96.8,3.2,0.0
+24021750100,surface_class,pedestrian ways,length,341,4.6,0.0,95.4
+24021750100,sidewalk_presence,street centerlines,length,224,13.0,0.0,87.0
+24021750100,sidewalk_condition,sidewalks,length,176,20.2,8.4,71.4
+24021750100,sidewalk_width_m,sidewalks,length,176,20.6,10.1,69.3
+24021750100,street_lanes,street centerlines,length,224,36.5,0.0,63.5
+24021750100,street_speed_mph,street centerlines,length,224,11.1,0.0,88.9
+24021750200,crossing_control,crossings,count,87,57.5,42.5,0.0
+24021750200,signal_lpi,signalized crossings,count,5,0.0,0.0,100.0
+24021750200,signal_aps,signalized crossings,count,5,0.0,0.0,100.0
+24021750200,signal_hawk,signalized crossings,count,5,0.0,0.0,100.0
+24021750200,signal_all_ped_phase,signalized crossings,count,5,0.0,0.0,100.0
+24021750200,crossed_lanes,crossings,count,87,73.6,0.0,26.4
+24021750200,crossed_width_m,crossings,count,87,0.0,0.0,100.0
+24021750200,crossed_speed_mph,crossings,count,87,33.3,0.0,66.7
+24021750200,crossed_aadt,crossings,count,87,0.0,0.0,100.0
+24021750200,kerb_a,crossings,count,87,89.7,0.0,10.3
+24021750200,kerb_b,crossings,count,87,92.0,0.0,8.0
+24021750200,ramp_check_a,crossings,count,87,88.5,0.0,11.5
+24021750200,ramp_check_b,crossings,count,87,90.8,0.0,9.2
+24021750200,step_free,all edges,length,853,0.4,99.6,0.0
+24021750200,grade_avg_pct,all edges,length,853,92.1,7.0,0.9
+24021750200,grade_max_pct,all edges,length,853,92.1,7.0,0.9
+24021750200,surface_class,pedestrian ways,length,562,30.0,0.0,70.0
+24021750200,sidewalk_presence,street centerlines,length,280,24.5,0.0,75.5
+24021750200,sidewalk_condition,sidewalks,length,315,30.8,4.7,64.5
+24021750200,sidewalk_width_m,sidewalks,length,315,31.9,6.5,61.7
+24021750200,street_lanes,street centerlines,length,280,31.7,0.0,68.3
+24021750200,street_speed_mph,street centerlines,length,280,8.4,0.0,91.6
+24021750300,crossing_control,crossings,count,42,69.0,21.4,9.5
+24021750300,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021750300,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021750300,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021750300,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021750300,crossed_lanes,crossings,count,42,47.6,0.0,52.4
+24021750300,crossed_width_m,crossings,count,42,0.0,0.0,100.0
+24021750300,crossed_speed_mph,crossings,count,42,35.7,0.0,64.3
+24021750300,crossed_aadt,crossings,count,42,0.0,0.0,100.0
+24021750300,kerb_a,crossings,count,42,66.7,0.0,33.3
+24021750300,kerb_b,crossings,count,42,66.7,0.0,33.3
+24021750300,ramp_check_a,crossings,count,42,61.9,0.0,38.1
+24021750300,ramp_check_b,crossings,count,42,59.5,0.0,40.5
+24021750300,step_free,all edges,length,448,0.0,100.0,0.0
+24021750300,grade_avg_pct,all edges,length,448,92.4,7.6,0.0
+24021750300,grade_max_pct,all edges,length,448,92.4,7.6,0.0
+24021750300,surface_class,pedestrian ways,length,316,15.9,0.0,84.1
+24021750300,sidewalk_presence,street centerlines,length,130,16.7,0.0,83.3
+24021750300,sidewalk_condition,sidewalks,length,189,61.1,1.5,37.4
+24021750300,sidewalk_width_m,sidewalks,length,189,70.6,6.4,23.0
+24021750300,street_lanes,street centerlines,length,130,5.4,0.0,94.6
+24021750300,street_speed_mph,street centerlines,length,130,2.3,0.0,97.7
+24021750504,crossing_control,crossings,count,113,83.2,5.3,11.5
+24021750504,signal_lpi,signalized crossings,count,2,0.0,0.0,100.0
+24021750504,signal_aps,signalized crossings,count,2,0.0,0.0,100.0
+24021750504,signal_hawk,signalized crossings,count,2,0.0,0.0,100.0
+24021750504,signal_all_ped_phase,signalized crossings,count,2,0.0,0.0,100.0
+24021750504,crossed_lanes,crossings,count,113,24.8,0.0,75.2
+24021750504,crossed_width_m,crossings,count,113,0.0,0.0,100.0
+24021750504,crossed_speed_mph,crossings,count,113,13.3,0.0,86.7
+24021750504,crossed_aadt,crossings,count,113,0.0,0.0,100.0
+24021750504,kerb_a,crossings,count,113,56.6,0.0,43.4
+24021750504,kerb_b,crossings,count,113,57.5,0.0,42.5
+24021750504,ramp_check_a,crossings,count,113,56.6,0.0,43.4
+24021750504,ramp_check_b,crossings,count,113,57.5,0.0,42.5
+24021750504,step_free,all edges,length,1831,0.1,99.9,0.0
+24021750504,grade_avg_pct,all edges,length,1831,95.3,4.6,0.1
+24021750504,grade_max_pct,all edges,length,1831,95.3,4.6,0.1
+24021750504,surface_class,pedestrian ways,length,825,10.6,0.0,89.4
+24021750504,sidewalk_presence,street centerlines,length,997,30.3,0.0,69.7
+24021750504,sidewalk_condition,sidewalks,length,480,29.5,33.4,37.1
+24021750504,sidewalk_width_m,sidewalks,length,480,31.5,39.4,29.2
+24021750504,street_lanes,street centerlines,length,997,13.1,0.0,86.9
+24021750504,street_speed_mph,street centerlines,length,997,7.3,0.0,92.7
+24021750505,crossing_control,crossings,count,48,62.5,12.5,25.0
+24021750505,signal_lpi,signalized crossings,count,2,0.0,0.0,100.0
+24021750505,signal_aps,signalized crossings,count,2,0.0,0.0,100.0
+24021750505,signal_hawk,signalized crossings,count,2,0.0,0.0,100.0
+24021750505,signal_all_ped_phase,signalized crossings,count,2,0.0,0.0,100.0
+24021750505,crossed_lanes,crossings,count,48,12.5,0.0,87.5
+24021750505,crossed_width_m,crossings,count,48,0.0,0.0,100.0
+24021750505,crossed_speed_mph,crossings,count,48,4.2,0.0,95.8
+24021750505,crossed_aadt,crossings,count,48,0.0,0.0,100.0
+24021750505,kerb_a,crossings,count,48,87.5,0.0,12.5
+24021750505,kerb_b,crossings,count,48,85.4,0.0,14.6
+24021750505,ramp_check_a,crossings,count,48,87.5,0.0,12.5
+24021750505,ramp_check_b,crossings,count,48,85.4,0.0,14.6
+24021750505,step_free,all edges,length,1022,0.0,100.0,0.0
+24021750505,grade_avg_pct,all edges,length,1022,97.8,2.2,0.0
+24021750505,grade_max_pct,all edges,length,1022,97.8,2.2,0.0
+24021750505,surface_class,pedestrian ways,length,304,2.7,0.0,97.3
+24021750505,sidewalk_presence,street centerlines,length,715,36.2,0.0,63.8
+24021750505,sidewalk_condition,sidewalks,length,293,31.2,33.6,35.2
+24021750505,sidewalk_width_m,sidewalks,length,293,14.8,21.1,64.0
+24021750505,street_lanes,street centerlines,length,715,6.2,0.0,93.8
+24021750505,street_speed_mph,street centerlines,length,715,2.7,0.0,97.3
+24021750506,crossing_control,crossings,count,92,85.9,10.9,3.3
+24021750506,signal_lpi,signalized crossings,count,4,0.0,0.0,100.0
+24021750506,signal_aps,signalized crossings,count,4,0.0,0.0,100.0
+24021750506,signal_hawk,signalized crossings,count,4,0.0,0.0,100.0
+24021750506,signal_all_ped_phase,signalized crossings,count,4,0.0,0.0,100.0
+24021750506,crossed_lanes,crossings,count,92,5.4,0.0,94.6
+24021750506,crossed_width_m,crossings,count,92,0.0,0.0,100.0
+24021750506,crossed_speed_mph,crossings,count,92,4.3,0.0,95.7
+24021750506,crossed_aadt,crossings,count,92,0.0,0.0,100.0
+24021750506,kerb_a,crossings,count,92,59.8,0.0,40.2
+24021750506,kerb_b,crossings,count,92,43.5,0.0,56.5
+24021750506,ramp_check_a,crossings,count,92,57.6,0.0,42.4
+24021750506,ramp_check_b,crossings,count,92,41.3,0.0,58.7
+24021750506,step_free,all edges,length,893,0.0,100.0,0.0
+24021750506,grade_avg_pct,all edges,length,893,97.7,2.3,0.0
+24021750506,grade_max_pct,all edges,length,893,97.7,2.3,0.0
+24021750506,surface_class,pedestrian ways,length,334,10.1,0.0,89.9
+24021750506,sidewalk_presence,street centerlines,length,557,41.2,0.0,58.8
+24021750506,sidewalk_condition,sidewalks,length,289,8.5,34.8,56.7
+24021750506,sidewalk_width_m,sidewalks,length,289,3.5,24.0,72.5
+24021750506,street_lanes,street centerlines,length,557,14.6,0.0,85.4
+24021750506,street_speed_mph,street centerlines,length,557,8.8,0.0,91.2
+24021750507,crossing_control,crossings,count,24,83.3,0.0,16.7
+24021750507,signal_lpi,signalized crossings,count,1,0.0,0.0,100.0
+24021750507,signal_aps,signalized crossings,count,1,0.0,0.0,100.0
+24021750507,signal_hawk,signalized crossings,count,1,0.0,0.0,100.0
+24021750507,signal_all_ped_phase,signalized crossings,count,1,0.0,0.0,100.0
+24021750507,crossed_lanes,crossings,count,24,8.3,0.0,91.7
+24021750507,crossed_width_m,crossings,count,24,0.0,0.0,100.0
+24021750507,crossed_speed_mph,crossings,count,24,8.3,0.0,91.7
+24021750507,crossed_aadt,crossings,count,24,0.0,0.0,100.0
+24021750507,kerb_a,crossings,count,24,87.5,0.0,12.5
+24021750507,kerb_b,crossings,count,24,87.5,0.0,12.5
+24021750507,ramp_check_a,crossings,count,24,83.3,0.0,16.7
+24021750507,ramp_check_b,crossings,count,24,83.3,0.0,16.7
+24021750507,step_free,all edges,length,544,0.0,100.0,0.0
+24021750507,grade_avg_pct,all edges,length,544,97.5,2.5,0.0
+24021750507,grade_max_pct,all edges,length,544,97.5,2.5,0.0
+24021750507,surface_class,pedestrian ways,length,203,3.0,0.0,97.0
+24021750507,sidewalk_presence,street centerlines,length,337,28.8,0.0,71.2
+24021750507,sidewalk_condition,sidewalks,length,134,34.3,31.5,34.2
+24021750507,sidewalk_width_m,sidewalks,length,134,36.9,34.9,28.1
+24021750507,street_lanes,street centerlines,length,337,3.0,0.0,97.0
+24021750507,street_speed_mph,street centerlines,length,337,12.3,0.0,87.7
+24021750508,crossing_control,crossings,count,69,65.2,1.4,33.3
+24021750508,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021750508,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021750508,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021750508,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021750508,crossed_lanes,crossings,count,69,8.7,0.0,91.3
+24021750508,crossed_width_m,crossings,count,69,0.0,0.0,100.0
+24021750508,crossed_speed_mph,crossings,count,69,7.2,0.0,92.8
+24021750508,crossed_aadt,crossings,count,69,0.0,0.0,100.0
+24021750508,kerb_a,crossings,count,69,87.0,0.0,13.0
+24021750508,kerb_b,crossings,count,69,82.6,0.0,17.4
+24021750508,ramp_check_a,crossings,count,69,81.2,0.0,18.8
+24021750508,ramp_check_b,crossings,count,69,79.7,0.0,20.3
+24021750508,step_free,all edges,length,938,0.0,100.0,0.0
+24021750508,grade_avg_pct,all edges,length,938,98.1,1.9,0.0
+24021750508,grade_max_pct,all edges,length,938,98.1,1.9,0.0
+24021750508,surface_class,pedestrian ways,length,376,11.7,0.0,88.3
+24021750508,sidewalk_presence,street centerlines,length,558,27.3,0.0,72.7
+24021750508,sidewalk_condition,sidewalks,length,211,36.4,30.7,32.9
+24021750508,sidewalk_width_m,sidewalks,length,211,40.5,35.0,24.5
+24021750508,street_lanes,street centerlines,length,558,7.8,0.0,92.2
+24021750508,street_speed_mph,street centerlines,length,558,13.6,0.0,86.4
+24021750600,crossing_control,crossings,count,180,84.4,7.8,7.8
+24021750600,signal_lpi,signalized crossings,count,4,0.0,0.0,100.0
+24021750600,signal_aps,signalized crossings,count,4,0.0,0.0,100.0
+24021750600,signal_hawk,signalized crossings,count,4,0.0,0.0,100.0
+24021750600,signal_all_ped_phase,signalized crossings,count,4,0.0,0.0,100.0
+24021750600,crossed_lanes,crossings,count,180,30.6,0.0,69.4
+24021750600,crossed_width_m,crossings,count,180,0.0,0.0,100.0
+24021750600,crossed_speed_mph,crossings,count,180,18.3,0.0,81.7
+24021750600,crossed_aadt,crossings,count,180,0.0,0.0,100.0
+24021750600,kerb_a,crossings,count,180,77.2,0.0,22.8
+24021750600,kerb_b,crossings,count,180,79.4,0.0,20.6
+24021750600,ramp_check_a,crossings,count,180,75.0,0.0,25.0
+24021750600,ramp_check_b,crossings,count,180,77.8,0.0,22.2
+24021750600,step_free,all edges,length,1782,0.1,99.9,0.0
+24021750600,grade_avg_pct,all edges,length,1782,91.9,7.9,0.1
+24021750600,grade_max_pct,all edges,length,1782,91.9,7.9,0.1
+24021750600,surface_class,pedestrian ways,length,1272,30.0,0.0,70.0
+24021750600,sidewalk_presence,street centerlines,length,498,22.4,0.0,77.6
+24021750600,sidewalk_condition,sidewalks,length,559,56.7,9.0,34.3
+24021750600,sidewalk_width_m,sidewalks,length,559,61.6,13.0,25.4
+24021750600,street_lanes,street centerlines,length,498,6.8,0.0,93.2
+24021750600,street_speed_mph,street centerlines,length,498,3.7,0.0,96.3
+24021750701,crossing_control,crossings,count,140,30.0,5.7,64.3
+24021750701,signal_lpi,signalized crossings,count,6,0.0,0.0,100.0
+24021750701,signal_aps,signalized crossings,count,6,0.0,0.0,100.0
+24021750701,signal_hawk,signalized crossings,count,6,0.0,0.0,100.0
+24021750701,signal_all_ped_phase,signalized crossings,count,6,0.0,0.0,100.0
+24021750701,crossed_lanes,crossings,count,140,14.3,0.0,85.7
+24021750701,crossed_width_m,crossings,count,140,0.0,0.0,100.0
+24021750701,crossed_speed_mph,crossings,count,140,19.3,0.0,80.7
+24021750701,crossed_aadt,crossings,count,140,0.0,0.0,100.0
+24021750701,kerb_a,crossings,count,140,72.9,0.0,27.1
+24021750701,kerb_b,crossings,count,140,74.3,0.0,25.7
+24021750701,ramp_check_a,crossings,count,140,70.7,0.0,29.3
+24021750701,ramp_check_b,crossings,count,140,72.9,0.0,27.1
+24021750701,step_free,all edges,length,1977,0.0,100.0,0.0
+24021750701,grade_avg_pct,all edges,length,1977,96.7,3.3,0.0
+24021750701,grade_max_pct,all edges,length,1977,96.7,3.3,0.0
+24021750701,surface_class,pedestrian ways,length,895,5.3,0.0,94.7
+24021750701,sidewalk_presence,street centerlines,length,1075,33.5,0.0,66.5
+24021750701,sidewalk_condition,sidewalks,length,598,53.5,19.5,27.0
+24021750701,sidewalk_width_m,sidewalks,length,598,55.0,19.0,26.0
+24021750701,street_lanes,street centerlines,length,1075,13.6,0.0,86.4
+24021750701,street_speed_mph,street centerlines,length,1075,13.6,0.0,86.4
+24021750702,crossing_control,crossings,count,51,76.5,2.0,21.6
+24021750702,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021750702,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021750702,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021750702,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021750702,crossed_lanes,crossings,count,51,13.7,0.0,86.3
+24021750702,crossed_width_m,crossings,count,51,0.0,0.0,100.0
+24021750702,crossed_speed_mph,crossings,count,51,2.0,0.0,98.0
+24021750702,crossed_aadt,crossings,count,51,0.0,0.0,100.0
+24021750702,kerb_a,crossings,count,51,88.2,0.0,11.8
+24021750702,kerb_b,crossings,count,51,90.2,0.0,9.8
+24021750702,ramp_check_a,crossings,count,51,86.3,0.0,13.7
+24021750702,ramp_check_b,crossings,count,51,86.3,0.0,13.7
+24021750702,step_free,all edges,length,973,0.0,100.0,0.0
+24021750702,grade_avg_pct,all edges,length,973,96.9,3.1,0.0
+24021750702,grade_max_pct,all edges,length,973,96.9,3.1,0.0
+24021750702,surface_class,pedestrian ways,length,396,13.9,0.0,86.1
+24021750702,sidewalk_presence,street centerlines,length,574,40.7,0.0,59.3
+24021750702,sidewalk_condition,sidewalks,length,269,43.9,37.0,19.2
+24021750702,sidewalk_width_m,sidewalks,length,269,3.8,13.7,82.5
+24021750702,street_lanes,street centerlines,length,574,5.9,0.0,94.1
+24021750702,street_speed_mph,street centerlines,length,574,0.1,0.0,99.9
+24021750801,crossing_control,crossings,count,108,50.0,21.3,28.7
+24021750801,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021750801,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021750801,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021750801,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021750801,crossed_lanes,crossings,count,108,13.9,0.0,86.1
+24021750801,crossed_width_m,crossings,count,108,0.0,0.0,100.0
+24021750801,crossed_speed_mph,crossings,count,108,9.3,0.0,90.7
+24021750801,crossed_aadt,crossings,count,108,0.0,0.0,100.0
+24021750801,kerb_a,crossings,count,108,65.7,0.0,34.3
+24021750801,kerb_b,crossings,count,108,66.7,0.0,33.3
+24021750801,ramp_check_a,crossings,count,108,62.0,0.0,38.0
+24021750801,ramp_check_b,crossings,count,108,63.0,0.0,37.0
+24021750801,step_free,all edges,length,2667,0.0,100.0,0.0
+24021750801,grade_avg_pct,all edges,length,2667,95.5,4.5,0.0
+24021750801,grade_max_pct,all edges,length,2667,95.5,4.5,0.0
+24021750801,surface_class,pedestrian ways,length,1604,4.7,0.0,95.3
+24021750801,sidewalk_presence,street centerlines,length,960,28.9,0.0,71.1
+24021750801,sidewalk_condition,sidewalks,length,752,49.9,29.7,20.4
+24021750801,sidewalk_width_m,sidewalks,length,752,44.0,31.1,24.9
+24021750801,street_lanes,street centerlines,length,960,9.8,0.0,90.2
+24021750801,street_speed_mph,street centerlines,length,960,11.7,0.0,88.3
+24021750802,crossing_control,crossings,count,152,61.8,30.9,7.2
+24021750802,signal_lpi,signalized crossings,count,3,0.0,0.0,100.0
+24021750802,signal_aps,signalized crossings,count,3,0.0,0.0,100.0
+24021750802,signal_hawk,signalized crossings,count,3,0.0,0.0,100.0
+24021750802,signal_all_ped_phase,signalized crossings,count,3,0.0,0.0,100.0
+24021750802,crossed_lanes,crossings,count,152,38.8,0.0,61.2
+24021750802,crossed_width_m,crossings,count,152,0.0,0.0,100.0
+24021750802,crossed_speed_mph,crossings,count,152,12.5,0.0,87.5
+24021750802,crossed_aadt,crossings,count,152,0.0,0.0,100.0
+24021750802,kerb_a,crossings,count,152,47.4,0.0,52.6
+24021750802,kerb_b,crossings,count,152,50.7,0.0,49.3
+24021750802,ramp_check_a,crossings,count,152,47.4,0.0,52.6
+24021750802,ramp_check_b,crossings,count,152,50.0,0.0,50.0
+24021750802,step_free,all edges,length,2360,0.0,100.0,0.0
+24021750802,grade_avg_pct,all edges,length,2360,95.7,4.2,0.0
+24021750802,grade_max_pct,all edges,length,2360,95.7,4.2,0.0
+24021750802,surface_class,pedestrian ways,length,1045,36.0,0.0,64.0
+24021750802,sidewalk_presence,street centerlines,length,1304,21.7,0.0,78.3
+24021750802,sidewalk_condition,sidewalks,length,805,31.0,19.0,50.0
+24021750802,sidewalk_width_m,sidewalks,length,805,37.3,25.5,37.3
+24021750802,street_lanes,street centerlines,length,1304,19.2,0.0,80.8
+24021750802,street_speed_mph,street centerlines,length,1304,7.3,0.0,92.7
+24021750804,crossing_control,crossings,count,73,87.7,11.0,1.4
+24021750804,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021750804,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021750804,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021750804,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021750804,crossed_lanes,crossings,count,73,5.5,0.0,94.5
+24021750804,crossed_width_m,crossings,count,73,0.0,0.0,100.0
+24021750804,crossed_speed_mph,crossings,count,73,12.3,0.0,87.7
+24021750804,crossed_aadt,crossings,count,73,0.0,0.0,100.0
+24021750804,kerb_a,crossings,count,73,57.5,0.0,42.5
+24021750804,kerb_b,crossings,count,73,57.5,0.0,42.5
+24021750804,ramp_check_a,crossings,count,73,54.8,0.0,45.2
+24021750804,ramp_check_b,crossings,count,73,54.8,0.0,45.2
+24021750804,step_free,all edges,length,673,0.0,100.0,0.0
+24021750804,grade_avg_pct,all edges,length,673,97.4,2.6,0.0
+24021750804,grade_max_pct,all edges,length,673,97.4,2.6,0.0
+24021750804,surface_class,pedestrian ways,length,356,9.1,0.0,90.9
+24021750804,sidewalk_presence,street centerlines,length,314,40.2,0.0,59.8
+24021750804,sidewalk_condition,sidewalks,length,266,24.1,36.3,39.5
+24021750804,sidewalk_width_m,sidewalks,length,266,19.8,32.5,47.7
+24021750804,street_lanes,street centerlines,length,314,4.7,0.0,95.3
+24021750804,street_speed_mph,street centerlines,length,314,13.4,0.0,86.6
+24021750805,crossing_control,crossings,count,165,35.2,23.6,41.2
+24021750805,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021750805,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021750805,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021750805,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021750805,crossed_lanes,crossings,count,165,10.3,0.0,89.7
+24021750805,crossed_width_m,crossings,count,165,0.0,0.0,100.0
+24021750805,crossed_speed_mph,crossings,count,165,26.1,0.0,73.9
+24021750805,crossed_aadt,crossings,count,165,0.0,0.0,100.0
+24021750805,kerb_a,crossings,count,165,73.9,0.0,26.1
+24021750805,kerb_b,crossings,count,165,66.1,0.0,33.9
+24021750805,ramp_check_a,crossings,count,165,73.9,0.0,26.1
+24021750805,ramp_check_b,crossings,count,165,66.1,0.0,33.9
+24021750805,step_free,all edges,length,1294,0.0,100.0,0.0
+24021750805,grade_avg_pct,all edges,length,1294,95.2,4.8,0.0
+24021750805,grade_max_pct,all edges,length,1294,95.2,4.8,0.0
+24021750805,surface_class,pedestrian ways,length,684,62.3,0.0,37.7
+24021750805,sidewalk_presence,street centerlines,length,605,29.2,0.0,70.8
+24021750805,sidewalk_condition,sidewalks,length,465,52.2,16.4,31.3
+24021750805,sidewalk_width_m,sidewalks,length,465,49.5,11.4,39.0
+24021750805,street_lanes,street centerlines,length,605,9.7,0.0,90.3
+24021750805,street_speed_mph,street centerlines,length,605,12.7,0.0,87.3
+24021751002,crossing_control,crossings,count,1,0.0,0.0,100.0
+24021751002,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751002,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751002,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751002,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751002,crossed_lanes,crossings,count,1,0.0,0.0,100.0
+24021751002,crossed_width_m,crossings,count,1,0.0,0.0,100.0
+24021751002,crossed_speed_mph,crossings,count,1,0.0,0.0,100.0
+24021751002,crossed_aadt,crossings,count,1,0.0,0.0,100.0
+24021751002,kerb_a,crossings,count,1,0.0,0.0,100.0
+24021751002,kerb_b,crossings,count,1,0.0,0.0,100.0
+24021751002,ramp_check_a,crossings,count,1,0.0,0.0,100.0
+24021751002,ramp_check_b,crossings,count,1,0.0,0.0,100.0
+24021751002,step_free,all edges,length,27,0.0,100.0,0.0
+24021751002,grade_avg_pct,all edges,length,27,99.9,0.1,0.0
+24021751002,grade_max_pct,all edges,length,27,99.9,0.1,0.0
+24021751002,surface_class,pedestrian ways,length,17,0.0,0.0,100.0
+24021751002,sidewalk_presence,street centerlines,length,9,0.0,0.0,100.0
+24021751002,sidewalk_condition,sidewalks,length,10,0.0,0.0,100.0
+24021751002,sidewalk_width_m,sidewalks,length,10,0.0,0.0,100.0
+24021751002,street_lanes,street centerlines,length,9,50.1,0.0,49.9
+24021751002,street_speed_mph,street centerlines,length,9,0.0,0.0,100.0
+24021751003,crossing_control,crossings,count,15,40.0,40.0,20.0
+24021751003,signal_lpi,signalized crossings,count,1,0.0,0.0,100.0
+24021751003,signal_aps,signalized crossings,count,1,0.0,0.0,100.0
+24021751003,signal_hawk,signalized crossings,count,1,0.0,0.0,100.0
+24021751003,signal_all_ped_phase,signalized crossings,count,1,0.0,0.0,100.0
+24021751003,crossed_lanes,crossings,count,15,40.0,0.0,60.0
+24021751003,crossed_width_m,crossings,count,15,0.0,0.0,100.0
+24021751003,crossed_speed_mph,crossings,count,15,20.0,0.0,80.0
+24021751003,crossed_aadt,crossings,count,15,0.0,0.0,100.0
+24021751003,kerb_a,crossings,count,15,26.7,0.0,73.3
+24021751003,kerb_b,crossings,count,15,13.3,0.0,86.7
+24021751003,ramp_check_a,crossings,count,15,26.7,0.0,73.3
+24021751003,ramp_check_b,crossings,count,15,13.3,0.0,86.7
+24021751003,step_free,all edges,length,887,0.0,100.0,0.0
+24021751003,grade_avg_pct,all edges,length,887,93.8,6.2,0.0
+24021751003,grade_max_pct,all edges,length,887,93.8,6.2,0.0
+24021751003,surface_class,pedestrian ways,length,253,6.4,0.0,93.6
+24021751003,sidewalk_presence,street centerlines,length,630,14.2,0.0,85.8
+24021751003,sidewalk_condition,sidewalks,length,227,24.5,19.2,56.4
+24021751003,sidewalk_width_m,sidewalks,length,227,0.2,18.6,81.2
+24021751003,street_lanes,street centerlines,length,630,6.1,0.0,93.9
+24021751003,street_speed_mph,street centerlines,length,630,11.5,0.0,88.5
+24021751004,crossing_control,crossings,count,5,40.0,0.0,60.0
+24021751004,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751004,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751004,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751004,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751004,crossed_lanes,crossings,count,5,0.0,0.0,100.0
+24021751004,crossed_width_m,crossings,count,5,0.0,0.0,100.0
+24021751004,crossed_speed_mph,crossings,count,5,0.0,0.0,100.0
+24021751004,crossed_aadt,crossings,count,5,0.0,0.0,100.0
+24021751004,kerb_a,crossings,count,5,0.0,0.0,100.0
+24021751004,kerb_b,crossings,count,5,0.0,0.0,100.0
+24021751004,ramp_check_a,crossings,count,5,0.0,0.0,100.0
+24021751004,ramp_check_b,crossings,count,5,0.0,0.0,100.0
+24021751004,step_free,all edges,length,130,0.0,100.0,0.0
+24021751004,grade_avg_pct,all edges,length,130,96.5,3.5,0.1
+24021751004,grade_max_pct,all edges,length,130,96.5,3.5,0.1
+24021751004,surface_class,pedestrian ways,length,30,0.0,0.0,100.0
+24021751004,sidewalk_presence,street centerlines,length,98,14.5,0.0,85.5
+24021751004,sidewalk_condition,sidewalks,length,21,0.0,35.8,64.2
+24021751004,sidewalk_width_m,sidewalks,length,21,0.0,0.0,100.0
+24021751004,street_lanes,street centerlines,length,98,5.2,0.0,94.8
+24021751004,street_speed_mph,street centerlines,length,98,1.3,0.0,98.7
+24021751201,crossing_control,crossings,count,86,52.3,14.0,33.7
+24021751201,signal_lpi,signalized crossings,count,2,0.0,0.0,100.0
+24021751201,signal_aps,signalized crossings,count,2,0.0,0.0,100.0
+24021751201,signal_hawk,signalized crossings,count,2,0.0,0.0,100.0
+24021751201,signal_all_ped_phase,signalized crossings,count,2,0.0,0.0,100.0
+24021751201,crossed_lanes,crossings,count,86,16.3,0.0,83.7
+24021751201,crossed_width_m,crossings,count,86,0.0,0.0,100.0
+24021751201,crossed_speed_mph,crossings,count,86,39.5,0.0,60.5
+24021751201,crossed_aadt,crossings,count,86,0.0,0.0,100.0
+24021751201,kerb_a,crossings,count,86,44.2,0.0,55.8
+24021751201,kerb_b,crossings,count,86,43.0,0.0,57.0
+24021751201,ramp_check_a,crossings,count,86,44.2,0.0,55.8
+24021751201,ramp_check_b,crossings,count,86,43.0,0.0,57.0
+24021751201,step_free,all edges,length,1812,0.0,100.0,0.0
+24021751201,grade_avg_pct,all edges,length,1812,98.0,2.0,0.0
+24021751201,grade_max_pct,all edges,length,1812,98.0,2.0,0.0
+24021751201,surface_class,pedestrian ways,length,538,15.1,0.0,84.9
+24021751201,sidewalk_presence,street centerlines,length,1266,9.9,0.0,90.1
+24021751201,sidewalk_condition,sidewalks,length,182,45.9,9.9,44.2
+24021751201,sidewalk_width_m,sidewalks,length,182,47.6,16.0,36.4
+24021751201,street_lanes,street centerlines,length,1266,10.7,0.0,89.3
+24021751201,street_speed_mph,street centerlines,length,1266,7.2,0.0,92.8
+24021751202,crossing_control,crossings,count,62,93.5,3.2,3.2
+24021751202,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751202,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751202,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751202,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751202,crossed_lanes,crossings,count,62,1.6,0.0,98.4
+24021751202,crossed_width_m,crossings,count,62,0.0,0.0,100.0
+24021751202,crossed_speed_mph,crossings,count,62,4.8,0.0,95.2
+24021751202,crossed_aadt,crossings,count,62,0.0,0.0,100.0
+24021751202,kerb_a,crossings,count,62,58.1,0.0,41.9
+24021751202,kerb_b,crossings,count,62,29.0,0.0,71.0
+24021751202,ramp_check_a,crossings,count,62,58.1,0.0,41.9
+24021751202,ramp_check_b,crossings,count,62,29.0,0.0,71.0
+24021751202,step_free,all edges,length,813,0.0,100.0,0.0
+24021751202,grade_avg_pct,all edges,length,813,98.4,1.5,0.1
+24021751202,grade_max_pct,all edges,length,813,98.4,1.5,0.1
+24021751202,surface_class,pedestrian ways,length,227,6.2,0.0,93.8
+24021751202,sidewalk_presence,street centerlines,length,585,49.7,0.0,50.3
+24021751202,sidewalk_condition,sidewalks,length,281,27.6,48.3,24.1
+24021751202,sidewalk_width_m,sidewalks,length,281,5.5,30.7,63.7
+24021751202,street_lanes,street centerlines,length,585,9.0,0.0,91.0
+24021751202,street_speed_mph,street centerlines,length,585,8.8,0.0,91.2
+24021751203,crossing_control,crossings,count,5,60.0,20.0,20.0
+24021751203,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751203,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751203,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751203,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751203,crossed_lanes,crossings,count,5,60.0,0.0,40.0
+24021751203,crossed_width_m,crossings,count,5,0.0,0.0,100.0
+24021751203,crossed_speed_mph,crossings,count,5,20.0,0.0,80.0
+24021751203,crossed_aadt,crossings,count,5,0.0,0.0,100.0
+24021751203,kerb_a,crossings,count,5,80.0,0.0,20.0
+24021751203,kerb_b,crossings,count,5,80.0,0.0,20.0
+24021751203,ramp_check_a,crossings,count,5,80.0,0.0,20.0
+24021751203,ramp_check_b,crossings,count,5,80.0,0.0,20.0
+24021751203,step_free,all edges,length,347,0.0,100.0,0.0
+24021751203,grade_avg_pct,all edges,length,347,92.7,7.3,0.0
+24021751203,grade_max_pct,all edges,length,347,92.7,7.3,0.0
+24021751203,surface_class,pedestrian ways,length,15,0.0,0.0,100.0
+24021751203,sidewalk_presence,street centerlines,length,331,8.7,0.0,91.3
+24021751203,sidewalk_condition,sidewalks,length,24,0.0,43.2,56.8
+24021751203,sidewalk_width_m,sidewalks,length,24,0.8,64.7,34.6
+24021751203,street_lanes,street centerlines,length,331,12.8,0.0,87.2
+24021751203,street_speed_mph,street centerlines,length,331,9.7,0.0,90.3
+24021751301,crossing_control,crossings,count,47,2.1,4.3,93.6
+24021751301,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751301,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751301,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751301,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751301,crossed_lanes,crossings,count,47,4.3,0.0,95.7
+24021751301,crossed_width_m,crossings,count,47,0.0,0.0,100.0
+24021751301,crossed_speed_mph,crossings,count,47,2.1,0.0,97.9
+24021751301,crossed_aadt,crossings,count,47,0.0,0.0,100.0
+24021751301,kerb_a,crossings,count,47,10.6,0.0,89.4
+24021751301,kerb_b,crossings,count,47,8.5,0.0,91.5
+24021751301,ramp_check_a,crossings,count,47,10.6,0.0,89.4
+24021751301,ramp_check_b,crossings,count,47,8.5,0.0,91.5
+24021751301,step_free,all edges,length,1012,0.0,100.0,0.0
+24021751301,grade_avg_pct,all edges,length,1012,94.7,5.3,0.0
+24021751301,grade_max_pct,all edges,length,1012,94.7,5.3,0.0
+24021751301,surface_class,pedestrian ways,length,359,6.6,0.0,93.4
+24021751301,sidewalk_presence,street centerlines,length,652,9.9,0.0,90.1
+24021751301,sidewalk_condition,sidewalks,length,176,26.0,23.3,50.6
+24021751301,sidewalk_width_m,sidewalks,length,176,24.1,11.4,64.5
+24021751301,street_lanes,street centerlines,length,652,17.4,0.0,82.6
+24021751301,street_speed_mph,street centerlines,length,652,17.5,0.0,82.5
+24021751302,crossing_control,crossings,count,0,0.0,0.0,0.0
+24021751302,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751302,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751302,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751302,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751302,crossed_lanes,crossings,count,0,0.0,0.0,0.0
+24021751302,crossed_width_m,crossings,count,0,0.0,0.0,0.0
+24021751302,crossed_speed_mph,crossings,count,0,0.0,0.0,0.0
+24021751302,crossed_aadt,crossings,count,0,0.0,0.0,0.0
+24021751302,kerb_a,crossings,count,0,0.0,0.0,0.0
+24021751302,kerb_b,crossings,count,0,0.0,0.0,0.0
+24021751302,ramp_check_a,crossings,count,0,0.0,0.0,0.0
+24021751302,ramp_check_b,crossings,count,0,0.0,0.0,0.0
+24021751302,step_free,all edges,length,9,0.0,100.0,0.0
+24021751302,grade_avg_pct,all edges,length,9,100.0,0.0,0.0
+24021751302,grade_max_pct,all edges,length,9,100.0,0.0,0.0
+24021751302,surface_class,pedestrian ways,length,0,0.0,0.0,0.0
+24021751302,sidewalk_presence,street centerlines,length,9,0.0,0.0,100.0
+24021751302,sidewalk_condition,sidewalks,length,0,0.0,0.0,0.0
+24021751302,sidewalk_width_m,sidewalks,length,0,0.0,0.0,0.0
+24021751302,street_lanes,street centerlines,length,9,0.0,0.0,100.0
+24021751302,street_speed_mph,street centerlines,length,9,0.0,0.0,100.0
+24021751701,crossing_control,crossings,count,36,83.3,16.7,0.0
+24021751701,signal_lpi,signalized crossings,count,5,0.0,0.0,100.0
+24021751701,signal_aps,signalized crossings,count,5,0.0,0.0,100.0
+24021751701,signal_hawk,signalized crossings,count,5,0.0,0.0,100.0
+24021751701,signal_all_ped_phase,signalized crossings,count,5,0.0,0.0,100.0
+24021751701,crossed_lanes,crossings,count,36,38.9,0.0,61.1
+24021751701,crossed_width_m,crossings,count,36,0.0,0.0,100.0
+24021751701,crossed_speed_mph,crossings,count,36,5.6,0.0,94.4
+24021751701,crossed_aadt,crossings,count,36,0.0,0.0,100.0
+24021751701,kerb_a,crossings,count,36,97.2,0.0,2.8
+24021751701,kerb_b,crossings,count,36,94.4,0.0,5.6
+24021751701,ramp_check_a,crossings,count,36,97.2,0.0,2.8
+24021751701,ramp_check_b,crossings,count,36,94.4,0.0,5.6
+24021751701,step_free,all edges,length,790,0.0,100.0,0.0
+24021751701,grade_avg_pct,all edges,length,790,92.8,7.1,0.0
+24021751701,grade_max_pct,all edges,length,790,92.8,7.1,0.0
+24021751701,surface_class,pedestrian ways,length,279,5.6,0.0,94.4
+24021751701,sidewalk_presence,street centerlines,length,511,0.8,0.0,99.2
+24021751701,sidewalk_condition,sidewalks,length,87,3.5,3.5,92.9
+24021751701,sidewalk_width_m,sidewalks,length,87,3.5,4.6,91.8
+24021751701,street_lanes,street centerlines,length,511,10.4,0.0,89.6
+24021751701,street_speed_mph,street centerlines,length,511,5.0,0.0,95.0
+24021751902,crossing_control,crossings,count,0,0.0,0.0,0.0
+24021751902,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751902,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751902,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751902,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751902,crossed_lanes,crossings,count,0,0.0,0.0,0.0
+24021751902,crossed_width_m,crossings,count,0,0.0,0.0,0.0
+24021751902,crossed_speed_mph,crossings,count,0,0.0,0.0,0.0
+24021751902,crossed_aadt,crossings,count,0,0.0,0.0,0.0
+24021751902,kerb_a,crossings,count,0,0.0,0.0,0.0
+24021751902,kerb_b,crossings,count,0,0.0,0.0,0.0
+24021751902,ramp_check_a,crossings,count,0,0.0,0.0,0.0
+24021751902,ramp_check_b,crossings,count,0,0.0,0.0,0.0
+24021751902,step_free,all edges,length,26,0.0,100.0,0.0
+24021751902,grade_avg_pct,all edges,length,26,93.2,6.8,0.0
+24021751902,grade_max_pct,all edges,length,26,93.2,6.8,0.0
+24021751902,surface_class,pedestrian ways,length,6,78.1,0.0,21.9
+24021751902,sidewalk_presence,street centerlines,length,20,0.0,0.0,100.0
+24021751902,sidewalk_condition,sidewalks,length,4,0.0,0.0,100.0
+24021751902,sidewalk_width_m,sidewalks,length,4,0.0,0.0,100.0
+24021751902,street_lanes,street centerlines,length,20,55.5,0.0,44.5
+24021751902,street_speed_mph,street centerlines,length,20,0.0,0.0,100.0
+24021751904,crossing_control,crossings,count,0,0.0,0.0,0.0
+24021751904,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021751904,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021751904,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021751904,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021751904,crossed_lanes,crossings,count,0,0.0,0.0,0.0
+24021751904,crossed_width_m,crossings,count,0,0.0,0.0,0.0
+24021751904,crossed_speed_mph,crossings,count,0,0.0,0.0,0.0
+24021751904,crossed_aadt,crossings,count,0,0.0,0.0,0.0
+24021751904,kerb_a,crossings,count,0,0.0,0.0,0.0
+24021751904,kerb_b,crossings,count,0,0.0,0.0,0.0
+24021751904,ramp_check_a,crossings,count,0,0.0,0.0,0.0
+24021751904,ramp_check_b,crossings,count,0,0.0,0.0,0.0
+24021751904,step_free,all edges,length,1,0.0,100.0,0.0
+24021751904,grade_avg_pct,all edges,length,1,0.0,100.0,0.0
+24021751904,grade_max_pct,all edges,length,1,0.0,100.0,0.0
+24021751904,surface_class,pedestrian ways,length,0,0.0,0.0,0.0
+24021751904,sidewalk_presence,street centerlines,length,1,0.0,0.0,100.0
+24021751904,sidewalk_condition,sidewalks,length,0,0.0,0.0,0.0
+24021751904,sidewalk_width_m,sidewalks,length,0,0.0,0.0,0.0
+24021751904,street_lanes,street centerlines,length,1,100.0,0.0,0.0
+24021751904,street_speed_mph,street centerlines,length,1,100.0,0.0,0.0
+24021752602,crossing_control,crossings,count,0,0.0,0.0,0.0
+24021752602,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021752602,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021752602,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021752602,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021752602,crossed_lanes,crossings,count,0,0.0,0.0,0.0
+24021752602,crossed_width_m,crossings,count,0,0.0,0.0,0.0
+24021752602,crossed_speed_mph,crossings,count,0,0.0,0.0,0.0
+24021752602,crossed_aadt,crossings,count,0,0.0,0.0,0.0
+24021752602,kerb_a,crossings,count,0,0.0,0.0,0.0
+24021752602,kerb_b,crossings,count,0,0.0,0.0,0.0
+24021752602,ramp_check_a,crossings,count,0,0.0,0.0,0.0
+24021752602,ramp_check_b,crossings,count,0,0.0,0.0,0.0
+24021752602,step_free,all edges,length,7,0.0,100.0,0.0
+24021752602,grade_avg_pct,all edges,length,7,100.0,0.0,0.0
+24021752602,grade_max_pct,all edges,length,7,100.0,0.0,0.0
+24021752602,surface_class,pedestrian ways,length,0,0.0,0.0,0.0
+24021752602,sidewalk_presence,street centerlines,length,7,0.0,0.0,100.0
+24021752602,sidewalk_condition,sidewalks,length,0,0.0,0.0,0.0
+24021752602,sidewalk_width_m,sidewalks,length,0,0.0,0.0,0.0
+24021752602,street_lanes,street centerlines,length,7,0.0,0.0,100.0
+24021752602,street_speed_mph,street centerlines,length,7,0.0,0.0,100.0
+24021765100,crossing_control,crossings,count,72,73.6,8.3,18.1
+24021765100,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021765100,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021765100,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021765100,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021765100,crossed_lanes,crossings,count,72,23.6,0.0,76.4
+24021765100,crossed_width_m,crossings,count,72,0.0,0.0,100.0
+24021765100,crossed_speed_mph,crossings,count,72,16.7,0.0,83.3
+24021765100,crossed_aadt,crossings,count,72,0.0,0.0,100.0
+24021765100,kerb_a,crossings,count,72,94.4,0.0,5.6
+24021765100,kerb_b,crossings,count,72,95.8,0.0,4.2
+24021765100,ramp_check_a,crossings,count,72,88.9,0.0,11.1
+24021765100,ramp_check_b,crossings,count,72,84.7,0.0,15.3
+24021765100,step_free,all edges,length,1505,0.0,100.0,0.0
+24021765100,grade_avg_pct,all edges,length,1505,96.5,3.5,0.0
+24021765100,grade_max_pct,all edges,length,1505,96.5,3.5,0.0
+24021765100,surface_class,pedestrian ways,length,493,10.9,0.0,89.1
+24021765100,sidewalk_presence,street centerlines,length,1005,30.9,0.0,69.1
+24021765100,sidewalk_condition,sidewalks,length,443,43.6,32.6,23.8
+24021765100,sidewalk_width_m,sidewalks,length,443,42.9,36.3,20.8
+24021765100,street_lanes,street centerlines,length,1005,9.1,0.0,90.9
+24021765100,street_speed_mph,street centerlines,length,1005,8.5,0.0,91.5
+24021772200,crossing_control,crossings,count,111,73.9,18.0,8.1
+24021772200,signal_lpi,signalized crossings,count,2,0.0,0.0,100.0
+24021772200,signal_aps,signalized crossings,count,2,0.0,0.0,100.0
+24021772200,signal_hawk,signalized crossings,count,2,0.0,0.0,100.0
+24021772200,signal_all_ped_phase,signalized crossings,count,2,0.0,0.0,100.0
+24021772200,crossed_lanes,crossings,count,111,27.9,0.0,72.1
+24021772200,crossed_width_m,crossings,count,111,0.0,0.0,100.0
+24021772200,crossed_speed_mph,crossings,count,111,27.0,0.0,73.0
+24021772200,crossed_aadt,crossings,count,111,0.0,0.0,100.0
+24021772200,kerb_a,crossings,count,111,72.1,0.0,27.9
+24021772200,kerb_b,crossings,count,111,69.4,0.0,30.6
+24021772200,ramp_check_a,crossings,count,111,70.3,0.0,29.7
+24021772200,ramp_check_b,crossings,count,111,69.4,0.0,30.6
+24021772200,step_free,all edges,length,2263,0.1,99.9,0.0
+24021772200,grade_avg_pct,all edges,length,2263,93.5,6.2,0.3
+24021772200,grade_max_pct,all edges,length,2263,93.5,6.2,0.3
+24021772200,surface_class,pedestrian ways,length,872,18.6,0.0,81.4
+24021772200,sidewalk_presence,street centerlines,length,1379,14.1,0.0,85.9
+24021772200,sidewalk_condition,sidewalks,length,500,33.3,21.7,44.9
+24021772200,sidewalk_width_m,sidewalks,length,500,31.0,22.0,47.0
+24021772200,street_lanes,street centerlines,length,1379,10.2,0.0,89.8
+24021772200,street_speed_mph,street centerlines,length,1379,20.4,0.0,79.6
+24021775600,crossing_control,crossings,count,1,0.0,0.0,100.0
+24021775600,signal_lpi,signalized crossings,count,0,0.0,0.0,0.0
+24021775600,signal_aps,signalized crossings,count,0,0.0,0.0,0.0
+24021775600,signal_hawk,signalized crossings,count,0,0.0,0.0,0.0
+24021775600,signal_all_ped_phase,signalized crossings,count,0,0.0,0.0,0.0
+24021775600,crossed_lanes,crossings,count,1,0.0,0.0,100.0
+24021775600,crossed_width_m,crossings,count,1,0.0,0.0,100.0
+24021775600,crossed_speed_mph,crossings,count,1,0.0,0.0,100.0
+24021775600,crossed_aadt,crossings,count,1,0.0,0.0,100.0
+24021775600,kerb_a,crossings,count,1,0.0,0.0,100.0
+24021775600,kerb_b,crossings,count,1,0.0,0.0,100.0
+24021775600,ramp_check_a,crossings,count,1,0.0,0.0,100.0
+24021775600,ramp_check_b,crossings,count,1,0.0,0.0,100.0
+24021775600,step_free,all edges,length,231,0.0,100.0,0.0
+24021775600,grade_avg_pct,all edges,length,231,97.1,2.9,0.0
+24021775600,grade_max_pct,all edges,length,231,97.1,2.9,0.0
+24021775600,surface_class,pedestrian ways,length,83,0.0,0.0,100.0
+24021775600,sidewalk_presence,street centerlines,length,148,0.0,0.0,100.0
+24021775600,sidewalk_condition,sidewalks,length,4,0.0,0.0,100.0
+24021775600,sidewalk_width_m,sidewalks,length,4,0.0,0.0,100.0
+24021775600,street_lanes,street centerlines,length,148,20.2,0.0,79.8
+24021775600,street_speed_mph,street centerlines,length,148,1.4,0.0,98.6

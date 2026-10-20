@@ -1,0 +1,264 @@
+"""HTTP API for the web app (Phase 1): one endpoint that plans and explains a trip.
+
+Deployment stays private. The server binds to this machine only unless a password is set
+(``PF_APP_PASSWORD``); with a password every request needs it (HTTP Basic, any user name).
+Nothing about a plan or search request is stored: the caller's location arrives only as
+trip endpoints and is gone when the response is sent. The one thing kept is what a tester
+chooses to send through the feedback form: their answers and comment, with the day, and no
+location, address or device details.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import secrets
+import threading
+from datetime import date
+from typing import Literal
+
+from fastapi import Depends, FastAPI, HTTPException, Query, Response, status
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field, model_validator
+
+from .basemap import Basemap
+from .config import DATA_DIR, REPO_ROOT
+from .places import PlaceIndex
+from .routing.cost import PENALTY_VERSION, Preferences
+from .analysis.barriers import _unlicensed_sources as unlicensed_sources
+from .routing.profiles import PROFILES
+from .routing.profiles import as_json as profiles_json
+from .routing.profiles import resolve as resolve_profile
+from .routing.service import TripPlanner
+from .sources import REGION, SOURCES
+from .wmata import ElevatorNotices
+
+PASSWORD_ENV = "PF_APP_PASSWORD"
+WEB_DIST = REPO_ROOT / "web" / "dist"
+MAX_BUDGET_MIN = 30.0
+FEEDBACK_FILE = DATA_DIR / "feedback" / "feedback.jsonl"
+# Tiles and glyphs only change when they are fetched again; a day spares a phone re-asking.
+BASEMAP_CACHE = "private, max-age=86400"
+# One map view at a time; a town has a few thousand barrier records in all.
+BARRIERS_MAX_FEATURES = 5000
+_feedback_lock = threading.Lock()
+_basic = HTTPBasic(auto_error=False)
+
+
+class LatLon(BaseModel):
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+
+
+class Priorities(BaseModel):
+    """The mix of the three accessibility dimensions (any positive scale)."""
+    cross: float = Field(1.0, ge=0)
+    slope: float = Field(1.0, ge=0)
+    sidewalk: float = Field(1.0, ge=0)
+
+    @model_validator(mode="after")
+    def _not_all_zero(self) -> "Priorities":
+        if self.cross + self.slope + self.sidewalk <= 0:
+            raise ValueError("at least one priority must be above zero")
+        return self
+
+
+class PlanRequest(BaseModel):
+    """A trip. ``profile`` fills the requirements and priorities; any of them sent explicitly
+    overrides the profile's."""
+    origin: LatLon
+    destination: LatLon
+    profile: Literal[tuple(PROFILES)] | None = None  # type: ignore[valid-type]
+    step_free: bool = False
+    max_grade_pct: float | None = Field(None, gt=0, le=30)
+    certainty: Literal["verified_only", "allow_likely", "allow_unknown"] = "allow_likely"
+    priorities: Priorities = Priorities()
+    budget_min: float = Field(5.0, ge=0, le=MAX_BUDGET_MIN)
+
+
+Answer = Literal["yes", "partly", "no"]
+
+
+class Feedback(BaseModel):
+    """What a tester tells us. Every question is optional; an empty form is refused."""
+    felt_minutes_clear: Answer | None = None  # did "felt minutes" make sense?
+    places_clear: Answer | None = None  # were the places where routes differ understandable?
+    better_than_route_list: Answer | None = None  # preferred over a plain list of routes?
+    walked: bool = False  # sent after walking a route with guidance, not only planning one
+    comment: str = Field("", max_length=2000)
+
+    @model_validator(mode="after")
+    def _not_empty(self) -> "Feedback":
+        if not (self.felt_minutes_clear or self.places_clear or self.better_than_route_list or self.comment.strip()):
+            raise ValueError("nothing to send")
+        return self
+
+
+def _require_password(credentials: HTTPBasicCredentials | None = Depends(_basic)) -> None:
+    expected = os.environ.get(PASSWORD_ENV)
+    if not expected:
+        return  # no password configured: the server is only reachable from this machine (see `pf serve`)
+    if credentials is None or not secrets.compare_digest(credentials.password.encode(), expected.encode()):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "password required", headers={"WWW-Authenticate": "Basic"})
+
+
+def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = None,
+               basemap: Basemap | None = None, feedback_file=None,
+               elevators: ElevatorNotices | None = None) -> FastAPI:
+    app = FastAPI(title="PathFinder", docs_url=None, redoc_url=None, dependencies=[Depends(_require_password)])
+    # a plan with thirty routes is about 2 MB of coordinates as JSON and a tenth of that compressed
+    app.add_middleware(GZipMiddleware, minimum_size=1024)
+    state: dict = {"planner": planner, "places": places, "barriers": None, "sidewalks": None}
+    if basemap is None and Basemap.available():
+        basemap = Basemap()
+    feedback_path = feedback_file or FEEDBACK_FILE
+    if elevators is None:
+        elevators = ElevatorNotices.from_environment()
+
+    app.state.dd = state
+
+    def get_planner() -> TripPlanner:
+        if state["planner"] is None:  # loaded on first use so the process starts fast
+            state["planner"] = TripPlanner()
+        return state["planner"]
+
+    @app.get("/api/region")
+    def region() -> dict:
+        """Where the page opens and what this region can say, so one page serves any region."""
+        return {"id": REGION.id, "name": REGION.name, "center": list(REGION.center), "bbox": list(REGION.bbox),
+                "profiles": profiles_json(), "transit_notices": elevators is not None,
+                "sources": {sid: s.title for sid, s in SOURCES.items()}}
+
+    @app.get("/api/health")
+    def health() -> dict:
+        # the page draws its backdrop from here when the tiles have been fetched
+        return {"status": "ok", "basemap": basemap is not None, "basemap_max_zoom": basemap.max_zoom if basemap else None,
+                "center": list(REGION.center)}
+
+    @app.get("/tiles/{z}/{x}/{y}.mvt")
+    def tile(z: int, x: int, y: int) -> Response:
+        data = basemap.tile(z, x, y) if basemap else None
+        if data is None:
+            return Response(status_code=204)
+        headers = {"Cache-Control": BASEMAP_CACHE}
+        if basemap.gzipped:
+            headers["Content-Encoding"] = "gzip"
+        return Response(data, media_type="application/x-protobuf", headers=headers)
+
+    @app.get("/fonts/{stack}/{name}")
+    def glyphs(stack: str, name: str) -> Response:
+        if basemap is None:
+            raise HTTPException(status.HTTP_404_NOT_FOUND)
+        try:
+            data = basemap.glyphs(stack, name)
+        except ValueError:
+            raise HTTPException(status.HTTP_404_NOT_FOUND) from None
+        return Response(data, media_type="application/x-protobuf", headers={"Cache-Control": BASEMAP_CACHE})
+
+    @app.post("/api/feedback", status_code=status.HTTP_201_CREATED)
+    def feedback(body: Feedback) -> dict:
+        """Keep a tester's answers. Only what they typed and ticked is written, with the day."""
+        row = {"day": date.today().isoformat(), "penalty_version": PENALTY_VERSION, **body.model_dump()}
+        with _feedback_lock:
+            feedback_path.parent.mkdir(parents=True, exist_ok=True)
+            with feedback_path.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        return {"status": "saved"}
+
+    @app.get("/api/barriers")
+    def barrier_map(bbox: str = Query(pattern=r"^-?[\d.]+,-?[\d.]+,-?[\d.]+,-?[\d.]+$"),
+                    limit: int = Query(BARRIERS_MAX_FEATURES, ge=1, le=BARRIERS_MAX_FEATURES)) -> dict:
+        """Recorded barriers and unrecorded places inside ``bbox`` (minlon,minlat,maxlon,maxlat),
+        each with its source and date, from the same graph the planner routes on."""
+        from .analysis.barriers import as_geojson, barriers
+
+        xmin, ymin, xmax, ymax = (float(v) for v in bbox.split(","))
+        if not (xmin < xmax and ymin < ymax):
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "bbox must be minlon,minlat,maxlon,maxlat")
+        if state["barriers"] is None:
+            import geopandas as gpd
+
+            edges = gpd.read_parquet(get_planner().graph_dir / "edges.parquet")
+            state["barriers"] = barriers(edges).to_crs("EPSG:4326")
+            from .analysis.barriers import estimated_sidewalks
+            from .graph.enrich import SURVEY_SIDEWALK_LINES
+
+            path = get_planner().graph_dir / SURVEY_SIDEWALK_LINES
+            lines = gpd.read_parquet(path) if path.exists() else None
+            state["sidewalks"] = (estimated_sidewalks(lines, edges).to_crs("EPSG:4326")
+                                  if lines is not None and len(lines) else None)
+        b = state["barriers"]
+        inside = b.cx[xmin:xmax, ymin:ymax]
+        sw = state["sidewalks"]
+        sw_inside = sw.cx[xmin:xmax, ymin:ymax] if sw is not None else None
+        # A capped answer keeps every barrier and spreads what is left over the unknown types
+        # in turn, so no kind of gap disappears from the map; the counts are always complete.
+        turn = inside.groupby("type").cumcount()
+        inside = inside.assign(_turn=turn.where(inside["kind"] == "unknown", -1)).sort_values("_turn", kind="stable")
+        out = as_geojson(inside.drop(columns="_turn").head(limit))
+        # estimated sidewalk lines travel beside the barriers, never in their place
+        sidewalks = as_geojson(sw_inside.head(limit)) if sw_inside is not None and len(sw_inside) else \
+            {"type": "FeatureCollection", "features": []}
+        return {**out, "truncated": len(inside) > limit, "counts": inside["type"].value_counts().to_dict(),
+                "sidewalks": {**sidewalks, "count": 0 if sw_inside is None else len(sw_inside),
+                              "truncated": sw_inside is not None and len(sw_inside) > limit},
+                "unlicensed_sources": unlicensed_sources()}
+
+    @app.get("/api/search")
+    def search(q: str = Query(min_length=2, max_length=120), lat: float | None = Query(None, ge=-90, le=90),
+               lon: float | None = Query(None, ge=-180, le=180)) -> dict:
+        """Find places and addresses by name. Answered from the local index; the query is
+        not logged or passed on."""
+        if state["places"] is None:
+            state["places"] = PlaceIndex()
+        near = (lon, lat) if lat is not None and lon is not None else None
+        return {"results": state["places"].search(q, near)}
+
+    @app.post("/api/plan")
+    def plan(body: PlanRequest) -> dict:
+        chosen = body.model_fields_set
+        overrides = {k: getattr(body, k) for k in ("step_free", "max_grade_pct", "certainty") if k in chosen}
+        p = body.priorities
+        mix = (p.cross, p.slope, p.sidewalk) if "priorities" in chosen else None
+        req, mix = resolve_profile(body.profile, overrides, mix)
+        pref = Preferences(w_cross=mix[0], w_slope=mix[1], w_sidewalk=mix[2], budget_s=body.budget_min * 60)
+        origin, destination = (body.origin.lon, body.origin.lat), (body.destination.lon, body.destination.lat)
+        out = get_planner().plan(origin, destination, req, pref)
+        if elevators is not None:
+            # Metro elevators out of service at a station the trip starts or ends at. A notice
+            # only: no route depends on them (see wmata.py).
+            out["transit_notices"] = elevators.for_trip(origin, destination)
+        return out
+
+    @app.middleware("http")
+    async def cache_built_assets(request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith("/assets/") and response.status_code == 200:
+            # file names carry a hash of their content, so a copy can be kept for good
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        return response
+
+    if WEB_DIST.exists():  # the built web app, when present (`npm run build` in web/)
+        app.mount("/", StaticFiles(directory=WEB_DIST, html=True), name="web")
+    return app
+
+
+def warm_up(app_state: dict) -> None:
+    """Load the network and the place index now, so the first person to ask does not wait for them."""
+    if app_state["planner"] is None:
+        app_state["planner"] = TripPlanner()
+    if app_state["places"] is None:
+        app_state["places"] = PlaceIndex()
+
+
+def serve(host: str = "127.0.0.1", port: int = 8000) -> None:
+    import uvicorn
+
+    if host not in ("127.0.0.1", "localhost", "::1") and not os.environ.get(PASSWORD_ENV):
+        raise SystemExit(f"Refusing to listen on {host} without a password: set {PASSWORD_ENV} first. "
+                         "Deployment stays private unless the owner authorizes public access.")
+    app = create_app()
+    threading.Thread(target=warm_up, args=(app.state.dd,), daemon=True).start()
+    uvicorn.run(app, host=host, port=port)

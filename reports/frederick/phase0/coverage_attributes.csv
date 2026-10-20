@@ -1,0 +1,23 @@
+attribute,scope,weighted_by,n,verified,inferred,unknown,top_sources,evidence_year_median,evidence_year_range
+crossing_control,crossings,count,1803,63.7,14.5,21.7,osm_frederick 81%; derived:osm_marked_no_signal_inventory 15%; derived:osm_marked_signalization_not_recorded 4%,2026.0,2026–2026
+signal_lpi,signalized crossings,count,34,0.0,0.0,100.0,,,
+signal_aps,signalized crossings,count,34,0.0,0.0,100.0,,,
+signal_hawk,signalized crossings,count,34,0.0,0.0,100.0,,,
+signal_all_ped_phase,signalized crossings,count,34,0.0,0.0,100.0,,,
+crossed_lanes,crossings,count,1803,22.3,0.0,77.7,osm_frederick 100%,2026.0,2026–2026
+crossed_width_m,crossings,count,1803,0.0,0.0,100.0,,,
+crossed_speed_mph,crossings,count,1803,15.8,0.0,84.2,osm_frederick 100%,2026.0,2026–2026
+crossed_aadt,crossings,count,1803,0.0,0.0,100.0,,,
+kerb_a,crossings,count,1803,67.6,0.0,32.4,frederick_ramps 98%; osm_frederick 2%,2025.0,2025–2026
+kerb_b,crossings,count,1803,65.2,0.0,34.8,frederick_ramps 98%; osm_frederick 2%,2025.0,2025–2026
+ramp_check_a,crossings,count,1803,65.9,0.0,34.1,frederick_ramps 100%,2025.0,2025–2025
+ramp_check_b,crossings,count,1803,63.5,0.0,36.5,frederick_ramps 100%,2025.0,2025–2025
+step_free,all edges,length,28693,0.0,100.0,0.0,derived:absent_from_osm_steps_outside_inventory 80%; derived:absent_from_osm_steps_offstreet 19%; derived:inferred_connector_no_stairs_polygon 1%,2026.0,2026–2026
+grade_avg_pct,all edges,length,28693,95.6,4.3,0.1,frederick_dtm 99%; derived:frederick_dtm_endpoints 1%,2021.0,2021–2021
+grade_max_pct,all edges,length,28693,95.6,4.3,0.1,frederick_dtm 99%; derived:frederick_dtm_endpoints 1%,2021.0,2021–2021
+surface_class,pedestrian ways,length,12685,17.3,0.0,82.7,osm_frederick 100%,2026.0,2026–2026
+sidewalk_presence,street centerlines,length,15779,23.4,0.0,76.6,frederick_sidewalks 80%; osm_frederick 20%,2025.0,2025–2026
+sidewalk_condition,sidewalks,length,7760,37.8,24.7,37.5,frederick_sidewalks 100%,2025.0,2025–2025
+sidewalk_width_m,sidewalks,length,7760,33.7,22.7,43.6,frederick_sidewalks 100%,2025.0,2025–2025
+street_lanes,street centerlines,length,15779,11.5,0.0,88.5,osm_frederick 100%,2026.0,2026–2026
+street_speed_mph,street centerlines,length,15779,10.2,0.0,89.8,osm_frederick 100%,2026.0,2026–2026

@@ -1,0 +1,243 @@
+{
+  "n_od_pairs": 300,
+  "profiles": {
+    "everyday_day": {
+      "n": 300,
+      "feasible_pct": 100.0,
+      "rec_differs_from_fastest_pct": 92.7,
+      "median_routes_in_set": 12.0,
+      "latency_p50_s": 0.04,
+      "latency_p95_s": 0.184,
+      "subgraph_edges_p50": 670.5,
+      "H1_sections_le3_pct_when_changed": 80.6,
+      "sections_distribution_when_changed": {
+        "1.0": 86,
+        "2.0": 100,
+        "3.0": 38,
+        "4.0": 23,
+        "5.0": 10,
+        "6.0": 6,
+        "7.0": 4,
+        "8.0": 6,
+        "9.0": 5
+      },
+      "rec_extra_min_p50_when_changed": 1.1,
+      "rec_extra_min_p90_when_changed": 3.82,
+      "rec_divergent_share_p50_when_changed": 0.466,
+      "rec_felt_gain_min_p50_when_changed": 7.32,
+      "worth_showing_pct_of_feasible": 89.3,
+      "worth_showing_pct_of_changed": 96.4,
+      "H1_sections_le3_pct_when_worth_showing": 79.9,
+      "H1_by_distance_band": {
+        "1500-2500": {
+          "n": 99,
+          "sections_le3_pct": 62.6,
+          "sections_p50": 3.0
+        },
+        "400-800": {
+          "n": 80,
+          "sections_le3_pct": 93.8,
+          "sections_p50": 2.0
+        },
+        "800-1500": {
+          "n": 99,
+          "sections_le3_pct": 87.9,
+          "sections_p50": 2.0
+        }
+      },
+      "circuity_p50": 1.444,
+      "circuity_p95": 3.853,
+      "circuity_gt_2_count": 55
+    },
+    "everyday_day_x2": {
+      "n": 300,
+      "feasible_pct": 100.0,
+      "rec_differs_from_fastest_pct": 95.0,
+      "median_routes_in_set": 13.5,
+      "latency_p50_s": 0.042,
+      "latency_p95_s": 0.225,
+      "subgraph_edges_p50": 670.5,
+      "H1_sections_le3_pct_when_changed": 79.6,
+      "sections_distribution_when_changed": {
+        "1.0": 93,
+        "2.0": 83,
+        "3.0": 51,
+        "4.0": 26,
+        "5.0": 11,
+        "6.0": 6,
+        "7.0": 5,
+        "8.0": 5,
+        "9.0": 5
+      },
+      "rec_extra_min_p50_when_changed": 1.52,
+      "rec_extra_min_p90_when_changed": 4.4,
+      "rec_divergent_share_p50_when_changed": 0.505,
+      "rec_felt_gain_min_p50_when_changed": 15.58,
+      "worth_showing_pct_of_feasible": 93.0,
+      "worth_showing_pct_of_changed": 97.9,
+      "H1_sections_le3_pct_when_worth_showing": 79.2,
+      "H1_by_distance_band": {
+        "1500-2500": {
+          "n": 99,
+          "sections_le3_pct": 62.6,
+          "sections_p50": 3.0
+        },
+        "400-800": {
+          "n": 86,
+          "sections_le3_pct": 94.2,
+          "sections_p50": 1.5
+        },
+        "800-1500": {
+          "n": 100,
+          "sections_le3_pct": 84.0,
+          "sections_p50": 2.0
+        }
+      }
+    },
+    "stepfree_likely": {
+      "n": 300,
+      "feasible_pct": 2.7,
+      "rec_differs_from_fastest_pct": 75.0,
+      "median_routes_in_set": 8.5,
+      "latency_p50_s": 0.027,
+      "latency_p95_s": 0.044,
+      "subgraph_edges_p50": 298.5,
+      "H1_sections_le3_pct_when_changed": 100.0,
+      "sections_distribution_when_changed": {
+        "1.0": 4,
+        "2.0": 2
+      },
+      "rec_extra_min_p50_when_changed": 0.02,
+      "rec_extra_min_p90_when_changed": 1.41,
+      "rec_divergent_share_p50_when_changed": 0.051,
+      "rec_felt_gain_min_p50_when_changed": 0.75,
+      "worth_showing_pct_of_feasible": 50.0,
+      "worth_showing_pct_of_changed": 66.7,
+      "H1_sections_le3_pct_when_worth_showing": 100.0,
+      "H1_by_distance_band": {
+        "1500-2500": {
+          "n": 1,
+          "sections_le3_pct": 100.0,
+          "sections_p50": 1.0
+        },
+        "400-800": {
+          "n": 2,
+          "sections_le3_pct": 100.0,
+          "sections_p50": 1.5
+        },
+        "800-1500": {
+          "n": 3,
+          "sections_le3_pct": 100.0,
+          "sections_p50": 1.0
+        }
+      },
+      "infeasible_relaxations": {
+        "allow_unknown": 199,
+        "none_single": 82,
+        "drop_max_grade": 5,
+        "drop_max_grade,allow_unknown": 3,
+        "drop_max_grade,allow_unknown,grade_12pct": 2,
+        "drop_max_grade,grade_12pct": 1
+      }
+    },
+    "stepfree_unknown_ok": {
+      "n": 300,
+      "feasible_pct": 70.7,
+      "rec_differs_from_fastest_pct": 94.3,
+      "median_routes_in_set": 10.0,
+      "latency_p50_s": 0.037,
+      "latency_p95_s": 0.142,
+      "subgraph_edges_p50": 587.5,
+      "H1_sections_le3_pct_when_changed": 79.5,
+      "sections_distribution_when_changed": {
+        "1.0": 66,
+        "2.0": 69,
+        "3.0": 24,
+        "4.0": 26,
+        "5.0": 11,
+        "6.0": 3,
+        "7.0": 1
+      },
+      "rec_extra_min_p50_when_changed": 0.99,
+      "rec_extra_min_p90_when_changed": 3.06,
+      "rec_divergent_share_p50_when_changed": 0.375,
+      "rec_felt_gain_min_p50_when_changed": 7.83,
+      "worth_showing_pct_of_feasible": 92.0,
+      "worth_showing_pct_of_changed": 97.5,
+      "H1_sections_le3_pct_when_worth_showing": 79.0,
+      "H1_by_distance_band": {
+        "1500-2500": {
+          "n": 69,
+          "sections_le3_pct": 65.2,
+          "sections_p50": 3.0
+        },
+        "400-800": {
+          "n": 62,
+          "sections_le3_pct": 93.5,
+          "sections_p50": 1.0
+        },
+        "800-1500": {
+          "n": 69,
+          "sections_le3_pct": 81.2,
+          "sections_p50": 2.0
+        }
+      }
+    },
+    "stepfree_verified": {
+      "n": 300,
+      "feasible_pct": 0.0,
+      "rec_differs_from_fastest_pct": NaN,
+      "median_routes_in_set": null,
+      "latency_p50_s": null,
+      "latency_p95_s": null,
+      "subgraph_edges_p50": null
+    },
+    "walker_cane": {
+      "n": 300,
+      "feasible_pct": 100.0,
+      "rec_differs_from_fastest_pct": 92.0,
+      "median_routes_in_set": 12.0,
+      "latency_p50_s": 0.039,
+      "latency_p95_s": 0.195,
+      "subgraph_edges_p50": 670.5,
+      "H1_sections_le3_pct_when_changed": 80.4,
+      "sections_distribution_when_changed": {
+        "1.0": 83,
+        "2.0": 101,
+        "3.0": 38,
+        "4.0": 25,
+        "5.0": 8,
+        "6.0": 6,
+        "7.0": 5,
+        "8.0": 4,
+        "9.0": 1,
+        "10.0": 5
+      },
+      "rec_extra_min_p50_when_changed": 1.1,
+      "rec_extra_min_p90_when_changed": 3.83,
+      "rec_divergent_share_p50_when_changed": 0.484,
+      "rec_felt_gain_min_p50_when_changed": 7.8,
+      "worth_showing_pct_of_feasible": 89.3,
+      "worth_showing_pct_of_changed": 97.1,
+      "H1_sections_le3_pct_when_worth_showing": 79.9,
+      "H1_by_distance_band": {
+        "1500-2500": {
+          "n": 99,
+          "sections_le3_pct": 62.6,
+          "sections_p50": 3.0
+        },
+        "400-800": {
+          "n": 80,
+          "sections_le3_pct": 93.8,
+          "sections_p50": 2.0
+        },
+        "800-1500": {
+          "n": 97,
+          "sections_le3_pct": 87.6,
+          "sections_p50": 2.0
+        }
+      }
+    }
+  },
+  "n_sampled": 300
+}
