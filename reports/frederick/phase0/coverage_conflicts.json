@@ -9,8 +9,8 @@
   "grade_readings_downgraded_suspect": 101,
   "grade_readings_downgraded_not_repeatable": 714,
   "edges_with_grade_separation_masking": 134,
-  "implicit_crossing_edge_ends": 7253,
-  "implicit_crossing_ends_with_unknown_kerb": 2491,
+  "implicit_crossing_edge_ends": 7267,
+  "implicit_crossing_ends_with_unknown_kerb": 2499,
   "edges_outside_region_inventory_coverage_on_street": 1675,
   "grade_readings_discarded_dtm_discontinuity": 2
 }

@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { barriersIn, planTrip, profiles as fetchProfiles } from "./api";
+import { Component, lazy, type ReactNode, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchProfiles } from "./api";
 import { BARRIER_COLORS, ESTIMATED_SIDEWALK_COLOR, LEGEND } from "./barrierStyle";
 import { Conditions, Fact, streetName } from "./Conditions";
 import { Feedback } from "./Feedback";
@@ -29,9 +29,54 @@ const START_HINT_M = 25; // which way to set off is said until the walker is thi
 const DEMO = new URLSearchParams(window.location.search).has("demo");
 const DEMO_SPEED_MPS = 12;
 
-// The map library is most of the page's weight. It is fetched after the page itself, so the
-// search boxes and the panel are on screen and usable while it arrives.
-const MapView = lazy(() => import("./MapView").then((m) => ({ default: m.MapView })));
+// The map library is most of the page's weight. It is fetched and started only once the search
+// card and the panel have been painted: starting the map's graphics first held the whole page
+// blank on a phone. (Preloading its code alongside the page was measured too: on a slow
+// connection it took bandwidth from the page itself and made everything later.)
+// A failed download leaves a message and a retry over the map, never a blank page.
+const loadMap = () => lazy(() => import("./MapView").then((m) => ({ default: m.MapView })));
+void basemapInfo(); // asked now, so the answer is waiting when the map starts
+
+class MapBoundary extends Component<{ children: ReactNode; onRetry: () => void }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (!this.state.failed) return this.props.children;
+    return (
+      <div className="map map-failed">
+        <p>The map could not load. Search and routes still work.</p>
+        <button className="btn ghost" onClick={() => { this.setState({ failed: false }); this.props.onRetry(); }}>Try again</button>
+      </div>
+    );
+  }
+}
+
+/** After the first paint: two animation frames, so the browser has drawn the page once. */
+function useAfterFirstPaint(): boolean {
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    let id = requestAnimationFrame(() => { id = requestAnimationFrame(() => setDone(true)); });
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return done;
+}
+
+/** Whether the phone says it is online, followed as it changes. */
+function useOnline(): boolean {
+  const [online, setOnline] = useState(() => navigator.onLine !== false);
+  useEffect(() => {
+    const on = () => setOnline(navigator.onLine !== false);
+    window.addEventListener("online", on); window.addEventListener("offline", on);
+    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", on); };
+  }, []);
+  return online;
+}
+
+// The panel on a phone: pulled down to its button, at its usual height, or up over most of the map.
+type Sheet = "low" | "mid" | "full";
+const SHEET_ORDER: Sheet[] = ["low", "mid", "full"];
+const DRAG_START_PX = 8; // a finger moving less than this is a tap, not a drag
+const DRAG_SNAP_PX = 48; // and dragged this far, the panel moves to the next height
 
 // What matters to someone rarely changes between walks, so it is remembered on this device
 // (never sent anywhere), along with the last few places picked.
@@ -52,9 +97,20 @@ interface Track {
 function load(): Saved {
   try { return JSON.parse(localStorage.getItem(STORE) ?? "{}") as Saved; } catch { return {}; }
 }
-function save(change: Saved) {
-  try { localStorage.setItem(STORE, JSON.stringify({ ...load(), ...change })); } catch { /* private browsing: nothing is remembered */ }
+// Writes are gathered and made at most every half second: a drag in the triangle changes the
+// settings on every movement of the finger, and each write re-read and re-wrote the whole store.
+let pending: Saved = {};
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+function flush() {
+  saveTimer = null;
+  try { localStorage.setItem(STORE, JSON.stringify({ ...load(), ...pending })); } catch { /* private browsing: nothing is remembered */ }
+  pending = {};
 }
+function save(change: Saved) {
+  pending = { ...pending, ...change };
+  saveTimer ??= setTimeout(flush, 500);
+}
+window.addEventListener("pagehide", () => { if (saveTimer) { clearTimeout(saveTimer); flush(); } });
 
 // The trip lives in the address after the "#", which browsers do not send to a server, so
 // a reload or a shared link restores it.
@@ -96,7 +152,10 @@ function useDarkTheme(): boolean {
 
 export function App() {
   const dark = useDarkTheme();
-  const [profileList, setProfileList] = useState<Profile[]>([]);
+  const online = useOnline();
+  const painted = useAfterFirstPaint();
+  const [MapView, setMapView] = useState(loadMap);
+  const [profileList, setProfileList] = useState<Profile[]>(cachedProfiles);
   useEffect(() => { void fetchProfiles().then(setProfileList); }, []);
   const [settings, setSettingsState] = useState<Settings>(() => ({ ...DEFAULTS, ...load().settings }));
   // The newest settings, readable at once: a drag can end (and ask for routes) before React
@@ -130,7 +189,22 @@ export function App() {
   const [recording, setRecording] = useState(() => Boolean(load().recordWalks));
   const [recorded, setRecorded] = useState(0); // samples in the walk recording, for the save button
   const [feedback, setFeedback] = useState<"closed" | "open" | "after-walk">("closed");
-  const [sheetLow, setSheetLow] = useState(false); // on a phone: the panel pulled down to show more of the map
+  const [sheet, setSheet] = useState<Sheet>("mid"); // on a phone: how much of the screen the panel takes
+  const [recenter, setRecenter] = useState(0); // bumped by the locate button
+  const [following, setFollowing] = useState(true); // while walking: the map is keeping up with the user
+  const sheetEl = useRef<HTMLElement>(null);
+  const drag = useRef<{ y: number; dy: number; moved: boolean; id: number } | null>(null);
+  const draggedJustNow = useRef(false); // the click that ends a drag is not a tap on a tab
+  const appEl = useRef<HTMLDivElement>(null);
+  const topEl = useRef<HTMLElement>(null);
+  // The panel pulled all the way up stops just under the search card, whose height varies.
+  useEffect(() => {
+    const top = topEl.current, app = appEl.current;
+    if (!top || !app || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => app.style.setProperty("--top-h", `${Math.round(top.getBoundingClientRect().bottom)}px`));
+    ro.observe(top);
+    return () => ro.disconnect();
+  }, [walking]); // the card is not shown while walking
   const track = useRef<Track | null>(null);
   const accuracy = useRef<number | null>(null);
   const request = useRef<AbortController | null>(null);
@@ -397,24 +471,62 @@ export function App() {
   }
 
   const ready = Boolean(origin && destination);
+
+  // The panel follows a finger dragged on its handle or its tabs, and settles at the nearest
+  // height in the direction it was moved. A tap on the handle still toggles it (keyboard too).
+  function dragStart(e: React.PointerEvent) {
+    if (e.pointerType === "mouse" || window.innerWidth >= 760) return;
+    drag.current = { y: e.clientY, dy: 0, moved: false, id: e.pointerId };
+  }
+  function dragMove(e: React.PointerEvent) {
+    const d = drag.current;
+    if (!d || d.id !== e.pointerId) return;
+    d.dy = e.clientY - d.y;
+    if (!d.moved && Math.abs(d.dy) < DRAG_START_PX) return;
+    if (!d.moved) { d.moved = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); }
+    const el = sheetEl.current;
+    if (el) { el.style.transition = "none"; el.style.transform = `translateY(${Math.max(d.dy, -40)}px)`; }
+  }
+  function dragEnd() {
+    const d = drag.current;
+    drag.current = null;
+    const el = sheetEl.current;
+    if (el) { el.style.transition = ""; el.style.transform = ""; }
+    if (!d || !d.moved) return;
+    draggedJustNow.current = true;
+    setTimeout(() => { draggedJustNow.current = false; }, 0);
+    const i = SHEET_ORDER.indexOf(sheet);
+    if (d.dy <= -DRAG_SNAP_PX) setSheet(SHEET_ORDER[Math.min(i + 1, 2)]);
+    else if (d.dy >= DRAG_SNAP_PX) setSheet(SHEET_ORDER[Math.max(i - (d.dy > 240 ? 2 : 1), 0)]);
+  }
+  const locate = user ? (
+    <button className={walking && !following ? "locate wide-label" : "locate"} onClick={() => setRecenter((n) => n + 1)}
+            aria-label={walking && !following ? "Follow my position again" : "Show my position"}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /><circle cx="12" cy="12" r="8" fill="none" /></svg>
+      {walking && !following && <span>Re-center</span>}
+    </button>
+  ) : null;
   const requirementCount = Number(settings.stepFree) + Number(settings.maxGrade != null) + Number(settings.certainty !== "allow_likely");
 
   return (
-    <div className={dark ? "app dark" : "app"}>
+    <div ref={appEl} className={dark ? "app dark" : "app"}>
+      <MapBoundary onRetry={() => setMapView(loadMap)}>
       <Suspense fallback={<div className="map" />}>
-      <MapView origin={walking ? null : (pinnedOrigin?.at ?? null)} destination={destination?.at ?? null} user={user}
+      {!painted ? <div className="map" /> : <MapView origin={walking ? null : (pinnedOrigin?.at ?? null)} destination={destination?.at ?? null} user={user}
                options={walking ? [] : options} extraRoute={plan?.relaxation?.route.geometry ?? null}
                selectedId={selected} places={chosenPlaces} openPlace={openPlace} colors={colors} dark={dark}
-               walked={parts?.behind ?? null} ahead={parts?.ahead ?? null} follow={walking} layout={sheetLow ? "low" : "open"}
+               walked={parts?.behind ?? null} ahead={parts?.ahead ?? null} follow={walking} layout={walking ? "walking" : sheet}
+               recenter={recenter} onFollowChange={setFollowing}
                mode={tab === "barriers" && !walking ? "barriers" : "routes"} barriers={barriers}
-               onBarrier={(b) => { setBarrier(b); setSheetLow(false); }} onView={setView}
-               onTap={tap} onPlace={(i) => { setOpenPlace(i); setTab("routes"); setSheetLow(false); }} />
+               onBarrier={(b) => { setBarrier(b); if (b) setSheet((s) => (s === "low" ? "mid" : s)); }} onView={setView}
+               onTap={tap} onPlace={(i) => { setOpenPlace(i); setTab("routes"); setSheet((s) => (s === "low" ? "mid" : s)); }} />}
       </Suspense>
+      </MapBoundary>
 
       {/* no box of its own, except on a phone held sideways: then it stacks the card and the panel down one side */}
       <div className="side">
       {!walking && (
-        <header className="top">
+        <header ref={topEl} className={destination ? "top compact" : "top"}>
           <div className="brand"><span className="mark" aria-hidden="true" />PathFinder<small>curbs, slopes and sidewalks, as recorded</small></div>
           <SearchBox kind="start" placeholder="Where from?" near={user}
                      label={pinnedOrigin ? pinnedOrigin.label : user ? "My location" : ""}
@@ -427,13 +539,17 @@ export function App() {
                      label={destination?.label ?? ""} active={tapSets === "destination"} onFocus={() => setTapSets("destination")}
                      recent={recent}
                      onPick={(at, label) => { clearPlan(); setDestination({ at, label }); remember({ at, label }); }} />
+          {!online && <p className="hint offline">You are offline. The map and routes need a connection.</p>}
           {locationNote && !pinnedOrigin && <p className="hint">{locationNote}</p>}
-          {error && <p className="error">{error}</p>}
+          {error && online && <p className="error">{error}</p>}
         </header>
       )}
 
       {walking && chosen ? (
         <section className="panel walking" style={{ "--route": colors[chosen.id] } as React.CSSProperties}>
+          {locate}
+          {/* the content scrolls inside, so the locate button can float above the panel */}
+          <div className="walk-body">
           {arrived ? <h2 className="big">You have arrived</h2> : (
             <>
               {ahead[0] ? (
@@ -462,11 +578,15 @@ export function App() {
           </label>
           <button className="btn ghost wide" onClick={stopWalking}>{arrived ? "Done" : "Stop"}</button>
           {DEMO && <p className="hint">Demo: the position is simulated along the route.</p>}
+          </div>
         </section>
       ) : (
-        <section className={sheetLow ? "panel low" : "panel"}>
-          <button className="grip" aria-expanded={!sheetLow} aria-label={sheetLow ? "Show the panel" : "Show more of the map"}
-                  onClick={() => setSheetLow((low) => !low)} />
+        <section ref={sheetEl} className={`panel ${sheet}`}>
+          {locate}
+          <div className="handle" onPointerDown={dragStart} onPointerMove={dragMove} onPointerUp={dragEnd} onPointerCancel={dragEnd}
+               onClickCapture={(e) => { if (draggedJustNow.current) { e.stopPropagation(); e.preventDefault(); } }}>
+          <button className="grip" aria-expanded={sheet !== "low"} aria-label={sheet === "low" ? "Show the panel" : "Show more of the map"}
+                  onClick={() => setSheet((s) => (s === "low" ? "mid" : "low"))} />
           <nav className="tabs" role="tablist">
             <button role="tab" aria-selected={tab === "priorities"} onClick={() => setTab("priorities")}>
               What matters{requirementCount > 0 && <em>{requirementCount}</em>}
@@ -474,6 +594,7 @@ export function App() {
             <button role="tab" aria-selected={tab === "routes"} onClick={() => setTab("routes")}>Routes{all.length > 0 && <em>{all.length}</em>}</button>
             <button role="tab" aria-selected={tab === "barriers"} onClick={() => setTab("barriers")}>Barriers</button>
           </nav>
+          </div>
 
           {tab === "barriers" ? (
             <BarrierPane barriers={barriers} error={barrierError} chosen={barrier} onClose={() => setBarrier(null)} />
@@ -525,7 +646,8 @@ export function App() {
                 </div>
               )}
               {feedback !== "closed" && <Feedback walked={feedback === "after-walk"} onClose={() => setFeedback("closed")} />}
-              {!plan && <p className="empty">{ready ? "Ready when you are." : "Choose where from and where to, by searching above or tapping the map."}</p>}
+              {!plan && busy && <div className="skeleton" aria-label="Finding routes"><i /><i /><i /></div>}
+              {!plan && !busy && <p className="empty">{ready ? "Ready when you are." : "Choose where from and where to, by searching above or tapping the map."}</p>}
               {plan && <Results plan={plan} options={options} total={all.length} selected={selected} colors={colors} bestId={bestId}
                                 feltTotal={feltTotal} feltSaved={feltSaved}
                                 onSelect={(id) => { setSelected(id); setOpenPlace(null); }}
@@ -599,6 +721,9 @@ function Results({ plan, options, total, selected, colors, bestId, feltTotal, fe
             : <>an elevator is out of service{n.where ? ` (${n.where.replace(/^Elevator /i, "")})` : ""}{n.estimated_return_eastern ? `, expected back ${new Date(n.estimated_return_eastern).toLocaleDateString([], { month: "short", day: "numeric" })}` : ""}.</>}
           <small className="fine"> {n.source}{n.as_of ? `, read ${new Date(n.as_of).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}` : ""}</small>
         </p>
+      ))}
+      {(["origin", "destination"] as const).map((end) => plan[end]?.inside_closed_area && (
+        <p key={end} className="callout warn"><b>!</b> OpenStreetMap shows your {end === "origin" ? "start" : "destination"} inside {plan[end]!.inside_closed_area}, which is not open to the public. The route {end === "origin" ? "starts" : "ends"} at the nearest public walkway outside it.</p>
       ))}
       {plan.destination?.nearer_walkway_passed_over && <p className="hint">The nearest walkway to your destination does not meet your requirements; the route ends at the nearest one that does.</p>}
       {options.map((o) => {

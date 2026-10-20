@@ -105,6 +105,19 @@ class TripPlanner:
         self._evidence = pq.read_table(graph_dir / "edges.parquet", columns=_EVIDENCE_COLUMNS)
         # how many walkways meet at each node: guidance announces a turn only where there is a choice
         self._node_ids, self._node_degree = np.unique(np.concatenate([self._geom_u, self._geom_v]), return_counts=True)
+        # Areas closed to the public (graph.build.clip_restricted removed their walkways). A trip
+        # end inside one still snaps to the nearest public walkway, outside the fence; the answer
+        # says so rather than implying the place itself can be walked to.
+        areas = graph_dir.parent / "interim" / "osm_restricted_areas.parquet"
+        self._closed = gpd.read_parquet(areas).to_crs(ANALYSIS_CRS) if areas.exists() else None
+
+    def closed_area_at(self, lon: float, lat: float) -> str | None:
+        """The name of the closed area a point lies in, if any."""
+        if self._closed is None or self._closed.empty:
+            return None
+        p = Point(*self._to_xy.transform(lon, lat))
+        hit = self._closed[self._closed.geometry.contains(p)]
+        return None if hit.empty else str(hit["name"].iloc[0] or "an area closed to the public")
 
     # ------------------------------------------------------------------ helpers
     def snap(self, lon: float, lat: float, usable: np.ndarray | None = None) -> Snap | None:
@@ -370,10 +383,16 @@ class TripPlanner:
             if s is None:  # no walkway in range meets the requirements: place it on the nearest one and say so
                 s = self.snap(*pt)
             if s is None:
+                closed = self.closed_area_at(*pt)
+                where = f" The {name} is inside {closed}, which is not open to the public." if closed else ""
                 return {**out, "status": "not_near_network",
-                        "message": f"There is no mapped walkway within {SNAP_MAX_M:.0f} m of the {name}."}
+                        "message": f"There is no public walkway within {SNAP_MAX_M:.0f} m of the {name}.{where}" if closed
+                        else f"There is no mapped walkway within {SNAP_MAX_M:.0f} m of the {name}."}
             out[name] = {"snap_distance_m": round(s.distance_m, 1), "walkway_meets_requirements": meets,
                          "nearer_walkway_passed_over": meets and not s.nearest_edge_meets_requirements}
+            closed = self.closed_area_at(*pt)
+            if closed:
+                out[name]["inside_closed_area"] = closed
             snaps.append(s)
         so, sd = snaps
         blocked_ends = [s.edge for s in snaps if not usable[s.edge]]

@@ -22,7 +22,7 @@ Frederick meets three of five criteria and misses two:
 
 - **A manual-wheelchair route exists for 47.5% of a fixed sample of 276 trips; the bar is 50%.**
   That is 7 trips short. Of the 145 trips without a route, 73 are blocked only by corners with no
-  record: 251 such corners inside the city line, 170 of them with no ramp record within 50 m.
+  record: 252 such corners inside the city line, 171 of them with no ramp record within 50 m.
   They cluster in newer neighborhoods (tracts 7512.01 and 7512.02, around Walter Martz, Yellow
   Springs, Rocky Springs and Banner Hill Roads). Only 27 of the 145 touch a state road.
 - **Sidewalk evidence covers 56.8% of walkable length; the bar is 60%.** The sidewalk survey holds
@@ -48,8 +48,7 @@ Frederick meets three of five criteria and misses two:
 |---|---|---|
 | Tuscanny Drive at Chestnut Lane (crossing and junction) | 39.44603, -77.44282 | 8 |
 | Old Willowbrook Road junction | 39.47451, -77.41233 | 7 |
-| Opossumtown Pike at Fairfield Drive | 39.44516, -77.41138 | 2 |
-| Opossumtown Pike junction, north | 39.44865, -77.41189 | 2 |
+| Opossumtown Pike at Fairfield Drive | 39.44516, -77.41138 | 3 |
 | Tuscanny Drive crossing, south | 39.44366, -77.44148 | 1 |
 
 **What the city gets back.** A copy of the barrier map and the unrecorded-corner list for every

@@ -20,8 +20,8 @@ Walkable network inside the line: 1,200 km.
 | sidewalk_poor_condition | barrier | Sidewalk with a survey condition index under 40 of 100 | 325 | 19.4 | 69.5 |
 | sidewalk_narrow | barrier | Sidewalk recorded narrower than 1.2 m (4 ft) | 5 | 0.4 | 0.0 |
 | curb_unknown | unknown | Crossing end where the curb is not recorded | 1,122 |  | 0.0 |
-| junction_curb_unknown | unknown | Junction corner where the curb is not recorded | 1,875 |  | 0.0 |
-| sidewalk_unknown | unknown | Street where it is not recorded whether there is a sidewalk | 2,472 | 125.2 | 0.0 |
+| junction_curb_unknown | unknown | Junction corner where the curb is not recorded | 1,883 |  | 0.0 |
+| sidewalk_unknown | unknown | Street where it is not recorded whether there is a sidewalk | 2,479 | 125.3 | 0.0 |
 
 ## By census tract (most unknowns per km first)
 
@@ -29,7 +29,7 @@ Tracts with at least 1 km of walkable network inside the line. Full table: [`bar
 
 | GEOID | barriers | unknowns | network_km | barriers_per_km | unknowns_per_km |
 |---|---|---|---|---|---|
-| 24021751203 | 34 | 270 | 25.4 | 1.34 | 10.61 |
+| 24021751203 | 34 | 270 | 25.5 | 1.33 | 10.59 |
 | 24021750100 | 104 | 119 | 15.8 | 6.59 | 7.54 |
 | 24021751301 | 54 | 578 | 76.7 | 0.7 | 7.54 |
 | 24021750504 | 199 | 465 | 71.0 | 2.8 | 6.55 |
@@ -39,8 +39,8 @@ Tracts with at least 1 km of walkable network inside the line. Full table: [`bar
 | 24021772200 | 230 | 575 | 119.5 | 1.92 | 4.81 |
 | 24021750506 | 74 | 233 | 49.2 | 1.5 | 4.73 |
 | 24021750801 | 349 | 330 | 72.4 | 4.82 | 4.56 |
+| 24021751201 | 70 | 276 | 62.1 | 1.13 | 4.44 |
 | 24021750805 | 239 | 291 | 68.5 | 3.49 | 4.25 |
-| 24021751201 | 70 | 260 | 62.1 | 1.13 | 4.19 |
 | 24021750508 | 77 | 143 | 38.9 | 1.98 | 3.68 |
 | 24021751701 | 57 | 110 | 44.3 | 1.29 | 2.48 |
 | 24021750804 | 52 | 93 | 39.1 | 1.33 | 2.38 |

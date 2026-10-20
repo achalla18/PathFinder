@@ -145,6 +145,26 @@ reports/<region>/            generated, committed, human-readable outputs (do no
   Barriers (the city map for the current view). The dark theme follows the phone's setting. `pf serve`
   refuses any non-local host unless `PF_APP_PASSWORD` is set. The map opens at the region's
   centre (`/api/health`). MapLibre 6 needs its worker bundled (`MapView.tsx`).
+- Web app on phones (2026-10-19), what keeps it fast:
+  - **Startup:** the map's code is fetched and started only after the first paint
+    (`useAfterFirstPaint`). Starting it first held the whole page blank. Do not add a preload for
+    it: measured on slow 4G, it took bandwidth from the page and made everything later.
+  - **Map:** two map workers at most, and pixel ratio capped at 2.
+  - **Redraws:** `MapView` redraws each part only when its own data changes; never redraw
+    everything on each render.
+  - **Saved settings:** writes are gathered every half second.
+- What the user sees on a phone:
+  - **Sheet:** the panel drags between three heights by its handle (grip and tabs).
+  - **Locate:** a locate button floats above the panel. While walking the map follows the user
+    until they move it themselves (watched on pointer events), and the button then reads
+    "Re-center".
+  - **Map failure:** a map that fails to load leaves a retry, never a blank page.
+  - **Offline:** there is an offline notice.
+- **Home screen and caching:** `web/public/` holds the manifest, icons and `sw.js`. The service
+  worker keeps only the app itself, plus `/api/region` and `/api/health`, and never trips,
+  searches, barriers or positions. It registers only over HTTPS or on this machine. `api.py`
+  serves the page, `sw.js` and the manifest `no-cache` so phones pick up a new build.
+- **Touch targets:** 44 px at least.
 - Basemap: no Maryland tiles are registered yet, so the page uses OpenStreetMap's public
   raster tiles (light development use only).
 - Tests: `python -m pytest -q` (data-invariant tests skip if the graph is not built; run
@@ -206,8 +226,10 @@ reports/<region>/            generated, committed, human-readable outputs (do no
 - **Closed areas are not walkable.** Fort Detrick, a closed Army post inside Frederick, is mapped
   only as a relation, and its streets carry `access=yes`. Until 2026-10-19 its 60 km of streets
   and paths were routed and sampled as public. `pf extract-osm` writes `osm_restricted_areas.parquet`
-  (`osm.RESTRICTED_AREA_TAGS`), and `build.drop_restricted` removes every edge with at least half
-  its length inside one. A public street along the fence stays.
+  (`osm.RESTRICTED_AREA_TAGS`), and `build.clip_restricted` cuts every edge at the boundary and
+  keeps only its parts outside (a gate road stops at the fence). The cut ends are never bridged,
+  no connector may enter, and a trip end inside an area is told so (`TripPlanner.closed_area_at`).
+  `test_no_walkway_enters_an_area_closed_to_the_public` checks the built graph.
 - OSM `crossing=marked` says a crossing is painted, not whether it is signalized; signals
   are in `crossing=traffic_signals`, `crossing:signals`, and the same tags on the node.
 - Without a roadway inventory, lanes and speed come from OSM `lanes` / `maxspeed` tags

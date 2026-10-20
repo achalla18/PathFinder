@@ -143,3 +143,29 @@ def test_a_plan_says_nothing_of_crime_or_darkness_and_certifies_nothing(planner)
     assert set(out["priorities"]) == {"cross", "slope", "sidewalk"}
     assert set(out["fastest"]["felt_minutes"]) == {"cross", "slope", "sidewalk"}
     assert "does not certify" in out["disclaimer"]
+
+
+def test_a_trip_end_inside_a_closed_area_is_named_and_routed_only_to_its_fence(tmp_path):
+    """Fort Detrick: a destination behind the gate snaps to the nearest public walkway outside
+    (its walkways were removed at build time), and the answer says why the route stops there."""
+    import geopandas as gpd
+    from shapely.geometry import box
+
+    graph, interim = tmp_path / "graph", tmp_path / "interim"
+    graph.mkdir(); interim.mkdir()
+    xy = {k: (X0 + x, Y0 + y) for k, (x, y) in {0: (0, 0), 1: (215, 0)}.items()}
+    e = make_edges([{"u": 0, "v": 1}], xy)
+    for col in ("name", "along_street", "crossed_street", "crossed_lanes"):
+        e[col] = None
+    e.to_parquet(graph / "edges.parquet")
+    make_nodes(xy).to_parquet(graph / "nodes.parquet")
+    gpd.GeoDataFrame({"name": ["Base"]}, geometry=[box(X0 + 230, Y0 - 50, X0 + 600, Y0 + 50)], crs=ANALYSIS_CRS) \
+        .to_crs(WGS84).to_parquet(interim / "osm_restricted_areas.parquet")
+    planner = TripPlanner(graph)
+
+    near_fence = planner.plan(_lonlat(0, 0), _lonlat(260, 10))
+    assert near_fence["status"] == "ok"
+    assert near_fence["destination"]["inside_closed_area"] == "Base"
+    assert "inside_closed_area" not in near_fence["origin"]
+    deep = planner.plan(_lonlat(0, 0), _lonlat(560, 0))
+    assert deep["status"] == "not_near_network" and "Base, which is not open to the public" in deep["message"]

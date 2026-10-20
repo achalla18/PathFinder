@@ -20,24 +20,24 @@ Trips with a manual-wheelchair route (step-free, 8.33%, allow likely): **131 of 
 
 | Reason | Places |
 |---|---|
-| curb unknown, unmarked junction crossing | 201 |
+| curb unknown, unmarked junction crossing | 202 |
 | curb unknown, marked crossing | 179 |
 | steeper than 8.33% | 103 |
 | slope unknown | 6 |
 
-Inside the city line, 251 blocking curbs have no record; 170 of them have no ramp-inventory record within 50 m, so the inventory does not reach them. By census tract:
+Inside the city line, 252 blocking curbs have no record; 171 of them have no ramp-inventory record within 50 m, so the inventory does not reach them. By census tract:
 
 | Tract | Places | Trip links | Streets |
 |---|---|---|---|
-| 24021751201 | 23 | 56 | Walter Martz Road, Pedigree Street, Yellow Springs Road, Apollo Drive |
-| 24021751202 | 31 | 34 | Rocky Springs Road, Banner Hill Road, Wynfield Court, Corn Crib Place |
-| 24021750802 | 19 | 24 | Shorebird Street, North Market Street, Sherwood, Wirksworth Alley |
-| 24021751301 | 17 | 23 | Old Willowbrook Road, Potting Shed Way, Pearson Drive, Fountain Drive |
-| 24021772200 | 15 | 20 | Storage Way, Monocacy Boulevard, Compass Way, Union Street |
-| 24021750506 | 8 | 16 | Mount Phillip Road, Butterfly Lane, Broadford Park Street, Tydings Park Road |
+| 24021751201 | 24 | 57 | Walter Martz Road, Pedigree Street, Apollo Drive, Yellow Springs Road |
+| 24021751202 | 31 | 34 | Rocky Springs Road, Wynfield Court, Banner Hill Road, Dominion Drive |
+| 24021750802 | 19 | 24 | Shorebird Street, North Market Street, Mill Island Parkway, Monocacy Boulevard |
+| 24021751301 | 17 | 23 | Old Willowbrook Road, Willow Road, Potting Shed Way, Pearson Boulevard |
+| 24021772200 | 15 | 20 | Storage Way, Monocacy Boulevard, Union Street, Compass Way |
+| 24021750506 | 8 | 16 | Mount Phillip Road, Butterfly Lane, Tydings Park Road, Broadford Park Street |
 | 24021750505 | 9 | 16 | Frontline Drive, Mansion Drive, Road B, Linden Avenue |
 | 24021750801 | 8 | 14 |  |
 
 ## Worklist
 
-The **14 places** in `worklist.csv` would open the 7 trips the bar needs, *if every one turned out to have a usable ramp*: an upper bound. 6 are inside the city line. Measured slopes are never on the list. Opened per places checked: 10: 4, 20: 13, 30: 16, 40: 20, 50: 24, 75: 36, 100: 41, 256: 73.
+The **13 places** in `worklist.csv` would open the 7 trips the bar needs, *if every one turned out to have a usable ramp*: an upper bound. 5 are inside the city line. Measured slopes are never on the list. Opened per places checked: 10: 5, 20: 13, 30: 17, 40: 20, 50: 24, 75: 36, 100: 40, 257: 73.

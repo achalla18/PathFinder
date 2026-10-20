@@ -11,6 +11,7 @@ location, address or device details.
 from __future__ import annotations
 
 import json
+import mimetypes
 import os
 import secrets
 import threading
@@ -43,6 +44,10 @@ FEEDBACK_FILE = DATA_DIR / "feedback" / "feedback.jsonl"
 BASEMAP_CACHE = "private, max-age=86400"
 # One map view at a time; a town has a few thousand barrier records in all.
 BARRIERS_MAX_FEATURES = 5000
+# The page, its service worker and its manifest name the hashed asset files: a phone must check
+# them each time, or it would keep running an old build. (The hashed files themselves are kept for good.)
+REVALIDATE_PATHS = {"/", "/index.html", "/sw.js", "/manifest.webmanifest"}
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 _feedback_lock = threading.Lock()
 _basic = HTTPBasic(auto_error=False)
 
@@ -238,6 +243,8 @@ def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = N
         if request.url.path.startswith("/assets/") and response.status_code == 200:
             # file names carry a hash of their content, so a copy can be kept for good
             response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        elif request.url.path in REVALIDATE_PATHS:
+            response.headers["Cache-Control"] = "no-cache"
         return response
 
     if WEB_DIST.exists():  # the built web app, when present (`npm run build` in web/)

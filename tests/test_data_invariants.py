@@ -108,3 +108,21 @@ def test_dtm_discontinuities_leave_grade_unknown(built_graph):
     assert len(d) > 0 or REGION.role("dtm") is None
     assert (d["grade_max_pct_status"] == "unknown").all()
     assert (d["grade_avg_pct_status"] == "unknown").all()
+
+
+def test_no_walkway_enters_an_area_closed_to_the_public(built_graph):
+    """Fort Detrick: nothing routable may lie inside a closed area, not even a few metres of a
+    gate road, and no connector may cross into one (graph.build.clip_restricted)."""
+    import geopandas as gpd
+
+    from pathfinder.config import INTERIM_DIR
+
+    path = INTERIM_DIR / "osm_restricted_areas.parquet"
+    if not path.exists():
+        pytest.skip("restricted areas not extracted")
+    areas = gpd.read_parquet(path).to_crs(built_graph.crs)
+    if areas.empty:
+        return
+    inside = built_graph.geometry.intersection(areas.geometry.union_all().buffer(-0.5)).length
+    bad = built_graph.loc[inside > 0.01, ["edge_id", "kind", "name"]]
+    assert bad.empty, bad.head().to_dict("records")

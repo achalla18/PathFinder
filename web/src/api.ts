@@ -1,7 +1,17 @@
 import type { Barriers, LonLat, Plan, PlaceResult, Profile, Settings } from "./types";
 
+/** A fetch that says plainly when the phone has no connection, instead of "Failed to fetch". */
+async function get(url: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init);
+  } catch (e) {
+    if ((e as Error).name === "AbortError") throw e;
+    throw new Error(navigator.onLine === false ? "You are offline. Routes need a connection." : "PathFinder could not be reached. Check the connection and try again.");
+  }
+}
+
 export async function planTrip(origin: LonLat, destination: LonLat, s: Settings, signal?: AbortSignal): Promise<Plan> {
-  const res = await fetch("/api/plan", {
+  const res = await get("/api/plan", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     signal,
@@ -31,12 +41,17 @@ export interface FeedbackAnswers {
 
 /** Send a tester's answers. Nothing else goes with them. */
 export async function sendFeedback(answers: FeedbackAnswers): Promise<void> {
-  const res = await fetch("/api/feedback", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(answers) });
+  const res = await get("/api/feedback", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(answers) });
   if (!res.ok) throw new Error(`The service answered ${res.status}.`);
 }
 
-/** Whether this server has its own map tiles, how far they zoom, and where its region is. */
-export async function basemapInfo(): Promise<{ local: boolean; maxZoom: number; center: LonLat | null }> {
+/** Whether this server has its own map tiles, how far they zoom, and where its region is.
+ *  Asked once, as the page starts, so the answer is ready when the map's code arrives. */
+let basemapAnswer: Promise<{ local: boolean; maxZoom: number; center: LonLat | null }> | null = null;
+export function basemapInfo(): Promise<{ local: boolean; maxZoom: number; center: LonLat | null }> {
+  return (basemapAnswer ??= askBasemap());
+}
+async function askBasemap(): Promise<{ local: boolean; maxZoom: number; center: LonLat | null }> {
   try {
     const h = await (await fetch("/api/health")).json();
     const center = Array.isArray(h.center) && h.center.length === 2 ? (h.center as LonLat) : null;
@@ -46,10 +61,17 @@ export async function basemapInfo(): Promise<{ local: boolean; maxZoom: number; 
   }
 }
 
-/** The mobility profiles this server offers. */
+/** The mobility profiles this server offers. Kept on the phone after the first visit, so the
+ *  buttons are there at once next time (the server's answer replaces them when it comes). */
+const PROFILES_KEY = "pathfinder.profiles";
+export function cachedProfiles(): Profile[] {
+  try { return JSON.parse(localStorage.getItem(PROFILES_KEY) ?? "[]") as Profile[]; } catch { return []; }
+}
 export async function profiles(): Promise<Profile[]> {
   try {
-    return (await (await fetch("/api/region")).json()).profiles ?? [];
+    const list = ((await (await fetch("/api/region")).json()).profiles ?? []) as Profile[];
+    try { localStorage.setItem(PROFILES_KEY, JSON.stringify(list)); } catch { /* private browsing */ }
+    return list;
   } catch {
     return [];
   }
@@ -57,7 +79,7 @@ export async function profiles(): Promise<Profile[]> {
 
 /** Recorded barriers and unrecorded places in a map view. */
 export async function barriersIn(bbox: [number, number, number, number], signal?: AbortSignal): Promise<Barriers> {
-  const res = await fetch(`/api/barriers?bbox=${bbox.map((v) => v.toFixed(5)).join(",")}`, { signal });
+  const res = await get(`/api/barriers?bbox=${bbox.map((v) => v.toFixed(5)).join(",")}`, { signal });
   if (!res.ok) throw new Error(`The barrier map answered ${res.status}.`);
   return res.json();
 }

@@ -1,15 +1,14 @@
 place,reason,detail,major_road,outside_line,nearest_ramp_record_m,n_trips,trips,GEOID,lon,lat,trips_opened_so_far
-junction:1229527719,"curb unknown, unmarked junction crossing",Tuscanny Drive,False,False,11.6,8,"25,26,30,33,41,156,201,249",24021751202,-77.442823,39.446031,0
-junction:102994994,"curb unknown, unmarked junction crossing",Fairfield Drive,False,False,23.2,2,"104,134",24021751201,-77.411376,39.445159,1
-junction:1229373959,"curb unknown, unmarked junction crossing",Opossumtown Pike,False,False,22.1,2,"115,134",24021751201,-77.411887,39.448653,2
+junction:102994994,"curb unknown, unmarked junction crossing",Fairfield Drive; Nalin Farm Pond Road,False,False,23.2,3,"104,115,134",24021751201,-77.411376,39.445159,2
+junction:1229527719,"curb unknown, unmarked junction crossing",Tuscanny Drive,False,False,11.6,8,"25,26,30,33,41,156,201,249",24021751202,-77.442823,39.446031,2
 junction:103033551,"curb unknown, unmarked junction crossing",Liberty Road,True,True,15.1,8,"40,122,135,147,158,192,209,296",24021750802,-77.377209,39.450938,2
 junction:102849382,"curb unknown, unmarked junction crossing",Red Wing Court,False,True,125.8,3,"91,147,158",24021750802,-77.380493,39.454467,3
 junction:12039016463,"curb unknown, unmarked junction crossing",Longmeadow Drive,True,True,49.9,5,"122,135,192,209,296",24021750802,-77.384086,39.449716,3
 junction:103073886,"curb unknown, unmarked junction crossing",Longmeadow Drive,True,True,46.5,5,"122,135,192,209,296",24021750802,-77.383856,39.449782,4
-corner:13448:kerb_a,"curb unknown, marked crossing",Chestnut Lane,False,False,11.6,4,"26,30,33,41",24021751202,-77.442823,39.446031,4
+corner:13447:kerb_a,"curb unknown, marked crossing",Chestnut Lane,False,False,11.6,4,"26,30,33,41",24021751202,-77.442823,39.446031,4
 junction:11589045682,"curb unknown, unmarked junction crossing",Willowbrook Road,False,True,374.1,7,"9,18,102,182,227,267,282",24021751301,-77.412343,39.473178,4
-junction:103000233,"curb unknown, unmarked junction crossing",Willowbrook Road,False,True,337.2,7,"9,18,102,182,227,267,282",24021751301,-77.412361,39.472844,4
-junction:103074345,"curb unknown, unmarked junction crossing",Old Willowbrook Road,False,False,518.9,7,"9,18,102,182,227,267,282",24021751301,-77.412326,39.474506,5
+junction:103074345,"curb unknown, unmarked junction crossing",Old Willowbrook Road,False,False,518.9,7,"9,18,102,182,227,267,282",24021751301,-77.412326,39.474506,4
+junction:103000233,"curb unknown, unmarked junction crossing",Willowbrook Road,False,True,337.2,7,"9,18,102,182,227,267,282",24021751301,-77.412361,39.472844,5
 junction:103014759,"curb unknown, unmarked junction crossing",River Run Court,False,True,87.3,5,"40,135,147,158,192",24021750802,-77.377452,39.451829,5
 junction:102979236,"curb unknown, unmarked junction crossing",Bull Rush Court; Quay Court,False,True,87.9,3,"40,135,192",24021750802,-77.377797,39.451745,6
-corner:14563:kerb_a,"curb unknown, marked crossing",Tuscanny Drive,False,False,9.0,1,41,24021751202,-77.441481,39.443655,7
+corner:14562:kerb_a,"curb unknown, marked crossing",Tuscanny Drive,False,False,9.0,1,41,24021751202,-77.441481,39.443655,7

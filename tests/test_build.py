@@ -10,7 +10,7 @@ from pathfinder.graph.build import (
     SURFACE_GAP_MAX_M,
     SURFACE_GAP_REASON,
     bridge_gaps,
-    drop_restricted,
+    clip_restricted,
     near_miss_dead_ends,
     node_table,
     prune_removed_road_stubs,
@@ -154,28 +154,86 @@ def test_near_miss_dead_ends_are_counted_not_bridged():
     assert near_miss_dead_ends(e, node_table(e), 5.0) == 0
 
 
-def test_restricted_area_removes_edges_mostly_inside_and_keeps_the_fence_street():
-    """Fort Detrick: streets behind the gate are mapped like public ones; none may be routed."""
-    base = box(0, 0, 100, 100)
-    areas = gpd.GeoDataFrame({"name": ["Base"]}, geometry=[base], crs=ANALYSIS_CRS)
-    ways = _ways([
-        {"osm_way_id": 1, "kind": "street_unknown", "representation": "street_centerline",
-         "node_refs": [1, 2], "coords": [(10, 50), (90, 50)]},            # inside the base
-        {"osm_way_id": 2, "kind": "street_unknown", "representation": "street_centerline",
-         "node_refs": [3, 4], "coords": [(-5, 0), (-5, 100)]},            # public road along the fence
-        {"osm_way_id": 3, "kind": "street_unknown", "representation": "street_centerline",
-         "node_refs": [5, 6], "coords": [(-40, 50), (20, 50)]},           # gate road: a third inside
-    ])
-    e = split_into_edges(ways)
-    kept, removed = drop_restricted(e, areas)
-    assert sorted(kept["osm_way_id"]) == [2, 3]
-    assert removed == {"Base": {"edges": 1, "km": 0.1}}
+# ---------------------------------------------------------------- closed areas (Fort Detrick)
+
+BASE = box(0, 0, 100, 100)
+
+
+def _base():
+    return gpd.GeoDataFrame({"name": ["Base"]}, geometry=[BASE], crs=ANALYSIS_CRS)
+
+
+def _street(way, refs, coords, kind="street_unknown", rep="street_centerline"):
+    return {"osm_way_id": way, "kind": kind, "representation": rep, "node_refs": refs, "coords": coords}
+
+
+def test_gate_road_is_cut_at_the_fence_and_nothing_inside_remains():
+    """The review case: a gate road a third inside the base was kept whole, so a route could run
+    20 m behind the gate. Now it stops at the fence, at a new dead-end node."""
+    e = split_into_edges(_ways([_street(3, [5, 6], [(-40, 50), (20, 50)])]))
+    kept, fence, removed = clip_restricted(e, _base())
+    assert len(kept) == 1
+    g = kept.geometry.iloc[0]
+    assert g.length == pytest.approx(40.0) and g.coords[-1] == pytest.approx((0.0, 50.0))
+    assert kept["u"].iloc[0] == 5 and kept["v"].iloc[0] < 0 and fence == {int(kept["v"].iloc[0])}
+    assert kept.geometry.intersection(BASE).length.sum() == pytest.approx(0.0)
+    assert removed == {"Base": {"edges_cut": 1, "edges_removed": 0, "km": 0.0}}
+
+
+def test_street_through_a_corner_loses_the_corner_and_no_longer_connects_through():
+    """An edge passing through a narrow part of the area must not stay walkable across it."""
+    e = split_into_edges(_ways([_street(1, [1, 2], [(-10, 20), (20, -10)])]))  # inside the base from (0, 10) to (10, 0)
+    e2 = split_into_edges(_ways([_street(2, [3, 4], [(-20, 50), (50, 50)])]))  # half inside: kept part outside
+    e = pd.concat([e, e2], ignore_index=True)
+    kept, fence, _ = clip_restricted(e, _base())
+    assert kept.geometry.intersection(BASE.buffer(-0.01)).length.sum() == pytest.approx(0.0)
+    way1 = kept[kept["osm_way_id"] == 1]
+    assert len(way1) == 2  # the two sides of the corner
+    ends = [{int(r.u), int(r.v)} for r in way1.itertuples()]
+    assert {n for n in ends[0] | ends[1] if n > 0} == {1, 2} and len((ends[0] | ends[1]) & fence) == 2
+    assert not (ends[0] & ends[1])  # the two pieces share no node: nothing joins them across the corner
+    assert len(fence) == 3
+
+
+def test_edges_wholly_inside_are_removed_and_the_fence_street_is_untouched():
+    e = split_into_edges(_ways([
+        _street(1, [1, 2], [(10, 50), (90, 50)]),   # behind the gate
+        _street(2, [3, 4], [(-5, 0), (-5, 100)]),   # public road along the fence
+        _street(4, [7, 8], [(0, 0), (0, 100)]),     # drawn on the fence line itself
+    ]))
+    kept, fence, removed = clip_restricted(e, _base())
+    assert sorted(kept["osm_way_id"]) == [2, 4]
+    assert fence == set()
+    assert removed == {"Base": {"edges_cut": 0, "edges_removed": 1, "km": 0.1}}
 
 
 def test_no_restricted_areas_keeps_everything():
-    ways = _ways([{"osm_way_id": 1, "kind": "sidewalk", "representation": "pedestrian_way",
-                   "node_refs": [1, 2], "coords": [(0, 0), (10, 0)]}])
-    e = split_into_edges(ways)
+    e = split_into_edges(_ways([{"osm_way_id": 1, "kind": "sidewalk", "representation": "pedestrian_way",
+                                 "node_refs": [1, 2], "coords": [(0, 0), (10, 0)]}]))
     empty = gpd.GeoDataFrame({"name": []}, geometry=[], crs=ANALYSIS_CRS)
-    kept, removed = drop_restricted(e, empty)
-    assert len(kept) == 1 and removed == {}
+    kept, fence, removed = clip_restricted(e, empty)
+    assert len(kept) == 1 and fence == set() and removed == {}
+
+
+def test_bridging_never_rejoins_ends_cut_at_the_fence():
+    """Two footways cut at the fence 2 m apart: a mapping-slip connector between their ends would
+    run along the fence and invent a link. Cut ends are real dead ends."""
+    e = split_into_edges(_ways([
+        {"osm_way_id": 1, "kind": "footway", "representation": "pedestrian_way", "node_refs": [1, 2], "coords": [(-20, 50), (30, 50)]},
+        {"osm_way_id": 2, "kind": "footway", "representation": "pedestrian_way", "node_refs": [3, 5, 4], "coords": [(-30, 90), (-2, 52), (30, 52)]},
+    ]))
+    kept, fence, _ = clip_restricted(e, _base())
+    kept["edge_id"] = np.arange(len(kept))
+    # without the rule the two cut ends, 2 m apart on the fence, would be joined
+    assert bridge_gaps(kept, node_table(kept), forbidden=BASE.buffer(-0.5))[1] == 1
+    assert bridge_gaps(kept, node_table(kept), skip_nodes=frozenset(fence), forbidden=BASE.buffer(-0.5))[1] == 0
+
+
+def test_bridging_never_enters_a_closed_area():
+    e = split_into_edges(_ways([
+        {"osm_way_id": 1, "kind": "footway", "representation": "pedestrian_way", "node_refs": [1, 2], "coords": [(50, 120), (50, 101)]},
+        {"osm_way_id": 2, "kind": "footway", "representation": "pedestrian_way", "node_refs": [3, 4], "coords": [(40, 99), (60, 99)]},
+    ]))
+    e["edge_id"] = np.arange(len(e))
+    assert bridge_gaps(e, node_table(e))[1] == 1  # 2 m apart: an ordinary mapping slip
+    assert bridge_gaps(e, node_table(e), forbidden=BASE.buffer(-0.5))[1] == 0  # but the target is behind the fence

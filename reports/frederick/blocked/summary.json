@@ -12,23 +12,23 @@
  "touching_major_road": 27,
  "touching_outside_line": 74,
  "places_by_reason": {
-  "curb unknown, unmarked junction crossing": 201,
+  "curb unknown, unmarked junction crossing": 202,
   "curb unknown, marked crossing": 179,
   "steeper than 8.33%": 103,
   "slope unknown": 6
  },
- "unknown_curbs_inside_line": 251,
- "unknown_curbs_inside_line_no_ramp_record_within_50m": 170,
- "places_to_close_gap": 14,
- "worklist_inside_line": 6,
+ "unknown_curbs_inside_line": 252,
+ "unknown_curbs_inside_line_no_ramp_record_within_50m": 171,
+ "places_to_close_gap": 13,
+ "worklist_inside_line": 5,
  "greedy": {
-  "10": 4,
+  "10": 5,
   "20": 13,
-  "30": 16,
+  "30": 17,
   "40": 20,
   "50": 24,
   "75": 36,
-  "100": 41,
-  "256": 73
+  "100": 40,
+  "257": 73
  }
 }

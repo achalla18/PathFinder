@@ -161,3 +161,21 @@ def test_large_answers_are_compressed(client):
     r = client.post("/api/plan", json=_body(_lonlat(0, 0), _lonlat(215, 0)), headers={"Accept-Encoding": "gzip"})
     assert r.status_code == 200 and r.headers.get("content-encoding") == "gzip"
     assert r.json()["status"] == "ok"  # and still read as the same answer
+
+
+def test_built_page_is_revalidated_and_hashed_assets_are_kept(planner, monkeypatch, tmp_path):  # noqa: F811
+    """The page and its service worker name the hashed files of a build; a phone that kept them
+    for good would keep running an old build. The hashed files themselves never change."""
+    (tmp_path / "assets").mkdir()
+    (tmp_path / "index.html").write_text("<!doctype html><title>t</title>")
+    (tmp_path / "sw.js").write_text("// sw")
+    (tmp_path / "manifest.webmanifest").write_text("{}")
+    (tmp_path / "assets" / "index-abc123.js").write_text("// js")
+    monkeypatch.setattr(api, "WEB_DIST", tmp_path)
+    monkeypatch.delenv(api.PASSWORD_ENV, raising=False)
+    c = TestClient(api.create_app(planner))
+    for path in ("/", "/sw.js", "/manifest.webmanifest"):
+        r = c.get(path)
+        assert r.status_code == 200 and r.headers["cache-control"] == "no-cache", path
+    assert c.get("/manifest.webmanifest").headers["content-type"].startswith("application/manifest+json")
+    assert "immutable" in c.get("/assets/index-abc123.js").headers["cache-control"]

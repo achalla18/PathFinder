@@ -303,10 +303,16 @@ def surface_gap_test(planim: gpd.GeoDataFrame, ways: gpd.GeoDataFrame, barriers:
 
 
 def bridge_gaps(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, tolerance: float = GAP_TOLERANCE_M,
-                accept=None, reason: str | None = None) -> tuple[gpd.GeoDataFrame, int]:
+                accept=None, reason: str | None = None, skip_nodes: frozenset[int] = frozenset(),
+                forbidden=None) -> tuple[gpd.GeoDataFrame, int]:
     """Connect dead ends of pedestrian ways to the nearest point of another edge within
     ``tolerance``, using explicit inferred connector edges. With ``accept(kind, line)`` a
     connector is made only if the test passes for the straight line it would follow.
+
+    - ``skip_nodes`` are dead ends that are real, not mapping slips (a way cut at the fence of a
+      closed area, see ``clip_restricted``): they are never bridged.
+    - No connector may enter ``forbidden`` (closed areas, shrunk a little so the fence line
+      itself does not count).
 
     - Only pedestrian-way dead ends are bridged (a sidewalk stopping 1.5 m short of another
       sidewalk is a mapping gap; a driveway ending is not).
@@ -320,7 +326,7 @@ def bridge_gaps(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, tolerance: flo
         edges[["u", "edge_id", "kind"]].rename(columns={"u": "node_id"}),
         edges[["v", "edge_id", "kind"]].rename(columns={"v": "node_id"}),
     ])
-    inc = inc[inc["node_id"].map(deg).eq(1) & inc["kind"].isin(_PEDESTRIAN_KINDS_FOR_BRIDGING)]
+    inc = inc[inc["node_id"].map(deg).eq(1) & inc["kind"].isin(_PEDESTRIAN_KINDS_FOR_BRIDGING) & ~inc["node_id"].isin(skip_nodes)]
     if inc.empty:
         return edges, 0
     pos = nodes.set_index("node_id")
@@ -350,7 +356,10 @@ def bridge_gaps(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, tolerance: flo
             continue
         g = e_by_id.at[best, "geometry"]
         t = g.project(p)
-        if accept is not None and not accept(own_kind, LineString([p, g.interpolate(t)])):
+        line = LineString([p, g.interpolate(t)])
+        if accept is not None and not accept(own_kind, line):
+            continue
+        if forbidden is not None and line.intersects(forbidden):
             continue
         # prefer an existing vertex when it is itself within tolerance (avoids sliver
         # splits); otherwise split at the projection so connectors never exceed tolerance
@@ -407,6 +416,9 @@ def bridge_gaps(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, tolerance: flo
         if s == t or key in seen:
             continue
         seen.add(key)
+        # a link to an existing vertex or a merged split point follows a line not tested above
+        if forbidden is not None and LineString([coords[s], coords[t]]).intersects(forbidden):
+            continue
         conn_rows.append({"u": s, "v": t, "kind": "connector", "representation": INFERRED_CONNECTOR,
                           "class_reason": reason or f"pedestrian dead end within {tolerance} m of another edge",
                           "osm_way_id": -1, "geometry": LineString([coords[s], coords[t]])})
@@ -456,32 +468,83 @@ def label_components(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame) -> tuple[
     return edges, nodes
 
 
-def drop_restricted(edges: gpd.GeoDataFrame, areas: gpd.GeoDataFrame | None = None) -> tuple[gpd.GeoDataFrame, dict]:
-    """Remove edges lying mostly inside an area closed to the public (osm.RESTRICTED_AREA_TAGS).
+RESTRICTED_MIN_PIECE_M = 1.0  # a sliver outside the fence shorter than this is dropped with the rest
+# How far inside a closed area a connector may reach before it counts as entering: the fence is
+# drawn as a line, and connectors between two cut ends lie along it.
+RESTRICTED_FENCE_TOLERANCE_M = 0.5
+
+
+def read_restricted_areas() -> gpd.GeoDataFrame:
+    path = INTERIM_DIR / "osm_restricted_areas.parquet"
+    if not path.exists():
+        raise RuntimeError("osm_restricted_areas.parquet missing; rerun `pf extract-osm`")
+    return gpd.read_parquet(path)
+
+
+def clip_restricted(edges: gpd.GeoDataFrame, areas: gpd.GeoDataFrame) -> tuple[gpd.GeoDataFrame, set[int], dict]:
+    """Remove every part of every edge that lies inside an area closed to the public
+    (osm.RESTRICTED_AREA_TAGS).
 
     A military installation's streets and paths are mapped like public ones, but a walker cannot
-    get past the gate: routing through one would invent a route, and trips inside it are not
-    trips anyone can take. Edges with at least half their length inside are removed, so a
-    public street along the fence stays. Returns the kept edges and what was removed, by area."""
-    if areas is None:
-        path = INTERIM_DIR / "osm_restricted_areas.parquet"
-        if not path.exists():
-            raise RuntimeError("osm_restricted_areas.parquet missing; rerun `pf extract-osm`")
-        areas = gpd.read_parquet(path)
+    get past the gate: routing through one would invent a route. An edge that crosses the fence is
+    cut there and keeps only its parts outside, so a gate road leads up to the fence and stops, and
+    a street that clips a corner of the area loses that corner (it is no longer one walkable line).
+    The point where a way is cut is a new node (negative id, like the gap bridger's), and those
+    nodes are returned so the gap bridger never joins them up again. Returns the edges, the cut
+    nodes and what was removed, by area."""
     if areas.empty:
-        return edges, {}
+        return edges, set(), {}
     areas = areas.to_crs(edges.crs)
-    inside = np.zeros(len(edges))
+    union = areas.geometry.union_all()
+    hit = edges.geometry.intersects(union).to_numpy() & ~edges.geometry.touches(union).to_numpy()
+    if not hit.any():
+        return edges, set(), {}
+    next_id = int(min(edges["u"].min(), edges["v"].min(), 0)) - 1
+    cut_ids: dict[tuple[float, float], int] = {}  # one node per cut point, shared by edges cut there
+
+    def node_at(xy, original_xy, original_id: int) -> int:
+        nonlocal next_id
+        if shapely.Point(xy).distance(shapely.Point(original_xy)) < 1e-6:
+            return original_id
+        key = (round(xy[0], 2), round(xy[1], 2))
+        if key not in cut_ids:
+            cut_ids[key] = next_id
+            next_id -= 1
+        return cut_ids[key]
+
     removed: dict[str, dict] = {}
-    for name, geom in zip(areas["name"].fillna("unnamed"), areas.geometry):
-        share = edges.geometry.intersection(geom).length.to_numpy() / edges["length_m"].to_numpy()
-        hit = (share >= 0.5) & (inside < 0.5)
-        if hit.any():
-            removed[name] = {"edges": int(hit.sum()), "km": round(float(edges.loc[hit, "length_m"].sum()) / 1000, 1)}
-        inside = np.maximum(inside, share)
-    if removed:
-        log.info("restricted areas: removed %s", removed)
-    return edges[inside < 0.5].reset_index(drop=True), removed
+    names = list(areas["name"].fillna("unnamed"))
+    rows = []
+    for rec in edges[hit].to_dict("records"):
+        g = rec["geometry"]
+        inside = g.intersection(union).length
+        name = next((n for n, a in zip(names, areas.geometry) if g.intersects(a)), "unnamed")
+        r = removed.setdefault(name, {"edges_cut": 0, "edges_removed": 0, "km": 0.0})
+        r["km"] += inside / 1000
+        outside = g.difference(union)
+        parts = [q for q in getattr(outside, "geoms", [outside]) if q.geom_type == "LineString" and q.length >= RESTRICTED_MIN_PIECE_M]
+        if not parts:
+            r["edges_removed"] += 1
+            continue
+        r["edges_cut"] += 1
+        a, b = g.coords[0], g.coords[-1]
+        for q in parts:
+            # keep the original direction of travel along the way: a piece runs u -> v
+            if g.project(shapely.Point(q.coords[0])) > g.project(shapely.Point(q.coords[-1])):
+                q = shapely.reverse(q)
+            piece = dict(rec)
+            piece["geometry"] = q
+            piece["u"] = node_at(q.coords[0], a, int(rec["u"]))
+            piece["v"] = node_at(q.coords[-1], b, int(rec["v"]))
+            piece["length_m"] = q.length
+            rows.append(piece)
+    out = edges[~hit]
+    if rows:
+        out = pd.concat([out, gpd.GeoDataFrame(rows, geometry="geometry", crs=edges.crs)], ignore_index=True)
+    for r in removed.values():
+        r["km"] = round(r["km"], 1)
+    log.info("restricted areas: %s; %d cut points at the fence", removed, len(cut_ids))
+    return out.reset_index(drop=True), set(cut_ids.values()), removed
 
 
 # ============================================================ entry point
@@ -517,12 +580,16 @@ def build() -> dict:
     keep = inside_len >= 0.5 * edges["length_m"]
     n_out = int((~keep).sum())
     edges = edges[keep].reset_index(drop=True)
-    edges, restricted = drop_restricted(edges)
+    areas = read_restricted_areas()
+    edges, fence_nodes, restricted = clip_restricted(edges, areas)
+    # connectors may not enter a closed area; the fence line itself (where cut ends lie) is allowed
+    fence = areas.to_crs(ANALYSIS_CRS).geometry.union_all().buffer(-RESTRICTED_FENCE_TOLERANCE_M) if len(areas) else None
+    no_entry = dict(skip_nodes=frozenset(fence_nodes), forbidden=fence)
     edges["outside_region"] = ~edges.geometry.within(boundary)
     edges, n_stubs = prune_removed_road_stubs(edges, removed_nodes)
     edges["edge_id"] = np.arange(len(edges), dtype=np.int64)
     nodes = node_table(edges)
-    edges, n_conn = bridge_gaps(edges, nodes)
+    edges, n_conn = bridge_gaps(edges, nodes, **no_entry)
     n_surface = 0
     if REGION.role("planimetrics"):
         from .roles import read as read_role
@@ -530,7 +597,7 @@ def build() -> dict:
         planim, _ = read_role("planimetrics")
         barriers = gpd.read_parquet(INTERIM_DIR / "osm_barriers.parquet").to_crs(ANALYSIS_CRS)
         edges, n_surface = bridge_gaps(edges, node_table(edges), tolerance=SURFACE_GAP_MAX_M,
-                                       accept=surface_gap_test(planim, ways, barriers), reason=SURFACE_GAP_REASON)
+                                       accept=surface_gap_test(planim, ways, barriers), reason=SURFACE_GAP_REASON, **no_entry)
     else:
         log.info("gap bridging: no planimetric survey for %s; only gaps up to %.0f m are bridged",
                  REGION.id, GAP_TOLERANCE_M)
@@ -563,7 +630,8 @@ def build() -> dict:
         "near_miss_radius_m": SURFACE_GAP_MAX_M,
         "removed_road_stubs_pruned": n_stubs,
         "edges_dropped_outside_scope": n_out,
-        "edges_dropped_in_restricted_areas": restricted,
+        "restricted_areas": restricted,
+        "restricted_fence_cut_points": len(fence_nodes),
         "inferred_connectors": n_conn + n_surface,
         "inferred_connectors_across_mapped_sidewalk_surface": n_surface,
     }

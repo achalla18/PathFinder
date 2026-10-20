@@ -47,8 +47,11 @@ export function SearchBox({ kind, label, placeholder, near, active, onFocus, onP
         onFocus={() => { setEditing(true); setText(""); onFocus(); }}
         onChange={(e) => setText(e.target.value)}
         onBlur={() => setTimeout(done, 150) /* let a tap on a suggestion land first */}
-        autoComplete="off" enterKeyHint="search"
+        autoComplete="off" enterKeyHint="search" autoCorrect="off" spellCheck={false}
       />
+      {editing && text && (
+        <button className="clear" aria-label="Clear" onMouseDown={(e) => { e.preventDefault(); setText(""); }}>×</button>
+      )}
       {editing && (
         <ul className="suggestions">
           {onMyLocation && <li><button onMouseDown={(e) => { e.preventDefault(); onMyLocation(); done(); }}>◎ My location</button></li>}

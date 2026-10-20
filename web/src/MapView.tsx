@@ -1,10 +1,10 @@
-import { type GeoJSONSource, LngLatBounds, Map as MapLibreMap, type MapMouseEvent, Marker, setWorkerUrl, type StyleSpecification } from "maplibre-gl";
+import { type GeoJSONSource, LngLatBounds, Map as MapLibreMap, type MapMouseEvent, Marker, prewarm, setWorkerCount, setWorkerUrl, type StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 // MapLibre 6 ships its worker as a separate module; without it routes and pins (GeoJSON
 // sources) never draw, while the raster basemap still does. Bundle it and point the library at it.
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { layers as basemapLayers, namedFlavor } from "@protomaps/basemaps";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { basemapInfo } from "./api";
 import { BARRIER_COLORS, ESTIMATED_SIDEWALK_COLOR } from "./barrierStyle";
 import type { BarrierProps, Barriers, LonLat, Place, RouteOption } from "./types";
@@ -42,6 +42,11 @@ const STYLE: StyleSpecification = {
 };
 
 setWorkerUrl(workerUrl);
+// Each worker downloads and compiles its own copy of the worker script (half a megabyte). The
+// library starts half the phone's cores' worth; two are plenty for a town's routes and tiles, and
+// starting them now overlaps that work with the page's own start.
+setWorkerCount(Math.min(2, Math.max(1, Math.floor((navigator.hardwareConcurrency || 2) / 2))));
+prewarm();
 
 // where the map opens when the server does not say which region it serves
 const DC_CENTER: LonLat = [-77.0365, 38.9072];
@@ -54,6 +59,7 @@ const PHONE_MARGIN_PX = 28; // room around a framed trip on a phone: a numbered 
 // A phone held sideways: the card and the panel are stacked down the left side (styles.css, .side)
 const SIDE_MEDIA = "(orientation: landscape) and (max-height: 520px)";
 const MIN_VIEW_PX = 80; // the least map height worth framing a trip into
+const GESTURE_PX = 10; // a finger moving farther than this on the map is the user moving it, not a tap
 
 /** A colour moved toward white (t > 0) or toward black (t < 0); t in [-1, 1]. */
 function shade(hex: string, t: number): string {
@@ -96,6 +102,8 @@ interface Props {
   colors: Record<number, string>; // one colour per route option, shared with the cards and the triangle
   dark: boolean; // the dark theme (the phone's own setting): the map dims with the page
   layout: string; // changes when the panel takes more or less of the screen: the trip is framed again
+  recenter: number; // bumped by the locate button: go to the user (and, while walking, follow again)
+  onFollowChange?: (following: boolean) => void; // while walking: false once the user pans the map away
   mode: "routes" | "barriers"; // barriers: the city barrier map; a tap picks a barrier, not a destination
   barriers: Barriers | null;
   onTap: (p: LonLat) => void;
@@ -108,6 +116,8 @@ export function MapView(props: Props) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<MapLibreMap | null>(null);
   const ready = useRef(false);
+  const [styled, setStyled] = useState(false); // the style has loaded: sources exist and can be drawn
+  const following = useRef(true); // while walking: the map keeps the user in view until they pan it
   const markers = useRef<Marker[]>([]);
   const ends = useRef<Partial<Record<"origin" | "destination" | "user", Marker>>>({});
   const latest = useRef(props);
@@ -116,12 +126,15 @@ export function MapView(props: Props) {
   useEffect(() => {
     let gone = false;
     void basemapInfo().then(({ local, maxZoom, center }) => { if (!gone) build(local ? localStyle(maxZoom) : STYLE, center ?? DC_CENTER); });
-    return () => { gone = true; map.current?.remove(); map.current = null; ready.current = false; ends.current = {}; markers.current = []; };
+    return () => { gone = true; map.current?.remove(); map.current = null; ready.current = false; setStyled(false); ends.current = {}; markers.current = []; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function build(style: StyleSpecification, center: LonLat) {
-    const m = new MapLibreMap({ container: el.current!, style, center, zoom: 13, attributionControl: { compact: true } });
+    // pixelRatio: phone screens are 3x, but routes over washed-out tiles look the same at 2x, and
+    // the map then draws under half as many pixels
+    const m = new MapLibreMap({ container: el.current!, style, center, zoom: 13, attributionControl: { compact: true },
+                                pixelRatio: Math.min(window.devicePixelRatio || 1, 2), fadeDuration: 150 });
     map.current = m;
     // taps must work, and routes must draw, before the basemap tiles have arrived
     m.on("click", (e: MapMouseEvent) => {
@@ -140,6 +153,21 @@ export function MapView(props: Props) {
       latest.current.onView([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
     };
     m.on("moveend", view);
+    // The user moving the map themselves while walking (a drag, a pinch, a wheel): stop pulling it
+    // back to them. Watched on the finger itself, not on the map's move events: a position fix
+    // eases the map about once a second, and a drag that starts during that animation joins a
+    // move already under way, so the map reports no new start for it.
+    const canvas = m.getCanvasContainer();
+    let down: { x: number; y: number } | null = null;
+    const letGo = () => {
+      if (latest.current.follow && following.current) { following.current = false; latest.current.onFollowChange?.(false); }
+    };
+    canvas.addEventListener("pointerdown", (e) => { down = { x: e.clientX, y: e.clientY }; });
+    canvas.addEventListener("pointermove", (e) => {
+      if (down && Math.hypot(e.clientX - down.x, e.clientY - down.y) > GESTURE_PX) { down = null; letGo(); }
+    });
+    for (const end of ["pointerup", "pointercancel"]) canvas.addEventListener(end, () => { down = null; });
+    canvas.addEventListener("wheel", letGo, { passive: true });
     m.once("load", view);
     m.once("style.load", () => {
       for (const id of ["routes", "sides", "barriers", "sidewalks"]) m.addSource(id, { type: "geojson", data: EMPTY });
@@ -208,57 +236,90 @@ export function MapView(props: Props) {
         paint: { "icon-opacity": 0.95 } });
       ready.current = true;
       dim();
-      draw();
+      setStyled(true); // the drawing effects below run now, each for its own part
       fit();
     });
   }
 
-  function draw() {
-    const m = map.current;
-    if (!m || !ready.current) return;
-    const p = latest.current;
-    const line = (coordinates: LonLat[], properties: object = {}) => ({ type: "Feature" as const, properties, geometry: { type: "LineString" as const, coordinates } });
-    const set = (id: string, features: object[]) => (m.getSource(id) as GeoJSONSource).setData({ type: "FeatureCollection", features } as never);
-    // a line's own colour, running from a lighter start to a deeper end
-    const paint = (prefix: string, color: string) => {
-      m.setPaintProperty(`${prefix}-glow`, "line-color", color);
-      m.setPaintProperty(`${prefix}-line`, "line-gradient",
-        ["interpolate", ["linear"], ["line-progress"], 0, shade(color, 0.42), 0.55, color, 1, shade(color, -0.22)]);
-    };
+  // Each part of the map is redrawn only when its own data changes. Redrawing everything on
+  // every render of the page (each move in the triangle, each position fix while walking)
+  // reset every line and rebuilt every pin.
+  const src = (id: string, features: object[]) =>
+    (map.current?.getSource(id) as GeoJSONSource | undefined)?.setData({ type: "FeatureCollection", features } as never);
+  const line = (coordinates: LonLat[], properties: object = {}) =>
+    ({ type: "Feature" as const, properties, geometry: { type: "LineString" as const, coordinates } });
+  // a line's own colour, running from a lighter start to a deeper end
+  const paint = (prefix: string, color: string) => {
+    const m = map.current!;
+    m.setPaintProperty(`${prefix}-glow`, "line-color", color);
+    m.setPaintProperty(`${prefix}-line`, "line-gradient",
+      ["interpolate", ["linear"], ["line-progress"], 0, shade(color, 0.42), 0.55, color, 1, shade(color, -0.22)]);
+  };
+  // the barrier map is about the city, not this trip: the trip steps aside while it is open
+  const trip = props.mode !== "barriers";
+  const color = (props.selectedId != null && props.colors[props.selectedId]) || USER_BLUE;
 
-    // the barrier map is about the city, not this trip: the trip steps aside while it is open
-    const trip = p.mode !== "barriers";
+  useEffect(() => {
+    if (!styled) return;
+    const p = latest.current;
     const chosen = trip ? p.options.find((o) => o.id === p.selectedId) : undefined;
-    const color = (p.selectedId != null && p.colors[p.selectedId]) || USER_BLUE;
-    set("routes", trip ? p.options.filter((o) => o !== chosen).map((o) => line(o.geometry, { color: p.colors[o.id] ?? INK })) : []);
+    src("routes", trip ? p.options.filter((o) => o !== chosen).map((o) => line(o.geometry, { color: p.colors[o.id] ?? INK })) : []);
     // a compromise route (nothing met the requirements) is shown as the chosen line, in coral
     const main = chosen?.geometry ?? (trip ? p.extraRoute : null);
-    set("chosen", main ? [line(main)] : []);
+    src("chosen", main ? [line(main)] : []);
     if (main) paint("chosen", chosen ? color : CORAL);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [styled, trip, props.options, props.selectedId, props.extraRoute, props.colors, color]);
 
-    set("barriers", p.mode === "barriers" && p.barriers ? p.barriers.features : []);
-    set("sidewalks", p.mode === "barriers" && p.barriers?.sidewalks ? p.barriers.sidewalks.features : []);
-    set("walked", p.walked && p.walked.length > 1 ? [line(p.walked)] : []);
-    set("ahead", p.ahead && p.ahead.length > 1 ? [line(p.ahead)] : []);
-    if (p.ahead) paint("ahead", color);
+  useEffect(() => {
+    if (!styled) return;
+    const b = props.mode === "barriers" ? props.barriers : null;
+    src("barriers", b ? b.features : []);
+    src("sidewalks", b?.sidewalks ? b.sidewalks.features : []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [styled, props.mode, props.barriers]);
 
-    const open = trip && p.openPlace != null ? p.places[p.openPlace] : null;
-    set("sides", open ? [line(open.fastest_route.geometry, { side: "fastest" }), line(open.this_route.geometry, { side: "this" })] : []);
+  useEffect(() => {
+    if (!styled) return;
+    src("walked", props.walked && props.walked.length > 1 ? [line(props.walked)] : []);
+    src("ahead", props.ahead && props.ahead.length > 1 ? [line(props.ahead)] : []);
+    if (props.ahead) paint("ahead", color);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [styled, props.walked, props.ahead, color]);
 
-    // Numbered pins for the places where the chosen route leaves the fastest one, and the
-    // ends of the trip. Plain HTML markers: the basemap style carries no fonts for
-    // map-drawn text, and CSS can make the user's position pulse.
+  useEffect(() => {
+    if (!styled) return;
+    const open = trip && props.openPlace != null ? props.places[props.openPlace] : null;
+    src("sides", open ? [line(open.fastest_route.geometry, { side: "fastest" }), line(open.this_route.geometry, { side: "this" })] : []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [styled, trip, props.openPlace, props.places]);
+
+  // Numbered pins for the places where the chosen route leaves the fastest one. Plain HTML
+  // markers: the basemap style carries no fonts for map-drawn text. Rebuilt only for a new
+  // set of places; opening one only changes its look.
+  useEffect(() => {
+    const m = map.current;
+    if (!styled || !m) return;
     markers.current.forEach((mk) => mk.remove());
-    markers.current = (trip ? p.places : []).map((pl, i) => {
+    markers.current = (trip ? props.places : []).map((pl, i) => {
       const pin = document.createElement("button");
-      pin.className = i === p.openPlace ? "place-pin open" : "place-pin";
+      pin.className = "place-pin";
       pin.textContent = String(i + 1);
       pin.setAttribute("aria-label", `Decision point ${i + 1}, where the routes differ`);
       pin.addEventListener("click", (ev) => { ev.stopPropagation(); latest.current.onPlace(i); });
       return new Marker({ element: pin }).setLngLat(pl.at).addTo(m);
     });
+  }, [styled, trip, props.places]);
+  useEffect(() => {
+    markers.current.forEach((mk, i) => mk.getElement().classList.toggle("open", i === props.openPlace));
+  }, [styled, trip, props.places, props.openPlace]);
+
+  // the ends of the trip and the user's position: moved, not rebuilt, on each fix (CSS makes the user pulse)
+  useEffect(() => {
+    const m = map.current;
+    if (!styled || !m) return;
     for (const kind of ["origin", "destination", "user"] as const) {
-      const at = p[kind];
+      const at = latest.current[kind];
       const existing = ends.current[kind];
       if (!at) { existing?.remove(); delete ends.current[kind]; continue; }
       if (existing) { existing.setLngLat(at); continue; }
@@ -267,9 +328,7 @@ export function MapView(props: Props) {
       dot.setAttribute("aria-hidden", "true");
       ends.current[kind] = new Marker({ element: dot }).setLngLat(at).addTo(m);
     }
-  }
-
-  useEffect(draw);
+  }, [styled, props.origin?.[0], props.origin?.[1], props.destination?.[0], props.destination?.[1], props.user?.[0], props.user?.[1]]);
 
   // frame the trip when a new set of routes arrives
   const fitKey = props.options.map((o) => o.geometry.length).join(",") + (props.extraRoute?.length ?? "");
@@ -344,18 +403,32 @@ export function MapView(props: Props) {
   }
   useEffect(dim, [props.dark]);
 
-  // while walking, keep the user in view (above the panel on phones)
-  const at = props.follow && props.user ? `${props.user[0].toFixed(5)},${props.user[1].toFixed(5)}` : null;
-  useEffect(() => {
+  // the user's position in view, clear of the panel (and on phones of the card above)
+  function goToUser(duration: number) {
     const m = map.current;
-    if (!m || !at || !props.user) return;
+    const u = latest.current.user;
+    if (!m || !u) return;
     const wide = window.innerWidth >= WIDE_PX;
     const side = sideCovered();
-    m.easeTo({ center: props.user, zoom: Math.max(m.getZoom(), 16.5), duration: 800,
+    const { top, bottom } = covered();
+    m.easeTo({ center: u, zoom: Math.max(m.getZoom(), 16.5), duration,
                padding: side != null ? { left: side, top: 0, right: 0, bottom: 0 }
-                      : wide ? { left: 420, top: 0, right: 0, bottom: 0 } : { left: 0, top: 0, right: 0, bottom: covered().bottom } });
+                      : wide ? { left: 420, top: 0, right: 0, bottom: 0 } : { left: 0, top, right: 0, bottom } });
+  }
+  // while walking the map follows the user, until they pan it themselves
+  useEffect(() => { following.current = true; latest.current.onFollowChange?.(true); }, [props.follow]);
+  const at = props.follow && props.user ? `${props.user[0].toFixed(5)},${props.user[1].toFixed(5)}` : null;
+  useEffect(() => {
+    if (at && following.current) goToUser(800);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [at]);
+  // the locate button: back to the user and, while walking, following again
+  useEffect(() => {
+    if (!props.recenter) return;
+    if (props.follow && !following.current) { following.current = true; latest.current.onFollowChange?.(true); }
+    goToUser(600);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.recenter]);
 
   return <div ref={el} className="map" />;
 }

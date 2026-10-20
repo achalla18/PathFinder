@@ -81,6 +81,7 @@ export interface SnapInfo {
   snap_distance_m: number;
   walkway_meets_requirements: boolean;
   nearer_walkway_passed_over: boolean;
+  inside_closed_area?: string; // the point is inside an area closed to the public (OSM landuse=military)
 }
 
 export interface Relaxation {

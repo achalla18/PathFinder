@@ -39,7 +39,7 @@ figures inside the city line:
 
 | Criterion | Gaithersburg 2026-10-15 | Gaithersburg 2026-10-16 | Frederick 2026-10-15 | Frederick 2026-10-16 | Frederick 2026-10-19 (Fort Detrick removed) |
 |---|---|---|---|---|---|
-| 1. Curb evidence at crossing ends, implicit included (≥ 60%) | 18.9% | 18.9% — misses (no ramp inventory) | 17.3% | **67.0%** (6,872 of 10,253) — passes | 69.3% (6,760 of 9,757) — passes |
+| 1. Curb evidence at crossing ends, implicit included (≥ 60%) | 18.9% | 18.9% — misses (no ramp inventory) | 17.3% | **67.0%** (6,872 of 10,253) — passes | 69.2% (6,766 of 9,771) — passes |
 | 2. Slope verified (≥ 80% of walkable length) | 0% | **89.4%** — passes | 0% | **96.0%** — passes | 95.8% — passes |
 | 3. Sidewalk evidence (≥ 60% of walkable length) | 51.4%* | 52.5% — misses; **61.7% — passes** with sidewalks from the survey (see below) | 47.6%* | 50.8% — misses; 54.6% — still misses with sidewalks from the survey | 56.8% — misses |
 | 4. Manual-wheelchair route exists, allow likely (≥ 50% of trip sample) | — | **2.7%** of 300 trips — misses (no ramp inventory) | — | **44.0%** of 300 trips — misses | 47.5% of 276 trips — misses (7 short) |
@@ -654,6 +654,8 @@ first, and folded crossings into accessibility, removing after-dark and crime.
   - Fix: the clip keeps `landuse=military` relations. `pf extract-osm` writes them, and
     `build.drop_restricted` removes every edge at least half inside. Frederick lost 805 edges
     (60.3 km). Tests: 213 pass.
+  - *Superseded 2026-10-20:* the half-inside rule still let a gate road run up to 20 m inside, and
+    the edges are now cut at the fence (see that entry).
   - Gaithersburg's clip touches no military area, so its network is unchanged.
   - The OSM extract was not re-downloaded: same file, same 2026-10-15 date.
 - **Frederick's bar, rebuilt** (`pf build-graph` → `pf crux --fresh`):
@@ -687,6 +689,90 @@ first, and folded crossings into accessibility, removing after-dark and crime.
     record is the ramp at the opposite curb; the city recorded one side only.
   - Not changed: some crossing ends are 8–12 m from a city ramp record, beyond the 8 m match radius
     calibrated on DC. Widening it needs an imagery check first.
+
+### 2026-10-20 — Closed areas cut at the fence (review finding)
+
+- **Finding** (adversarial review of the Fort Detrick fix):
+  - Removing only edges at least half inside kept a gate road whose inside stretch was shorter
+    than its outside one; the old unit test even kept one ending 20 m inside.
+  - A street clipping a corner of the base stayed walkable across it.
+  - The planner snaps a trip end up to 150 m to a walkway, so a destination behind the gate still
+    got a route without saying why it stopped.
+  - Confirmed on the real graph by a new data invariant (no walkway inside a closed area, shrunk
+    0.5 m for the fence line). Run on the graph built with the old rule, it failed on two edges:
+    a stretch of Veterans Drive and a service road reaching 91 m inside.
+- **Fix:**
+  - `build.clip_restricted` cuts every edge at the boundary and keeps only its parts outside.
+    Each cut point is a new dead-end node.
+  - The gap bridger never joins those ends (`skip_nodes`), and no connector may enter a closed
+    area (`forbidden`).
+  - The planner names the area when a trip end lies inside one. The route ends at the nearest
+    public walkway, and the web app says so; deep inside, the "no walkway" message names the area.
+  - Tests: the review's gate-road case, a corner cut, fence ends not rejoined (with a control that
+    they would be without the rule), no connector into the area, the planner notice, and the data
+    invariant.
+- **Checked on the real data:**
+  - Fort Detrick: 795 edges removed, 12 cut at the fence (13 cut points, all dead ends; 60.2 km
+    inside). On imagery all 13 lie where a road meets the mapped base boundary.
+  - Compared with the half-inside graph, no named public road lost length. One service road lost
+    91 m inside the base, Veterans Drive lost 1.7 m, and 10 approach roads the old rule dropped
+    whole now reach the fence.
+- **Frederick rebuilt** (`pf build-graph` → `pf crux --fresh`):
+  - Curb evidence: 69.2% (6,766 of 9,771 ends).
+  - Unrecorded junction curbs on the barrier map: 1,883.
+  - Criterion 4: unchanged, 47.5% of 276 trips.
+  - Blocked trips:
+    - 252 blocking curbs inside the line have no record, 171 of them with no ramp record within 50 m.
+    - The worklist is now 13 places, 5 inside the line.
+  - The brief to the city is updated.
+
+### 2026-10-19 — Web app: faster start and easier on phones
+
+- **Measured first** on an emulated phone (Chrome, 390×844, touch, 4× slower CPU, 1.6 Mbps and
+  150 ms latency, cold cache), Frederick trip from the address.
+- **Causes found:**
+  - The map's graphics started before the page's first paint, and the font list named fonts phones
+    do not have: the search card took 11 s to show.
+  - `MapView` redrew every route and rebuilt every pin on every render (each move in the triangle,
+    each position fix).
+  - Every move in the triangle re-read and re-wrote the saved settings.
+  - A failed download of the map's code blanked the whole page.
+- **Speed changes:**
+  - The map starts after the first paint, with two workers at most and pixel ratio 2.
+  - Targeted map redraws, batched saves, the system font, and no filter repainted while dragging.
+  - Profiles are kept on the phone, and the region is asked for at start.
+  - A service worker keeps the app itself for later visits and weak signal (never trips,
+    searches or positions).
+  - Preloading the map's code was tried and dropped: on slow 4G it took bandwidth from the page
+    and made every step later.
+- **Result,** paired runs alternating old and new builds, median of 3:
+
+  | Measure | Old | New |
+  |---|---|---|
+  | First paint | 2.9 s | 2.0 s |
+  | Map | 3.9 s | 3.1 s |
+  | Route cards | 6.0 s | 5.1 s |
+  | Main thread blocked during load | 4.7 s | 3.3 s |
+  | Blocked while dragging the triangle | 0.6 s | 0.17 s |
+
+  - Earlier runs, with the machine busy and so closer to a slow phone: first paint 8.8 s → 4.3 s,
+    map 11.8 s → 6.1 s.
+  - The emulator spends about 1 s on Windows font setup in the first layout, which a phone would not.
+- **On phones:**
+  - The panel drags between three heights.
+  - A locate button sits above the panel. While walking it becomes "Re-center" once the user moves
+    the map, and following no longer fights their finger.
+  - The search card shrinks once a trip is set, search fields have a clear button, and touch
+    targets are at least 44 px.
+  - Grey placeholders show while routes load; there is an offline notice and a retry when the map
+    fails.
+  - The app can be added to the home screen (manifest, icons, light and dark status bar).
+- **Checked:**
+  - 19 scripted checks on the emulated phone (sheet drags, a drag over the tabs not switching tab,
+    pan and re-center while walking, map download blocked, offline reload) pass on 3 runs.
+  - Screenshots in light, dark, landscape and a 360 px phone; one landscape bug (locate button
+    hidden) was found and fixed.
+  - `npm run build` is clean; 214 tests pass.
 
 ---
 
@@ -725,6 +811,7 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 | 2026-10-19 | **The retrained imagery model is not used:** scored once, it failed the same bar ("sidewalk" 80.9% correct; "no sidewalk" 100% but only 26 answers, 30 needed). The frozen test set is now spent for imagery models; any further imagery model needs a new, independently labelled test set fixed before it is built | The protocol fixed the outcome of a fail before training; a third look at the same test set would let it tune the model |
 | 2026-10-19 | **Areas closed to the public (`landuse=military`) are not walkable:** edges at least half inside are removed; trips with an end there leave the sample by its existing rule | A route through a guarded gate is not a route; Fort Detrick's streets were mapped as public (`access=yes`). This corrects the network, not the bar |
 | 2026-10-19 | **Imagery sidewalk detection is closed (owner).** No new test set and no further models; effort moves to getting Frederick over the accessibility bar through the city's own data | Two models failed, in opposite ways; at six inches, under canopy and beside driveways, 95% looks out of reach, and a new hand-labelled test set would cost about as much as mapping the streets |
+| 2026-10-20 | **Closed areas are cut at their boundary**, not removed by a share of each edge: only the parts of a walkway outside are kept, the cut ends are never bridged, and no connector may enter. A trip end inside one is told so | Review finding: the half-inside rule kept gate roads reaching up to 20 m behind the fence and corners walkable through the area |
 
 ---
 
@@ -764,7 +851,8 @@ first, and folded crossings into accessibility, removing after-dark and crime.
    asks for (a) written permission to show what is built on the city's surveys outside the team
    (rule 7), (b) the sidewalk survey's scope, which would let its silence count inside it
    (criterion 3, 56.8%), (c) the survey report (condition categories), and (d) a check of the
-   blocking corners in `reports/frederick/blocked/worklist.csv` (criterion 4, 7 trips short).
+   blocking corners in `reports/frederick/blocked/worklist.csv` (criterion 4, 7 trips short; 13
+   places, 5 inside the city line).
 2. Data requests (owner): MDOT SHA's ADA inventory (27 of Frederick's 145 blocked trips touch a
    major road); a Gaithersburg ramp inventory (it would lift criterion 4 most there: 199 of the
    blocked trips wait only on unrecorded curbs); MCDOT signals with APS / LPI.
