@@ -104,9 +104,10 @@ def barriers(edges: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
             idx = 0 if end == "u" else -1
             pts = [shapely.Point(shapely.get_coordinates(g)[idx]) for g in sel.geometry.values]
             for (_, r), pt in zip(sel.iterrows(), pts):
-                rows.append({"type": t, "status": "inferred" if t.endswith("barrier") else "unknown",
-                             "source": "derived:junction_ramp_evidence" if t.endswith("barrier") else None,
-                             "as_of": None, "length_m": np.nan, "street": r.get("name"),
+                barrier = t.endswith("barrier")
+                rows.append({"type": t, "status": "inferred" if barrier else "unknown",
+                             "source": r[f"xing_{end}_kerb_source"] if barrier else None,
+                             "as_of": r[f"xing_{end}_kerb_as_of"] if barrier else None, "length_m": np.nan, "street": r.get("name"),
                              "edge_id": int(r["edge_id"]), "geometry": pt})
 
     # --- lines

@@ -47,7 +47,9 @@ def make_edges(rows: list[dict], nodes_xy: dict[int, tuple[float, float]]) -> gp
                "offstreet": False, "ps_obstacles": 0, "ps_surface_problems": 0, "component": 0,
                "crossing_total_length_m": np.nan, "outside_region": False,
                "xing_u": False, "xing_u_control": None, "xing_u_width_m": np.nan, "xing_u_kerb": None,
-               "xing_v": False, "xing_v_control": None, "xing_v_width_m": np.nan, "xing_v_kerb": None}
+               "xing_u_kerb_source": None, "xing_u_kerb_as_of": None,
+               "xing_v": False, "xing_v_control": None, "xing_v_width_m": np.nan, "xing_v_kerb": None,
+               "xing_v_kerb_source": None, "xing_v_kerb_as_of": None}
         for attr, (val, st) in GRADED_DEFAULTS.items():
             rec[attr], rec[f"{attr}_status"] = val, st
             rec[f"{attr}_source"], rec[f"{attr}_as_of"] = ("test" if val is not None else None), None

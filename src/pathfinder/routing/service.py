@@ -31,7 +31,7 @@ from .explain import (
     shown_route,
     tipping_point,
 )
-from .guidance import build_steps
+from .guidance import build_steps, junction_kerb_claim
 from ..graph.enrich import signal_inventory_as_of
 from ..sources import REGION
 from .router import Network, Route, simplex_grid
@@ -51,7 +51,7 @@ _EVIDENCE_ATTRS = ("crossing_control", "kerb_a", "kerb_b", "ramp_check_a", "ramp
 _EVIDENCE_COLUMNS = ["edge_id", "kind", "representation", "osm_way_id", "length_m", "name", "along_street", "crossed_street",
                      "crossed_lanes", "crossed_speed_mph", "signal_lpi", "signal_hawk",
                      *[c for a in _EVIDENCE_ATTRS for c in (a, f"{a}_status", f"{a}_source", f"{a}_as_of")],
-                     *[f"xing_{end}{s}" for end in ("u", "v") for s in ("", "_control", "_kerb")]]
+                     *[f"xing_{end}{s}" for end in ("u", "v") for s in ("", "_control", "_kerb", "_kerb_source", "_kerb_as_of")]]
 
 
 def _claim(row: dict, attr: str) -> dict:
@@ -240,13 +240,12 @@ class TripPlanner:
         for end in ("u", "v"):
             for r in rows:
                 if r[f"xing_{end}"]:
-                    control, kerb = r[f"xing_{end}_control"], r[f"xing_{end}_kerb"]
+                    control = r[f"xing_{end}_control"]
                     out.append({"type": "unmapped_crossing", "street": r["name"],
                                 "control": {"value": control, "status": "inferred" if control else "unknown",
                                             "source": REGION.role("signals") if control else None,
                                             "as_of": signal_inventory_as_of(REGION.role("signals")) if control else None},
-                                "curb_ramps": {"value": kerb, "status": "inferred" if kerb != "unknown" else "unknown",
-                                               "source": "derived:junction_ramp_evidence", "as_of": None},
+                                "curb_ramps": junction_kerb_claim(r, end),
                                 "note": "Half of a crossing at a junction where sidewalks and crossings are not mapped separately."})
         steps = [r for r in rows if r["kind"] in ("steps", "escalator")]
         if steps:

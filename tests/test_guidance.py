@@ -14,7 +14,8 @@ def _row(**kw) -> dict:
     row = {"kind": "sidewalk", "name": None, "along_street": None, "osm_way_id": 1, "crossed_street": None, "sidewalk_presence": None,
            "sidewalk_presence_status": "unknown", "sidewalk_presence_source": None, "sidewalk_presence_as_of": None,
            "step_free_as_of": None, "xing_u": False, "xing_v": False,
-           "xing_u_control": None, "xing_v_control": None, "xing_u_kerb": None, "xing_v_kerb": None}
+           "xing_u_control": None, "xing_v_control": None, "xing_u_kerb": None, "xing_v_kerb": None,
+           "xing_u_kerb_source": None, "xing_v_kerb_source": None, "xing_u_kerb_as_of": None, "xing_v_kerb_as_of": None}
     for attr in ("crossing_control", "kerb_a", "kerb_b"):
         row.update({attr: None, f"{attr}_status": "unknown", f"{attr}_source": None, f"{attr}_as_of": None})
     return {**row, **kw}
@@ -93,13 +94,25 @@ def test_a_crossing_carries_its_claims_and_unknown_stays_unknown():
 
 def test_unmapped_crossings_are_steps_too_and_take_the_worse_half():
     # two street-centerline edges meeting at a junction, each flagged at that end; one half has a signal on record
-    a = _row(kind="street_unknown", xing_v=True, xing_v_control="signal", xing_v_kerb="ramp_likely")
-    b = _row(kind="street_unknown", xing_v=True, xing_v_control=None, xing_v_kerb="ramp_likely")
+    a = _row(kind="street_unknown", xing_v=True, xing_v_control="signal", xing_v_kerb="ramp_likely",
+             xing_v_kerb_source="frederick_ramps", xing_v_kerb_as_of="2025-04-02")
+    b = _row(kind="street_unknown", xing_v=True, xing_v_control=None, xing_v_kerb="ramp_likely",
+             xing_v_kerb_source="frederick_ramps", xing_v_kerb_as_of="2025-04-02")
     parts = [_line((0, 0), (100, 0)), _line((100, 0), (200, 0))]  # b is walked from its v end
     steps = [s for s in _walk(parts, [a, b], [2], forward=[True, False]) if s["type"] == "unmapped_crossing"]
     assert len(steps) == 1 and steps[0]["vertex"] == 2
     assert steps[0]["control"] == UNKNOWN  # the halves disagree: not a signal
-    assert steps[0]["curb_ramps"]["value"] == "ramp_likely" and steps[0]["curb_ramps"]["status"] == "inferred"
+    assert steps[0]["curb_ramps"] == {"value": "ramp_likely", "status": "inferred", "source": "frederick_ramps", "as_of": "2025-04-02"}
+
+
+def test_halves_that_agree_on_the_curb_keep_every_source_and_the_older_date():
+    a = _row(kind="alley", xing_v=True, xing_v_kerb="no_curb", xing_v_kerb_source="osm_md", xing_v_kerb_as_of="2026-10-15")
+    b = _row(kind="street_unknown", xing_v=True, xing_v_kerb="no_curb", xing_v_kerb_source="frederick_sidewalks",
+             xing_v_kerb_as_of="2025-03-11")
+    parts = [_line((0, 0), (100, 0)), _line((100, 0), (200, 0))]
+    steps = [s for s in _walk(parts, [a, b], [2], forward=[True, False]) if s["type"] == "unmapped_crossing"]
+    assert steps[0]["curb_ramps"] == {"value": "no_curb", "status": "inferred", "source": "frederick_sidewalks, osm_md",
+                                      "as_of": "2025-03-11"}
 
 
 def test_stairs_and_streets_without_a_sidewalk_are_named_before_they_are_reached():

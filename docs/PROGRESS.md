@@ -18,7 +18,7 @@ See "How to update" at the bottom.
 | **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) and sidewalks from the surveys (both towns) in. Each town passes 3 of 5 accessibility criteria |
 | **Next** | Frederick is 7 trips short of criterion 4 and 3.2 points short of criterion 3: a brief to the City of Frederick (data permission, survey scope, a corner check from `reports/frederick/blocked/`). Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
 | **Repo** | `C:\dev\PathFinder` (moved out of OneDrive 2026-10-19), its own git repository; no remote |
-| **Tests** | 213 pass on the Frederick graph (unit and data-invariant; 1 skipped by design) |
+| **Tests** | 222 pass on each town's graph (unit and data-invariant; 1 skipped by design), 2026-10-20 |
 
 ### Key metrics over time
 
@@ -726,6 +726,31 @@ first, and folded crossings into accessibility, removing after-dark and crime.
     - The worklist is now 13 places, 5 inside the line.
   - The brief to the city is updated.
 
+### 2026-10-20 — Junction curb claims carry their source and date
+
+- **Gap (open issue, rule 4):** at a junction crossed without a crossing edge, the curb claim
+  (`ramp_likely`, `no_ramp_reported`, `no_curb`) reached the trip and the barrier map as
+  `derived:junction_ramp_evidence` with no date.
+- **Fix:** `enrich_implicit_crossings` writes `xing_<end>_kerb_source` / `_as_of`.
+  - Ramp records: the sources counted at the corners, dated by the oldest record counted. Any
+    undated record leaves the date unknown.
+  - `no_curb`: OSM, dated by the extract, where an alley, service road or street without
+    sidewalk puts the walker in the roadway; otherwise the record that shows no sidewalk.
+  - The trip JSON, the guidance steps and the barrier map use them.
+  - Two halves of one crossing that agree but rest on different records keep both sources and
+    the older date. Before, they would have been compared whole and become unknown.
+  - The web app labels each source of a merged claim.
+- **Checked on the real data** (`pf enrich`, both towns):
+  - Frederick: every known junction curb has a source and a date. Of 7,267 flagged ends, 2,649
+    `ramp_likely` and 160 `no_ramp_reported` cite `frederick_ramps`, dated 2025-03-18 to 2025-06-10.
+    1,959 `no_curb` cite OSM (2026-10-15), and 2,499 stay unknown.
+  - Gaithersburg: 1,527 `no_curb` cite OSM; 3,734 unknown (no ramp inventory).
+  - Two Frederick junctions (Catoctin Avenue, Baker Place East) checked by hand against the raw
+    ramp records within the corner radius: the date is the oldest one.
+  - The cost model is unchanged, so routes, crux results and the bar cannot move. Coverage and
+    barrier reports regenerate byte-identical.
+- Tests: 222 pass on each town's graph (1 skipped by design); `npm run build` is clean.
+
 ### 2026-10-19 — Web app: faster start and easier on phones
 
 - **Measured first** on an emulated phone (Chrome, 390×844, touch, 4× slower CPU, 1.6 Mbps and
@@ -817,15 +842,16 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 
 ## Open issues
 
-- No Maryland basemap tiles, elevation, signals, lights, crashes or crime are registered
-  yet: every such attribute is unknown until Phase C.
+- No Maryland basemap tiles are registered yet (the page uses OSM's public tiles). *Corrected
+  2026-10-20:* elevation and signal locations are registered for both towns (2026-10-16);
+  lights, crashes and crime were dropped with the refocus.
 - Many parameters (radii, penalties, the 30 felt-second worth-showing bar) were calibrated
   on DC and are untested on suburban Maryland streets.
 - **Slope on regraded or terraced ground:** 14% (Gaithersburg) and 22% (Frederick) of steep
   edges are flat on average with one steep 10 m window; some sit on ground built since the
   flight. Candidates: newer imagery-dated checks, or field checks with testers.
-- `ramp_likely` / `no_ramp_reported` at junctions carry no date; they should take the
-  survey dates of the ramps they count.
+- ~~`ramp_likely` / `no_ramp_reported` at junctions carry no date.~~ Fixed 2026-10-20: they
+  carry the counted ramps' source and oldest date.
 - Gaithersburg has no published curb-ramp inventory; without one no step-free route can be
   confirmed there.
 - The City of Frederick sidewalk survey is not complete (88.9% of OSM's public-street

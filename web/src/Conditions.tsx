@@ -46,9 +46,9 @@ export const streetName = (s: string) =>
 
 function backing(c: Partial<Claim>): string {
   if (!c.status || c.status === "unknown") return "no record";
-  const src = c.source
-    ? (SOURCES[c.source] ?? (c.source.startsWith("osm_") ? "OpenStreetMap" : c.source.startsWith("derived") ? "estimated" : c.source))
-    : "";
+  // a claim merged from two halves of a crossing may name several sources, ", "-separated
+  const label = (s: string) => SOURCES[s] ?? (s.startsWith("osm_") ? "OpenStreetMap" : s.startsWith("derived") ? "estimated" : s);
+  const src = c.source ? [...new Set(c.source.split(", ").map(label))].join(" and ") : "";
   const year = c.as_of ? ` ${String(c.as_of).slice(0, 4)}` : "";
   return `${c.status === "inferred" ? "likely" : "recorded"}${src ? ` · ${src}` : ""}${year}`;
 }

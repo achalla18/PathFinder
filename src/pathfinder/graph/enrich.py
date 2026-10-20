@@ -775,7 +775,9 @@ def _side_capture_dates(lines: gpd.GeoSeries, polys: gpd.GeoDataFrame) -> pd.Ser
 
 
 def enrich_implicit_crossings(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, signals: gpd.GeoDataFrame,
-                              roadway: gpd.GeoDataFrame, ps: gpd.GeoDataFrame, ramps2010: gpd.GeoDataFrame) -> None:
+                              roadway: gpd.GeoDataFrame, ps: gpd.GeoDataFrame, ramps2010: gpd.GeoDataFrame,
+                              ps_source: str | None = "project_sidewalk_dc",
+                              ramps_source: str | None = "sidewalk_ramps_2010") -> None:
     """Flag the ends of street-centerline edges where the walker crosses a street that has no
     crossing edge, so the cost model and requirements can treat that crossing like any other.
 
@@ -801,6 +803,10 @@ def enrich_implicit_crossings(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, 
     - ``xing_x_kerb``     "no_curb" (walking in the roadway: no sidewalk, alley, service road),
                           "ramp_likely" (>= JUNCTION_MIN_RAMPS ramp records at the corners and
                           no missing-ramp label), "no_ramp_reported", or "unknown"
+    - ``xing_x_kerb_source`` / ``xing_x_kerb_as_of``  what backs a known kerb value: the ramp
+                          sources counted and their oldest record's date, or for "no_curb" OSM
+                          (alley, service road, street without sidewalk) or the survey that
+                          shows no sidewalk; null where the kerb is unknown
     Everything here is inferred; an implicit crossing never satisfies "verified only".
     """
     cl = edges["representation"].eq("street_centerline")
@@ -828,20 +834,43 @@ def enrich_implicit_crossings(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, 
     corners = gpd.GeoDataFrame({"node_id": jn["node_id"].to_numpy()},
                                geometry=jn.geometry.buffer(JUNCTION_RAMP_RADIUS_M).to_numpy(), crs=edges.crs)
 
-    def near_count(pts: gpd.GeoDataFrame) -> pd.Series:
-        return gpd.sjoin(pts[["geometry"]], corners, predicate="within").groupby("node_id").size()
-
+    # every ramp / missing-ramp record at a corner, with the source and date it carries
     inventory_kerb = _inventory_kerb(ramps2010)
-    ramps = near_count(ps[ps["label_type"].eq("CurbRamp")]).add(near_count(ramps2010[inventory_kerb.eq("ramp_present")]),
-                                                               fill_value=0)
-    no_ramp = near_count(ps[ps["label_type"].eq("NoCurbRamp")]).add(near_count(ramps2010[inventory_kerb.eq("no_ramp")]),
-                                                                     fill_value=0)
-    node_kerb = pd.Series("unknown", index=jn["node_id"].to_numpy(), dtype="object")
-    node_kerb[node_kerb.index.map(ramps).fillna(0).to_numpy() >= JUNCTION_MIN_RAMPS] = "ramp_likely"
-    node_kerb[node_kerb.index.map(no_ramp).fillna(0).to_numpy() > 0] = "no_ramp_reported"
+    recs = []
+    if ps_source is not None:
+        p = ps[ps["label_type"].isin(["CurbRamp", "NoCurbRamp"])]
+        recs.append(gpd.GeoDataFrame({"kval": p["label_type"].map({"CurbRamp": "ramp_present", "NoCurbRamp": "no_ramp"}),
+                                      "src": ps_source, "as_of": p["image_date"]}, geometry=p.geometry, crs=edges.crs))
+    if ramps_source is not None:
+        r = ramps2010[inventory_kerb.isin(["ramp_present", "no_ramp"])]
+        recs.append(gpd.GeoDataFrame({"kval": inventory_kerb[r.index], "src": ramps_source,
+                                      "as_of": _ms_to_date(r["CAPTUREYEAR"])}, geometry=r.geometry, crs=edges.crs))
+    recs = [g for g in recs if len(g)]
+    at = (gpd.sjoin(pd.concat(recs, ignore_index=True), corners, predicate="within") if recs
+          else pd.DataFrame(columns=["kval", "src", "as_of", "node_id"]))
+    at["as_of"] = at["as_of"].astype(object).where(at["as_of"].notna(), None)
 
-    presence = edges["sidewalk_presence"].where(edges["sidewalk_presence_status"].ne(ev.UNKNOWN))
-    in_roadway = shared | edges["kind"].eq("street_no_sidewalk") | presence.eq("none")
+    def evidence(kval: str) -> pd.DataFrame:
+        """Per junction: how many records say ``kval``, which sources, and the oldest record's
+        date (a count of several records is as old as its oldest one; any undated record
+        leaves the date unknown)."""
+        g = at[at["kval"].eq(kval)].groupby("node_id")
+        return pd.DataFrame({"n": g.size(), "src": g["src"].agg(lambda s: ", ".join(sorted(set(s)))),
+                             "as_of": g["as_of"].agg(lambda s: None if s.isna().any() else min(s))})
+
+    ramps, no_ramp = evidence("ramp_present"), evidence("no_ramp")
+    node_kerb = pd.Series("unknown", index=jn["node_id"].to_numpy(), dtype="object")
+    node_src = pd.Series(None, index=node_kerb.index, dtype="object")
+    node_as_of = pd.Series(None, index=node_kerb.index, dtype="object")
+    for value, e, hit in (("ramp_likely", ramps, ramps["n"] >= JUNCTION_MIN_RAMPS), ("no_ramp_reported", no_ramp, no_ramp["n"] > 0)):
+        ids = e.index[hit]
+        node_kerb[ids], node_src[ids], node_as_of[ids] = value, e.loc[ids, "src"], e.loc[ids, "as_of"]
+
+    presence_known = edges["sidewalk_presence_status"].ne(ev.UNKNOWN)
+    by_kind = shared | edges["kind"].eq("street_no_sidewalk")  # OSM says the walker is in the roadway
+    by_survey = ~by_kind & presence_known & edges["sidewalk_presence"].eq("none")
+    in_roadway = by_kind | by_survey
+    osm_as_of = _osm_as_of()
     for end in ("u", "v"):
         f = flags[end]
         n = edges[end]
@@ -851,6 +880,13 @@ def enrich_implicit_crossings(edges: gpd.GeoDataFrame, nodes: gpd.GeoDataFrame, 
         edges[f"xing_{end}_width_m"] = n.map(width).where(f).astype(float)
         kerb = n.map(node_kerb).where(~in_roadway, "no_curb")
         edges[f"xing_{end}_kerb"] = kerb.where(f).astype("object")
+        # what backs the curb value: the ramp records at the junction, or what put the walker in the roadway
+        src = n.map(node_src).where(~in_roadway, None)
+        src = src.where(~by_kind, OSM).where(~by_survey, edges["sidewalk_presence_source"])
+        as_of = n.map(node_as_of).where(~in_roadway, None)
+        as_of = as_of.where(~by_kind, osm_as_of).where(~by_survey, edges["sidewalk_presence_as_of"])
+        edges[f"xing_{end}_kerb_source"] = src.where(f & kerb.ne("unknown")).astype("object")
+        edges[f"xing_{end}_kerb_as_of"] = as_of.where(f & kerb.ne("unknown")).astype("object")
     log.info("implicit crossings: %d edge ends at %d junctions (%d with a inventory signal)",
              int(flags["u"].sum() + flags["v"].sum()), len(jn), len(has_signal))
 
@@ -979,7 +1015,7 @@ def enrich() -> gpd.GeoDataFrame:
         ("project sidewalk counts", lambda: enrich_project_sidewalk_counts(edges, ps)),
         ("centerline sidewalks", lambda: enrich_centerline_sidewalks(edges, planim, planim_src)),
         ("sidewalk condition", lambda: enrich_sidewalk_condition(edges, planim, planim_src)),
-        ("implicit crossings", lambda: enrich_implicit_crossings(edges, nodes, signals, roadway, ps, ramps)),
+        ("implicit crossings", lambda: enrich_implicit_crossings(edges, nodes, signals, roadway, ps, ramps, ps_src, ramps_src)),
         ("centerline traffic", lambda: enrich_centerline_traffic(edges, roadway, roadway_src, roadway_as_of)),
         ("slope", lambda: enrich_slope(edges)),
     ]

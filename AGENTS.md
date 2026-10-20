@@ -204,7 +204,9 @@ reports/<region>/            generated, committed, human-readable outputs (do no
   confirms nothing by absence. Check an inventory's completeness before naming it.
 - **Implicit crossings.** On street-centerline edges, passing a junction crosses a street
   with no crossing edge. `xing_u` / `xing_v` flag those ends; cost and requirements treat
-  each as half a crossing with inferred evidence at best.
+  each as half a crossing with inferred evidence at best. A known curb there carries its
+  source and date (`xing_<end>_kerb_source` / `_as_of`): the ramp records counted, dated by the
+  oldest one, or OSM where the walker is in the roadway.
 - **A favorable value needs positive evidence.** A crossing is a `signal` only when OSM says
   so; a nearby inventory signal alone never makes it one, and contradictory tags take the less
   favorable reading.

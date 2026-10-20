@@ -174,8 +174,9 @@ def test_centerline_junctions_become_implicit_crossings():
     nodes["on_removed_road"] = nodes["node_id"].eq(3)  # node 3 sits on a sidewalk-mapped avenue
     signals = _points([(110.0, 5.0)], STATUS=["Active"])
     roadway = gpd.GeoDataFrame({"TOTALCROSSSECTIONWIDTH": [60.0]}, geometry=[box(95, -200, 105, 200).boundary], crs=ANALYSIS_CRS)
-    ps = _points([(95.0, 5.0), (105.0, -5.0), (295.0, 5.0)], label_type=["CurbRamp", "CurbRamp", "NoCurbRamp"])
-    ramps = _points([(9e5, 9e5)])
+    ps = _points([(95.0, 5.0), (105.0, -5.0), (295.0, 5.0)], label_type=["CurbRamp", "CurbRamp", "NoCurbRamp"],
+                 image_date=["2023-06-01", "2021-05-01", "2022-07-01"])
+    ramps = _points([(9e5, 9e5)], CAPTUREYEAR=[CAPTURE_MS])
     enrich.enrich_implicit_crossings(e, nodes, signals, roadway, ps, ramps)
 
     assert e["xing_u"].tolist() == [False, True, False, False, True, False, False]
@@ -190,6 +191,25 @@ def test_centerline_junctions_become_implicit_crossings():
     assert e["xing_v_kerb"].iat[5] == "no_curb" and not e["xing_v"].iat[1]
     # nothing is recorded on ends that are not crossings
     assert e.loc[~e["xing_u"], "xing_u_kerb"].isna().all()
+    # each known curb says what backs it: the records' source and the oldest one's date ...
+    assert (e["xing_v_kerb_source"].iat[0], e["xing_v_kerb_as_of"].iat[0]) == ("project_sidewalk_dc", "2021-05-01")
+    assert (e["xing_v_kerb_source"].iat[2], e["xing_v_kerb_as_of"].iat[2]) == ("project_sidewalk_dc", "2022-07-01")
+    # ... or what put the walker in the roadway: OSM's alley here
+    assert e["xing_v_kerb_source"].iat[5] == enrich.OSM
+    # an unknown curb claims no source
+    assert e.loc[e["xing_u_kerb"].eq("unknown"), "xing_u_kerb_source"].isna().all()
+
+
+def test_a_junction_count_with_an_undated_record_has_no_date():
+    xy = {0: (0, 0), 1: (100, 0), 2: (200, 0), 3: (100, 100)}
+    st = {"kind": "street_unknown", "representation": "street_centerline"}
+    e = _edges([{"u": 0, "v": 1, **st}, {"u": 1, "v": 2, **st}, {"u": 3, "v": 1, **st}], xy)
+    nodes = make_nodes(xy)
+    nodes["on_removed_road"] = False
+    ps = _points([(95.0, 5.0), (105.0, -5.0)], label_type=["CurbRamp", "CurbRamp"], image_date=["2023-06-01", None])
+    enrich.enrich_implicit_crossings(e, nodes, _points([], STATUS=[]), _points([], TOTALCROSSSECTIONWIDTH=[]), ps,
+                                     _points([], CAPTUREYEAR=[]), ramps_source=None)
+    assert e["xing_v_kerb"].iat[0] == "ramp_likely" and e["xing_v_kerb_as_of"].iat[0] is None
 
 
 def test_coverage_report_covers_every_graded_attribute():
@@ -367,8 +387,8 @@ def test_a_driveway_down_the_street_from_a_signal_does_not_borrow_it():
     signals = _points([(100.0, 0.0)], STATUS=["Active"])
     roadway = gpd.GeoDataFrame({"TOTALCROSSSECTIONWIDTH": [40.0]}, geometry=[box(9e5, 9e5, 9e5 + 1, 9e5 + 1).boundary],
                                crs=ANALYSIS_CRS)
-    ramps = _points([(9e5, 9e5)])
-    ps = _points([(9e5, 9e5)], label_type=["CurbRamp"])
+    ramps = _points([(9e5, 9e5)], CAPTUREYEAR=[CAPTURE_MS])
+    ps = _points([(9e5, 9e5)], label_type=["CurbRamp"], image_date=["2023-06-01"])
     enrich.enrich_implicit_crossings(e, nodes, signals, roadway, ps, ramps)
     assert e["xing_v_control"].iat[0] == "signal"  # the intersection itself
     assert e["xing_v"].iat[5] and e["xing_v_control"].iat[5] is None  # the driveway: unknown

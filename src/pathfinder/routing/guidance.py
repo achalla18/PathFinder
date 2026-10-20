@@ -94,13 +94,30 @@ def _half_crossing(row: dict, end: str) -> dict:
     return {"control": {"value": control, "status": "inferred" if control else "unknown",
                         "source": REGION.role("signals") if control else None,
                                             "as_of": signal_inventory_as_of(REGION.role("signals")) if control else None},
-            "curb_ramps": {"value": kerb, "status": "inferred" if kerb and kerb != "unknown" else "unknown",
-                           "source": "derived:junction_ramp_evidence", "as_of": None}}
+            "curb_ramps": junction_kerb_claim(row, end)}
+
+
+def junction_kerb_claim(row: dict, end: str) -> dict:
+    """The curb claim at one flagged end: inferred from the records at the junction, with their
+    source and oldest date (``enrich.enrich_implicit_crossings``)."""
+    kerb = row[f"xing_{end}_kerb"]
+    known = bool(kerb) and kerb != "unknown"
+    return {"value": kerb, "status": "inferred" if known else "unknown",
+            "source": row[f"xing_{end}_kerb_source"] if known else None,
+            "as_of": row[f"xing_{end}_kerb_as_of"] if known else None}
 
 
 def _less_favorable(a: dict, b: dict) -> dict:
-    """Two halves of one unmapped crossing that disagree: the claim is unknown, not the better half."""
-    return a if a == b else {"value": None, "status": "unknown", "source": None, "as_of": None}
+    """Two halves of one unmapped crossing that disagree: the claim is unknown, not the better half.
+    Halves that agree on value and status but rest on different records keep both sources and
+    the older date."""
+    if a == b:
+        return a
+    if a["value"] == b["value"] and a["status"] == b["status"]:
+        sources = sorted({s for c in (a, b) if c["source"] for s in c["source"].split(", ")})
+        dates = [c["as_of"] for c in (a, b)]
+        return {**a, "source": ", ".join(sources) or None, "as_of": None if None in dates else min(dates)}
+    return {"value": None, "status": "unknown", "source": None, "as_of": None}
 
 
 def build_steps(parts: list[np.ndarray], rows: list[dict | None], forward: list[bool], join_degree: list[int]) -> list[dict]:
