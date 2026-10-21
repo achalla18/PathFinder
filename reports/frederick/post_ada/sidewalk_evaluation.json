@@ -1,0 +1,69 @@
+{
+ "bar_passed": false,
+ "checks": {
+  "1_photos": false,
+  "2_osm_tags": false,
+  "3_survey": false
+ },
+ "photos": {
+  "n": 59,
+  "correct": 37,
+  "precision_pct": 62.7,
+  "wilson_lb_pct": 50.0,
+  "sampled": 100,
+  "unclear": 41,
+  "verdicts": {
+   "unclear": 41,
+   "both": 37,
+   "one_side": 15,
+   "none": 7
+  }
+ },
+ "photo_controls": {
+  "unclear": 11,
+  "none": 6,
+  "both": 5,
+  "one_side": 3
+ },
+ "osm_tags": {
+  "n": 94,
+  "correct": 74,
+  "precision_pct": 78.7,
+  "wilson_lb_pct": 69.4,
+  "values": {
+   "both": 74,
+   "none": 11,
+   "one_side": 9
+  }
+ },
+ "survey": {
+  "n": 361,
+  "correct": 242,
+  "precision_pct": 67.0,
+  "wilson_lb_pct": 62.0,
+  "values": {
+   "both": 242,
+   "at_least_one_side": 119
+  }
+ },
+ "fills": {
+  "edges": 772,
+  "km": 48.2,
+  "km_inside_line": 45.3,
+  "criterion_3_before_pct": 56.8,
+  "criterion_3_after_pct": 60.6,
+  "criterion_3_bar_pct": 60.0
+ },
+ "protocol": {
+  "highways": [
+   "residential",
+   "living_street",
+   "tertiary"
+  ],
+  "year": 1995,
+  "radius_m": 60.0,
+  "min_built": 4,
+  "seed": 202610212,
+  "photo_radius_m": 15.0
+ }
+}

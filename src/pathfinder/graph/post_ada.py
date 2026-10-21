@@ -22,6 +22,13 @@ PARCEL_RADIUS_M = 60.0  # the lots around a corner: about two to four on each st
 MIN_BUILT_PARCELS = 4  # fewer says too little about the neighbourhood
 YEAR_MIN, YEAR_MAX = 1700, 2026  # YEARBLT outside this is no structure (0, blank) or an error
 SOURCE = "derived:post_ada_parcels"
+# Sidewalks: subdivision streets only. Arterials and unclassified roads are often older
+# alignments, state-built or rural, whatever the age of the houses beside them. Fixed with the
+# rule's bar on 2026-10-21 (docs/PROGRESS.md, Decisions log). The sidewalk rule FAILED its bar
+# (62.7% right in street photos against 95%) and is not used: these constants are kept only so
+# tools/post_ada/sidewalk_check.py can reproduce that test. Never wire them into enrich.
+SIDEWALK_HIGHWAYS = ("residential", "living_street", "tertiary")
+SIDEWALK_CLAIM = "both"
 
 
 def built_parcels(parcels: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
@@ -42,6 +49,15 @@ def neighbourhood(places: gpd.GeoSeries, built: gpd.GeoDataFrame) -> pd.DataFram
     out["post_ada"] = (out["n_built"] >= MIN_BUILT_PARCELS) & (out["oldest"] >= POST_ADA_YEAR)
     out.index = places.index
     return out
+
+
+def sidewalk_candidates(edges: gpd.GeoDataFrame) -> pd.Series:
+    """Street-centerline edges the sidewalk rule may speak for: a subdivision road class and
+    not a service road or alley. Whether presence is already known is the caller's matter."""
+    from .enrich import NO_PLANIMETRIC_PRESENCE_KINDS
+
+    return (edges["representation"].eq("street_centerline") & edges["highway"].isin(SIDEWALK_HIGHWAYS)
+            & ~edges["kind"].isin(NO_PLANIMETRIC_PRESENCE_KINDS))
 
 
 def as_of(parcels: gpd.GeoDataFrame) -> str | None:

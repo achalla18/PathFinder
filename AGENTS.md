@@ -110,7 +110,8 @@ src/pathfinder/
 field/<region>.csv           the team's field checks of blocking curbs (field/README.md); the only
                              data kept in the repo, read as source <region>_field_checks
 tools/field_checks/          make_sheet.py: the field sheet from the blocked-trip worklist
-tools/post_ada/              evaluate.py: scores the post-ADA rule against a ramp survey (internal)
+tools/post_ada/              evaluate.py: scores the post-ADA rule against a ramp survey (internal);
+                             sidewalk_check.py: the blind photo test of the sidewalk rule (failed)
 web/                         phone web app (React + TypeScript + MapLibre GL, built with Vite)
 tests/                       unit tests (synthetic) + data invariants (marked `data`)
 reports/<region>/            generated, committed, human-readable outputs (do not hand-edit)

@@ -16,7 +16,7 @@ See "How to update" at the bottom.
 |---|---|
 | **Product** | **City accessibility app** (refocused 2026-10-15): step-free routes from mobility profiles first, plus a city barrier map. Dimensions: crossings & curbs / slope / sidewalk |
 | **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) sidewalks from the surveys (both towns) and the post-ADA ramp rule (Frederick) in. Frederick passes 4 of 5 accessibility criteria, Gaithersburg 3 of 5 |
-| **Next** | Frederick clears criterion 4 (52.2%, 2026-10-21) and is 3.2 points short of criterion 3 (sidewalk evidence), which needs mapping. The City of Frederick allows internal use only (2026-10-20), so Phase E (testers) cannot see anything built on the city's data. Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
+| **Next** | Frederick clears criterion 4 (52.2%, 2026-10-21) and is 3.2 points short of criterion 3 (sidewalk evidence), which needs mapping: a parcel-age sidewalk rule failed its bar (62.7% right in street photos, 2026-10-21). The City of Frederick allows internal use only (2026-10-20), so Phase E (testers) cannot see anything built on the city's data. Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
 | **Repo** | `C:\dev\PathFinder` (moved out of OneDrive 2026-10-19), its own git repository; no remote |
 | **Tests** | 229 pass on each town's graph (unit and data-invariant; 1 skipped by design), 2026-10-21 |
 
@@ -799,6 +799,40 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 - Tests: 226 pass on the Frederick graph (new: field corner first and dated, radius, junction
   override, a corner answer not read as a junction, sheet validation).
 
+### 2026-10-21 — Post-ADA sidewalk rule fails its bar; not used
+
+- **Why:** criterion 3 (sidewalk evidence) is Frederick's last gap, 38.4 km short. 125 km of ordinary
+  streets have no sidewalk evidence. PathFinder tested whether the ramp rule's parcel test also
+  predicts sidewalks.
+- **The rule and its bar were fixed before any result was computed** (Decisions log, 2026-10-21). A
+  `residential`, `living_street` or `tertiary` street with at least 4 built parcels within 60 m, all
+  from 1995 or later, would get `sidewalk_presence = both`, `inferred`.
+- **Photos decided, judged blind.** 100 edges the rule would fill and 25 control edges it leaves were
+  shuffled into one unlabelled sheet of Mapillary photos (`tools/post_ada/sidewalk_check.py`). Every
+  edge was judged before the key was read. The agent made the photo calls; they are in
+  `reports/frederick/post_ada/sidewalk_sample.csv` with notes, for the owner to spot-check.
+- **Result, one scored run**
+  ([`reports/frederick/post_ada/sidewalk_evaluation.md`](../reports/frederick/post_ada/sidewalk_evaluation.md), internal):
+
+  | Test | Edges | Both sides | Precision | Wilson lower bound | Bar |
+  |---|---|---|---|---|---|
+  | 1. Street photos (judged rule edges) | 59 | 37 | 62.7% | 50.0% | ≥ 95%, ≥ 92%: fails |
+  | 2. OSM tags | 94 | 74 | 78.7% | 69.4% | ≥ 95%: fails |
+  | 3. City survey (finds only sidewalks that exist) | 361 | 242 | 67.0% | 62.0% | ≥ 90%: fails |
+
+  - Photo verdicts for the rule's 100 edges: 37 both sides, 15 one side, 7 none, 41 unclear (the bar
+    allows at most 30 unclear, so this fails too). Controls: 5 both, 3 one side, 6 none, 11 unclear.
+- **Why it fails:**
+  - New houses on old roads: rural and collector roads with grass to the curb.
+  - Subdivisions still being built, where a side's sidewalk waits for its lots.
+  - Streets with a sidewalk on one side only, beside a field, pond or parking lot.
+  - Ramps are built with the street; sidewalks often come later, one lot at a time.
+- **Not used, and not tuned.** It would have filled 48.2 km and lifted criterion 3 to 60.6%, past the
+  bar, but about a third of what it claimed would be wrong. The road classes, radius, year and count
+  stay as fixed; a different rule needs a new protocol and a new test set (these photo edges are
+  spent).
+- Criterion 3 stays at 56.8%. Sidewalk evidence still needs mapping.
+
 ### 2026-10-21 — Post-ADA ramp rule passes its bar; Frederick clears criterion 4
 
 - **Why:** the city will not check the blocking corners. Asked whether the bar could be met without
@@ -944,6 +978,7 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 | 2026-10-20 | **City of Frederick layers stay internal** (the city's answer: internal use only, no further data) | Rule 7 unchanged: nothing built on them is shown outside the team |
 | 2026-10-20 | **Closed areas are cut at their boundary**, not removed by a share of each edge: only the parts of a walkway outside are kept, the cut ends are never bridged, and no connector may enter. A trip end inside one is told so | Review finding: the half-inside rule kept gate roads reaching up to 20 m behind the fence and corners walkable through the area |
 | 2026-10-21 | **Post-ADA ramp rule and its bar, fixed before any parcel is fetched or any result computed.** *Rule:* SDAT parcel points (MD iMAP `MD_PropertyData` layer 0, fields `YEARBLT` and `LU` only: owner fields are never fetched); a parcel is built when `YEARBLT` is a year from 1700 to 2026. A place (a flagged junction node, or the outer end of a mapped crossing) is **post-ADA** when at least 4 built parcels lie within 60 m and the oldest of them was built in 1995 or later. A post-ADA junction gets `ramp_likely`, a post-ADA crossing end `ramp_present`, both `inferred`, source `derived:post_ada_parcels`, dated by the parcel data (`SDATDATE`), and only where every other source left the curb unknown and the walker is not in the roadway. *Test,* with the rule computed from parcels alone: junctions inside the city line with at least 2 City of Frederick ramp-survey records within 20 m (correct when none is "No ramp"), and crossing ends with a survey record within 8 m (correct when it is a ramp). *Bar, all of:* (1) junctions: precision ≥ 95% over ≥ 100 rule-positive test junctions, Wilson 95% lower bound ≥ 92%; (2) crossing ends: the same; (3) rule-positive test places whose oldest nearby building is from 2005 or later: precision ≥ 95% over ≥ 30; (4) when a Mapillary token exists, rule-positive worklist places with a usable street-level photo taken after the place was built: at most 5% wrong (reported; fewer than 10 checkable places leaves the decision to 1–3). Too few test places is a fail, not a pass. *Result:* pass → used as `inferred`; fail → not used, and the year, radius and count are not tuned on this test set | The blocked corners sit in subdivisions the city's survey does not reach; ADA Title II has required curb ramps on new streets since 1992 (three years' margin for streets laid before the houses). A rule is used only after it is tested against the survey; the blocked corners are newer than most, hence criterion 3. The survey stays internal: it only decides whether the rule is used |
+| 2026-10-21 | **Post-ADA sidewalk rule and its bar, fixed before any rule result is computed.** *Rule:* the same parcels and the same neighbourhood test as the ramp rule (`graph/post_ada.py`, constants unchanged): a street-centerline edge tagged `highway=residential`, `living_street` or `tertiary` is post-ADA when at least 4 built parcels lie within 60 m of the edge and the oldest was built in 1995 or later. A post-ADA edge gets `sidewalk_presence = both`, `inferred`, source `derived:post_ada_parcels`, dated by the parcel data, and only where OSM and the survey left presence unknown. Never on service roads or alleys. *Tests,* with the rule computed from parcels alone (one scored run of `tools/post_ada/sidewalk_check.py`): (1) **street photos, the deciding test:** a length-weighted random sample (seed 202610212) of 100 edges the rule would fill that have a Mapillary photo within 15 m of the edge, taken in a year after the oldest building, shuffled together with 25 control edges the rule leaves (eligible, unknown, oldest building before 1995) into one unlabelled sheet. Each edge is judged from up to 4 photos, preferring the newest ones facing along the street: `both` (a sidewalk on both sides), `one_side`, `none`, or `unclear`. A sidewalk under construction or closed is not `both`. The key that says which edges are rule-positive is not read until every edge is judged. Correct = `both`. (2) **OSM tags:** rule-positive edges whose OSM tags record both sides; correct when OSM says both. (3) **City survey:** rule-positive edges the survey graded; correct when it shows both sides (`at_least_one_side` counts as wrong). The survey records only sidewalks that exist, so it cannot show a missing one: it is a check against gross error only. *Bar, all of:* (1) at least 75 judged (not `unclear`) rule-positive photo edges, precision ≥ 95%, Wilson 95% lower bound ≥ 92%, and at most 30 of the 100 `unclear`; (2) precision ≥ 95% when it has ≥ 30 edges (fewer: reported only); (3) precision ≥ 90% over ≥ 100 edges. Too few test edges is a fail, not a pass. Whether the rule lifts criterion 3 past 60% is not part of the bar. *Result:* pass → used as `inferred` in Frederick; fail → not used, and the road classes, radius, year and count are not tuned on these tests | 125 km of Frederick's ordinary streets have no sidewalk evidence, mostly where the survey does not reach (newer subdivisions); criterion 3 is 38.4 km short. Frederick's subdivision streets are built with sidewalks, but some are not, and the survey cannot tell them apart from unsurveyed ones: its silence is never "no sidewalk". Only photos can see a missing sidewalk, so they decide, judged blind with controls mixed in. Arterials and `unclassified` roads are left out: often older alignments, state-built or rural. Photo verdicts are made by the agent and can be spot-checked by the owner |
 
 ---
 
@@ -1000,7 +1035,8 @@ first, and folded crossings into accessibility, removing after-dark and crime.
    blocked trips wait only on unrecorded curbs); MCDOT signals with APS / LPI.
    No further open signal data in either town.
 3. Frederick's sidewalk evidence beyond the survey: service roads, lots, and streets the survey shows
-   without a sidewalk; mapping with partners. Imagery detection is closed (2026-10-19).
+   without a sidewalk; mapping with partners. Imagery detection is closed (2026-10-19), and so is
+   the parcel-age sidewalk rule (62.7% right in street photos against a 95% bar, 2026-10-21).
 4. Phase E, The Freedom Center: testers and the profile numbers. Blocked in Frederick while the
    city's data is internal only (2026-10-20).
 
