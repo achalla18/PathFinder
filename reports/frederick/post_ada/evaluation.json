@@ -1,0 +1,103 @@
+{
+ "bar_passed": true,
+ "checks": {
+  "1_junctions": true,
+  "2_crossing_ends": true,
+  "3_newest": true
+ },
+ "junctions": {
+  "rule_positive": 317,
+  "correct": 315,
+  "precision_pct": 99.4,
+  "wilson_lb_pct": 97.7,
+  "test_places": 1448
+ },
+ "crossing_ends": {
+  "rule_positive": 544,
+  "correct": 544,
+  "precision_pct": 100.0,
+  "wilson_lb_pct": 99.3,
+  "test_places": 2381
+ },
+ "oldest_2005_or_later": {
+  "rule_positive": 348,
+  "correct": 347,
+  "precision_pct": 99.7,
+  "wilson_lb_pct": 98.4,
+  "test_places": 440
+ },
+ "parcels_built": 41106,
+ "parcel_as_of": "2026-05",
+ "fills": {
+  "unknown_junctions": 860,
+  "post_ada": 269,
+  "post_ada_inside_line": 256,
+  "post_ada_outside_line": 13
+ },
+ "worklist": {
+  "junctions": 11,
+  "post_ada": 1,
+  "by_place": {
+   "junction:102994994": {
+    "n_built": 0,
+    "oldest": null,
+    "post_ada": false
+   },
+   "junction:1229527719": {
+    "n_built": 9,
+    "oldest": 2002,
+    "post_ada": true
+   },
+   "junction:103033551": {
+    "n_built": 2,
+    "oldest": 1985,
+    "post_ada": false
+   },
+   "junction:102849382": {
+    "n_built": 6,
+    "oldest": 1987,
+    "post_ada": false
+   },
+   "junction:12039016463": {
+    "n_built": 1,
+    "oldest": 1964,
+    "post_ada": false
+   },
+   "junction:103073886": {
+    "n_built": 2,
+    "oldest": 1964,
+    "post_ada": false
+   },
+   "junction:11589045682": {
+    "n_built": 0,
+    "oldest": null,
+    "post_ada": false
+   },
+   "junction:103074345": {
+    "n_built": 0,
+    "oldest": null,
+    "post_ada": false
+   },
+   "junction:103000233": {
+    "n_built": 0,
+    "oldest": null,
+    "post_ada": false
+   },
+   "junction:103014759": {
+    "n_built": 6,
+    "oldest": 1985,
+    "post_ada": false
+   },
+   "junction:102979236": {
+    "n_built": 16,
+    "oldest": 1985,
+    "post_ada": false
+   }
+  }
+ },
+ "protocol": {
+  "year": 1995,
+  "radius_m": 60.0,
+  "min_built": 4
+ }
+}

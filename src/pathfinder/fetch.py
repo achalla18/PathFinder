@@ -121,7 +121,7 @@ def _arcgis_chunk(source: Source, ids: list[int]) -> list[dict]:
         f"{source.url}/query",
         data={
             "objectIds": ",".join(map(str, ids)),
-            "outFields": "*",
+            "outFields": ",".join(source.out_fields) or "*",
             "outSR": "4326",
             "returnGeometry": "true",
             "f": "geojson",

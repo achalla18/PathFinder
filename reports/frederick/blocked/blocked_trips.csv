@@ -1,146 +1,133 @@
 od,band,opened_by,n_places,reasons,only_unknowns,any_major_road,any_outside_line
 3,400-800,allow_unknown+no_grade,1.0,steeper than 8.33% x1,False,False,False
-4,400-800,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x3; steeper than 8.33% x2",False,True,True
-5,400-800,allow_unknown+no_grade,6.0,"curb unknown, marked crossing x4; curb unknown, unmarked junction crossing x1; steeper than 8.33% x1",False,False,False
-7,400-800,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,False
+7,400-800,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
 9,400-800,allow_unknown,6.0,"curb unknown, marked crossing x3; curb unknown, unmarked junction crossing x3",True,False,True
+4,400-800,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x3; steeper than 8.33% x2",False,True,True
+5,400-800,allow_unknown+no_grade,2.0,"curb unknown, unmarked junction crossing x1; steeper than 8.33% x1",False,False,False
 11,400-800,allow_unknown+no_grade,3.0,"steeper than 8.33% x2; curb unknown, unmarked junction crossing x1",False,False,False
 17,400-800,allow_unknown+no_grade,2.0,steeper than 8.33% x2,False,False,False
+20,400-800,allow_unknown+no_grade,6.0,"curb unknown, unmarked junction crossing x5; steeper than 8.33% x1",False,False,True
+23,400-800,allow_unknown+no_grade,6.0,"steeper than 8.33% x4; curb unknown, unmarked junction crossing x2",False,False,False
 18,400-800,allow_unknown,11.0,"curb unknown, marked crossing x7; curb unknown, unmarked junction crossing x4",True,False,True
 19,400-800,allow_unknown+no_grade,9.0,"curb unknown, unmarked junction crossing x7; steeper than 8.33% x2",False,False,True
-20,400-800,allow_unknown+no_grade,6.0,"curb unknown, unmarked junction crossing x5; steeper than 8.33% x1",False,False,True
-25,400-800,allow_unknown,3.0,"curb unknown, unmarked junction crossing x2; curb unknown, marked crossing x1",True,False,False
-23,400-800,allow_unknown+no_grade,6.0,"steeper than 8.33% x4; curb unknown, unmarked junction crossing x2",False,False,False
-26,400-800,allow_unknown,6.0,"curb unknown, marked crossing x3; curb unknown, unmarked junction crossing x3",True,False,True
-30,400-800,allow_unknown,5.0,"curb unknown, marked crossing x4; curb unknown, unmarked junction crossing x1",True,False,False
-33,400-800,allow_unknown,7.0,"curb unknown, unmarked junction crossing x4; curb unknown, marked crossing x3",True,False,True
-34,400-800,allow_unknown,2.0,"curb unknown, unmarked junction crossing x1; curb unknown, marked crossing x1",True,False,False
+26,400-800,allow_unknown,2.0,"curb unknown, unmarked junction crossing x2",True,False,True
 38,400-800,allow_unknown,3.0,"curb unknown, marked crossing x2; curb unknown, unmarked junction crossing x1",True,False,False
-40,400-800,allow_unknown,6.0,"curb unknown, unmarked junction crossing x3; curb unknown, marked crossing x3",True,True,True
-41,400-800,allow_unknown,3.0,"curb unknown, marked crossing x2; curb unknown, unmarked junction crossing x1",True,False,False
+33,400-800,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,True
+40,400-800,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,True,True
 42,400-800,allow_unknown+no_grade,4.0,"curb unknown, unmarked junction crossing x2; steeper than 8.33% x2",False,False,True
 45,400-800,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x3; steeper than 8.33% x2",False,False,True
-62,400-800,allow_unknown,2.0,"curb unknown, marked crossing x2",True,False,False
+70,400-800,allow_unknown+no_grade,2.0,steeper than 8.33% x2,False,False,False
+64,400-800,allow_unknown+no_grade,2.0,"curb unknown, unmarked junction crossing x1; steeper than 8.33% x1",False,False,True
 60,400-800,allow_unknown,10.0,"curb unknown, marked crossing x10",True,False,True
 61,400-800,allow_unknown+no_grade,4.0,"curb unknown, unmarked junction crossing x2; steeper than 8.33% x2",False,False,True
-70,400-800,allow_unknown+no_grade,4.0,"steeper than 8.33% x2; curb unknown, marked crossing x2",False,False,False
-64,400-800,allow_unknown+no_grade,2.0,"curb unknown, unmarked junction crossing x1; steeper than 8.33% x1",False,False,True
-65,400-800,allow_unknown,8.0,"curb unknown, unmarked junction crossing x8",True,False,False
 72,400-800,allow_unknown,2.0,"curb unknown, marked crossing x2",True,True,True
 73,400-800,allow_unknown+no_grade,4.0,"curb unknown, unmarked junction crossing x3; steeper than 8.33% x1",False,False,True
 75,400-800,allow_unknown+no_grade,16.0,"steeper than 8.33% x11; curb unknown, unmarked junction crossing x5",False,False,False
 77,400-800,allow_unknown,5.0,"curb unknown, marked crossing x3; curb unknown, unmarked junction crossing x2",True,True,True
 79,400-800,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x4; steeper than 8.33% x1",False,True,True
-81,400-800,allow_unknown+no_grade,15.0,"curb unknown, marked crossing x10; curb unknown, unmarked junction crossing x4; steeper than 8.33% x1",False,False,True
-86,400-800,allow_unknown+no_grade,5.0,"steeper than 8.33% x3; curb unknown, unmarked junction crossing x2",False,False,False
+81,400-800,allow_unknown+no_grade,12.0,"curb unknown, marked crossing x10; curb unknown, unmarked junction crossing x1; steeper than 8.33% x1",False,False,True
+86,400-800,allow_unknown+no_grade,3.0,steeper than 8.33% x3,False,False,False
+94,400-800,allow_unknown,2.0,"curb unknown, unmarked junction crossing x2",True,False,False
 83,400-800,allow_unknown+no_grade,5.0,"steeper than 8.33% x3; curb unknown, unmarked junction crossing x2",False,True,True
 85,400-800,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,True,True
-89,400-800,allow_unknown,8.0,"curb unknown, marked crossing x8",True,False,False
+89,400-800,allow_unknown,2.0,"curb unknown, marked crossing x2",True,False,False
 91,400-800,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,True
-92,400-800,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x3; steeper than 8.33% x2",False,False,True
-94,400-800,allow_unknown,2.0,"curb unknown, unmarked junction crossing x2",True,False,False
+92,400-800,allow_unknown+no_grade,4.0,"curb unknown, unmarked junction crossing x2; steeper than 8.33% x2",False,False,True
+102,800-1500,allow_unknown,4.0,"curb unknown, unmarked junction crossing x4",True,True,True
 99,400-800,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
 100,800-1500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
-101,800-1500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,False
-102,800-1500,allow_unknown,4.0,"curb unknown, unmarked junction crossing x4",True,True,True
 104,800-1500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
 105,800-1500,allow_unknown+no_grade,7.0,"curb unknown, unmarked junction crossing x5; steeper than 8.33% x2",False,False,True
 106,800-1500,allow_unknown+no_grade,3.0,steeper than 8.33% x3,False,False,False
+110,800-1500,allow_unknown+no_grade,7.0,"curb unknown, marked crossing x4; steeper than 8.33% x3",False,False,False
 107,800-1500,allow_unknown+no_grade,17.0,"curb unknown, marked crossing x13; steeper than 8.33% x2; curb unknown, unmarked junction crossing x2",False,True,False
-110,800-1500,allow_unknown+no_grade,9.0,"curb unknown, marked crossing x6; steeper than 8.33% x2; curb unknown, unmarked junction crossing x1",False,False,False
 112,800-1500,allow_unknown+no_grade,2.0,"steeper than 8.33% x1; curb unknown, unmarked junction crossing x1",False,False,False
 115,800-1500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
 113,800-1500,none (no step-free route at all),,,,,
 117,800-1500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,True
 119,800-1500,allow_unknown+no_grade,8.0,"steeper than 8.33% x5; curb unknown, marked crossing x2; slope unknown x1",False,False,False
-123,800-1500,allow_unknown,4.0,"curb unknown, unmarked junction crossing x4",True,False,False
-121,800-1500,allow_unknown+no_grade,8.0,"curb unknown, marked crossing x4; steeper than 8.33% x3; curb unknown, unmarked junction crossing x1",False,False,True
+126,800-1500,allow_unknown,2.0,"curb unknown, marked crossing x2",True,False,True
+121,800-1500,allow_unknown+no_grade,7.0,"curb unknown, marked crossing x4; steeper than 8.33% x3",False,False,True
 122,800-1500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,True,True
 128,800-1500,allow_unknown+no_grade,8.0,"steeper than 8.33% x5; curb unknown, marked crossing x2; curb unknown, unmarked junction crossing x1",False,False,True
-126,800-1500,allow_unknown,2.0,"curb unknown, marked crossing x2",True,False,True
-129,800-1500,allow_unknown,8.0,"curb unknown, unmarked junction crossing x8",True,False,False
-131,800-1500,allow_unknown,13.0,"curb unknown, unmarked junction crossing x9; curb unknown, marked crossing x4",True,False,True
-132,800-1500,allow_unknown,3.0,"curb unknown, marked crossing x2; curb unknown, unmarked junction crossing x1",True,False,True
 135,800-1500,allow_unknown,5.0,"curb unknown, unmarked junction crossing x5",True,True,True
+131,800-1500,allow_unknown,6.0,"curb unknown, unmarked junction crossing x6",True,False,True
+132,800-1500,allow_unknown,3.0,"curb unknown, marked crossing x2; curb unknown, unmarked junction crossing x1",True,False,True
+137,800-1500,allow_unknown+no_grade,2.0,steeper than 8.33% x2,False,False,True
 133,800-1500,allow_unknown+no_grade,1.0,steeper than 8.33% x1,False,False,False
 134,800-1500,allow_unknown,5.0,"curb unknown, unmarked junction crossing x3; curb unknown, marked crossing x2",True,False,False
-137,800-1500,allow_unknown+no_grade,2.0,steeper than 8.33% x2,False,False,True
 144,800-1500,allow_unknown+no_grade,7.0,"curb unknown, unmarked junction crossing x5; steeper than 8.33% x2",False,False,True
-141,800-1500,allow_unknown,18.0,"curb unknown, unmarked junction crossing x12; curb unknown, marked crossing x6",True,False,True
+147,800-1500,allow_unknown,5.0,"curb unknown, unmarked junction crossing x5",True,True,True
+141,800-1500,allow_unknown,9.0,"curb unknown, unmarked junction crossing x9",True,False,True
 142,800-1500,allow_unknown+no_grade,3.0,steeper than 8.33% x3,False,False,False
-147,800-1500,allow_unknown,7.0,"curb unknown, unmarked junction crossing x5; curb unknown, marked crossing x2",True,True,True
-151,800-1500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,False
+151,800-1500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
+157,800-1500,allow_unknown,4.0,"curb unknown, marked crossing x3; curb unknown, unmarked junction crossing x1",True,True,False
 154,800-1500,allow_unknown+no_grade,11.0,"curb unknown, unmarked junction crossing x8; steeper than 8.33% x3",False,True,True
 155,800-1500,allow_unknown+no_grade,4.0,"steeper than 8.33% x2; curb unknown, unmarked junction crossing x2",False,True,True
+158,800-1500,allow_unknown+no_grade,6.0,"curb unknown, unmarked junction crossing x4; steeper than 8.33% x2",False,True,True
 153,800-1500,allow_unknown+no_grade,1.0,steeper than 8.33% x1,False,False,False
-156,800-1500,allow_unknown,6.0,"curb unknown, marked crossing x4; curb unknown, unmarked junction crossing x2",True,False,False
-157,800-1500,allow_unknown,4.0,"curb unknown, marked crossing x3; curb unknown, unmarked junction crossing x1",True,True,False
-158,800-1500,allow_unknown+no_grade,8.0,"curb unknown, unmarked junction crossing x4; curb unknown, marked crossing x2; steeper than 8.33% x2",False,True,True
-160,800-1500,allow_unknown,3.0,"curb unknown, marked crossing x2; curb unknown, unmarked junction crossing x1",True,False,True
 163,800-1500,allow_unknown,5.0,"curb unknown, marked crossing x5",True,True,False
-173,800-1500,allow_unknown+no_grade,5.0,"steeper than 8.33% x3; curb unknown, unmarked junction crossing x2",False,False,False
-174,800-1500,allow_unknown,20.0,"curb unknown, unmarked junction crossing x16; curb unknown, marked crossing x4",True,False,True
+160,800-1500,allow_unknown,2.0,"curb unknown, marked crossing x1; curb unknown, unmarked junction crossing x1",True,False,True
+180,800-1500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
 178,800-1500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,False
-180,800-1500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,False
-183,800-1500,allow_unknown,3.0,"curb unknown, marked crossing x2; curb unknown, unmarked junction crossing x1",True,False,True
+173,800-1500,allow_unknown+no_grade,5.0,"steeper than 8.33% x3; curb unknown, unmarked junction crossing x2",False,False,False
+174,800-1500,allow_unknown,6.0,"curb unknown, unmarked junction crossing x4; curb unknown, marked crossing x2",True,False,True
+183,800-1500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,True
 181,800-1500,allow_unknown+no_grade,9.0,"steeper than 8.33% x5; curb unknown, unmarked junction crossing x4",False,False,False
 182,800-1500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,True
-188,800-1500,allow_unknown,5.0,"curb unknown, marked crossing x4; curb unknown, unmarked junction crossing x1",True,True,True
-185,800-1500,allow_unknown+no_grade,5.0,"curb unknown, marked crossing x3; steeper than 8.33% x2",False,False,True
+185,800-1500,allow_unknown+no_grade,4.0,"curb unknown, marked crossing x2; steeper than 8.33% x2",False,False,True
 186,800-1500,allow_unknown+no_grade,3.0,steeper than 8.33% x3,False,False,False
+188,800-1500,allow_unknown,4.0,"curb unknown, marked crossing x4",True,True,True
 190,800-1500,allow_unknown,2.0,"curb unknown, unmarked junction crossing x2",True,False,True
-192,800-1500,allow_unknown,8.0,"curb unknown, unmarked junction crossing x7; curb unknown, marked crossing x1",True,True,True
+192,800-1500,allow_unknown,7.0,"curb unknown, unmarked junction crossing x7",True,True,True
 193,800-1500,allow_unknown+no_grade,1.0,steeper than 8.33% x1,False,False,False
 195,800-1500,allow_unknown+no_grade,3.0,"curb unknown, unmarked junction crossing x1; steeper than 8.33% x1; curb unknown, marked crossing x1",False,False,True
-197,800-1500,allow_unknown,2.0,"curb unknown, marked crossing x2",True,False,False
 200,1500-2500,allow_unknown+no_grade,3.0,"curb unknown, marked crossing x2; steeper than 8.33% x1",False,True,False
-201,1500-2500,allow_unknown,20.0,"curb unknown, unmarked junction crossing x16; curb unknown, marked crossing x4",True,False,True
-204,1500-2500,allow_unknown,39.0,"curb unknown, marked crossing x24; curb unknown, unmarked junction crossing x15",True,False,True
+201,1500-2500,allow_unknown,15.0,"curb unknown, unmarked junction crossing x13; curb unknown, marked crossing x2",True,False,True
+204,1500-2500,allow_unknown,36.0,"curb unknown, marked crossing x22; curb unknown, unmarked junction crossing x14",True,False,True
 206,1500-2500,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x3; steeper than 8.33% x2",False,True,True
-209,1500-2500,allow_unknown,11.0,"curb unknown, marked crossing x6; curb unknown, unmarked junction crossing x5",True,True,True
+209,1500-2500,allow_unknown,5.0,"curb unknown, unmarked junction crossing x5",True,True,True
 211,1500-2500,allow_unknown,4.0,"curb unknown, marked crossing x4",True,False,False
 212,1500-2500,allow_unknown,9.0,"curb unknown, marked crossing x8; curb unknown, unmarked junction crossing x1",True,False,True
-213,1500-2500,allow_unknown,24.0,"curb unknown, marked crossing x16; curb unknown, unmarked junction crossing x8",True,False,True
+213,1500-2500,allow_unknown,17.0,"curb unknown, marked crossing x10; curb unknown, unmarked junction crossing x7",True,False,True
 214,1500-2500,allow_unknown+no_grade,4.0,"slope unknown x2; curb unknown, marked crossing x1; steeper than 8.33% x1",False,False,False
 215,1500-2500,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x2; steeper than 8.33% x2; curb unknown, marked crossing x1",False,True,False
 217,1500-2500,allow_unknown+no_grade,4.0,"steeper than 8.33% x2; curb unknown, unmarked junction crossing x1; slope unknown x1",False,False,False
-218,1500-2500,allow_unknown+no_grade,24.0,"curb unknown, marked crossing x10; curb unknown, unmarked junction crossing x7; steeper than 8.33% x6; slope unknown x1",False,False,True
+218,1500-2500,allow_unknown+no_grade,18.0,"steeper than 8.33% x6; curb unknown, marked crossing x6; curb unknown, unmarked junction crossing x5; slope unknown x1",False,False,True
 219,1500-2500,allow_unknown+no_grade,4.0,"curb unknown, unmarked junction crossing x2; steeper than 8.33% x2",False,False,False
-221,1500-2500,allow_unknown+no_grade,32.0,"curb unknown, unmarked junction crossing x19; curb unknown, marked crossing x10; steeper than 8.33% x3",False,False,True
+221,1500-2500,allow_unknown+no_grade,22.0,"curb unknown, marked crossing x12; curb unknown, unmarked junction crossing x7; steeper than 8.33% x3",False,False,True
 222,1500-2500,allow_unknown+no_grade,6.0,"curb unknown, unmarked junction crossing x5; steeper than 8.33% x1",False,False,True
 227,1500-2500,allow_unknown,19.0,"curb unknown, marked crossing x16; curb unknown, unmarked junction crossing x3",True,False,True
-228,1500-2500,allow_unknown,6.0,"curb unknown, marked crossing x6",True,False,False
-229,1500-2500,allow_unknown,4.0,"curb unknown, unmarked junction crossing x2; curb unknown, marked crossing x2",True,False,False
-230,1500-2500,allow_unknown+no_grade,6.0,"curb unknown, unmarked junction crossing x5; steeper than 8.33% x1",False,False,True
+230,1500-2500,allow_unknown+no_grade,2.0,"curb unknown, unmarked junction crossing x1; steeper than 8.33% x1",False,False,True
 231,1500-2500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,False,False
 233,1500-2500,allow_unknown+no_grade,6.0,"curb unknown, marked crossing x3; steeper than 8.33% x2; curb unknown, unmarked junction crossing x1",False,False,False
-239,1500-2500,allow_unknown,3.0,"curb unknown, marked crossing x2; slope unknown x1",True,False,False
+239,1500-2500,allow_unknown,4.0,"curb unknown, marked crossing x2; slope unknown x2",True,False,False
 237,1500-2500,none (no step-free route at all),,,,,
 245,1500-2500,allow_unknown,17.0,"curb unknown, marked crossing x10; curb unknown, unmarked junction crossing x7",True,False,True
 240,1500-2500,none (no step-free route at all),,,,,
 241,1500-2500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x2; curb unknown, marked crossing x1",True,True,True
-249,1500-2500,allow_unknown,16.0,"curb unknown, unmarked junction crossing x12; curb unknown, marked crossing x4",True,False,True
 252,1500-2500,allow_unknown+no_grade,3.0,steeper than 8.33% x3,False,False,True
-254,1500-2500,allow_unknown+no_grade,5.0,"curb unknown, marked crossing x2; steeper than 8.33% x2; curb unknown, unmarked junction crossing x1",False,False,False
-255,1500-2500,allow_unknown,5.0,"curb unknown, marked crossing x3; curb unknown, unmarked junction crossing x2",True,True,True
-256,1500-2500,allow_unknown+no_grade,6.0,"curb unknown, marked crossing x3; curb unknown, unmarked junction crossing x2; steeper than 8.33% x1",False,False,True
-257,1500-2500,allow_unknown+no_grade,3.0,"steeper than 8.33% x2; curb unknown, marked crossing x1",False,False,False
+249,1500-2500,allow_unknown,9.0,"curb unknown, unmarked junction crossing x9",True,False,True
+254,1500-2500,allow_unknown+no_grade,2.0,steeper than 8.33% x2,False,False,False
+255,1500-2500,allow_unknown,2.0,"curb unknown, unmarked junction crossing x2",True,True,True
+256,1500-2500,allow_unknown+no_grade,5.0,"curb unknown, unmarked junction crossing x2; curb unknown, marked crossing x2; steeper than 8.33% x1",False,False,True
 259,1500-2500,allow_unknown+no_grade,6.0,"steeper than 8.33% x4; curb unknown, marked crossing x2",False,False,False
 260,1500-2500,allow_unknown+no_grade,6.0,"steeper than 8.33% x5; curb unknown, unmarked junction crossing x1",False,False,False
 262,1500-2500,none (no step-free route at all),,,,,
-267,1500-2500,allow_unknown,9.0,"curb unknown, marked crossing x5; curb unknown, unmarked junction crossing x4",True,False,True
-263,1500-2500,allow_unknown,9.0,"curb unknown, unmarked junction crossing x5; curb unknown, marked crossing x4",True,True,True
+257,1500-2500,allow_unknown+no_grade,3.0,"steeper than 8.33% x2; curb unknown, marked crossing x1",False,False,False
+267,1500-2500,allow_unknown,4.0,"curb unknown, unmarked junction crossing x3; curb unknown, marked crossing x1",True,False,True
+263,1500-2500,allow_unknown,7.0,"curb unknown, unmarked junction crossing x5; curb unknown, marked crossing x2",True,True,True
 264,1500-2500,allow_unknown+no_grade,4.0,"steeper than 8.33% x3; curb unknown, marked crossing x1",False,False,True
 269,1500-2500,allow_unknown+no_grade,3.0,"steeper than 8.33% x2; curb unknown, unmarked junction crossing x1",False,False,False
 270,1500-2500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
-274,1500-2500,allow_unknown+no_grade,4.0,"steeper than 8.33% x3; curb unknown, unmarked junction crossing x1",False,False,False
-278,1500-2500,allow_unknown+no_grade,6.0,"steeper than 8.33% x4; curb unknown, unmarked junction crossing x2",False,False,False
-282,1500-2500,allow_unknown,9.0,"curb unknown, unmarked junction crossing x7; curb unknown, marked crossing x2",True,False,True
+274,1500-2500,allow_unknown+no_grade,3.0,steeper than 8.33% x3,False,False,False
+282,1500-2500,allow_unknown,8.0,"curb unknown, unmarked junction crossing x6; curb unknown, marked crossing x2",True,False,True
 285,1500-2500,allow_unknown+no_grade,8.0,"curb unknown, marked crossing x4; steeper than 8.33% x4",False,False,True
-286,1500-2500,allow_unknown+no_grade,11.0,"curb unknown, unmarked junction crossing x7; curb unknown, marked crossing x2; steeper than 8.33% x2",False,False,True
+278,1500-2500,allow_unknown+no_grade,6.0,"steeper than 8.33% x4; curb unknown, unmarked junction crossing x2",False,False,False
 288,1500-2500,allow_unknown+no_grade,9.0,"curb unknown, unmarked junction crossing x5; curb unknown, marked crossing x2; steeper than 8.33% x2",False,False,True
 291,1500-2500,allow_unknown,2.0,"curb unknown, marked crossing x1; curb unknown, unmarked junction crossing x1",True,False,False
+286,1500-2500,allow_unknown+no_grade,11.0,"curb unknown, unmarked junction crossing x7; curb unknown, marked crossing x2; steeper than 8.33% x2",False,False,True
 294,1500-2500,allow_unknown+no_grade,7.0,"curb unknown, unmarked junction crossing x3; steeper than 8.33% x2; curb unknown, marked crossing x2",False,False,True
 295,1500-2500,allow_unknown,1.0,"curb unknown, unmarked junction crossing x1",True,False,False
-296,1500-2500,allow_unknown,7.0,"curb unknown, marked crossing x4; curb unknown, unmarked junction crossing x3",True,True,True
+296,1500-2500,allow_unknown,3.0,"curb unknown, unmarked junction crossing x3",True,True,True
 297,1500-2500,none (no step-free route at all),,,,,

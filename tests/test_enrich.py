@@ -519,3 +519,57 @@ def test_the_field_sheet_skips_unanswered_rows_and_refuses_typos():
         roles.field_checks(sheet(result=["all_ramped"]))  # a junction answer on a corner
     with pytest.raises(ValueError, match="visited_on"):
         roles.field_checks(sheet(result=["ramp"], visited_on=["25/10/2026"]))
+
+
+# ---------------------------------------------------------------- post-ADA neighbourhoods
+
+
+def _parcels(xy_years: list[tuple[float, float, str]]) -> gpd.GeoDataFrame:
+    return gpd.GeoDataFrame({"YEARBLT": [y for _, _, y in xy_years], "SDATDATE": ["2026MAY"] * len(xy_years)},
+                            geometry=[Point(x, y) for x, y, _ in xy_years], crs=ANALYSIS_CRS)
+
+
+def test_a_post_ada_neighbourhood_needs_enough_buildings_all_new():
+    from pathfinder.graph import post_ada
+
+    built = post_ada.built_parcels(_parcels([(10, 0, "1998"), (-10, 0, "2004"), (0, 10, "2010"), (0, -10, "1996"),
+                                             (0, 20, "0"), (500, 0, "1960")]))
+    places = gpd.GeoSeries([Point(0, 0), Point(480, 0), Point(5000, 0)], crs=ANALYSIS_CRS)
+    n = post_ada.neighbourhood(places, built)
+    assert n["n_built"].tolist() == [4, 1, 0]  # "0" is no structure
+    assert n["post_ada"].tolist() == [True, False, False]
+    # one older house among them is enough to say nothing
+    older = post_ada.built_parcels(_parcels([(10, 0, "1998"), (-10, 0, "2004"), (0, 10, "2010"), (0, -10, "1990")]))
+    assert not post_ada.neighbourhood(places.iloc[:1], older)["post_ada"].iat[0]
+    assert post_ada.as_of(_parcels([(0, 0, "2000")])) == "2026-05"
+
+
+def test_the_post_ada_rule_fills_only_unknown_curbs_and_says_so():
+    xy = {0: (0, 0), 1: (100, 0), 2: (200, 0), 3: (100, 100), 4: (300, 0), 5: (300, 100), 6: (400, 0)}
+    st = {"kind": "street_unknown", "representation": "street_centerline"}
+    e = _edges([{"u": 0, "v": 1, **st}, {"u": 1, "v": 2, **st}, {"u": 3, "v": 1, **st},
+                {"u": 2, "v": 4, **st}, {"u": 5, "v": 4, **st}, {"u": 4, "v": 6, **st}], xy)
+    nodes = make_nodes(xy)
+    nodes["on_removed_road"] = False
+    new = [(100 + dx, dy, "2001") for dx, dy in ((10, 10), (-10, 10), (10, -10), (-10, -10))]
+    new += [(300 + dx, dy, "2001") for dx, dy in ((10, 10), (-10, 10), (10, -10), (-10, -10))]
+    ps = _points([(295.0, 5.0)], label_type=["NoCurbRamp"], image_date=["2023-06-01"])  # a missing ramp at node 4
+    enrich.enrich_implicit_crossings(e, nodes, _points([], STATUS=[]), _points([], TOTALCROSSSECTIONWIDTH=[]), ps,
+                                     _points([], CAPTUREYEAR=[]), ramps_source=None, parcels=_parcels(new))
+    assert e["xing_v_kerb"].iat[0] == "ramp_likely"
+    assert (e["xing_v_kerb_source"].iat[0], e["xing_v_kerb_as_of"].iat[0]) == ("derived:post_ada_parcels", "2026-05")
+    assert e["xing_v_kerb"].iat[3] == "no_ramp_reported"  # a record beats the rule
+
+
+def test_a_crossing_end_gets_an_inferred_ramp_only_where_nothing_records_it():
+    e, osm_nodes, ps, _ = _one_crossing()
+    new = [(dx, dy, "2001") for dx, dy in ((10, 5), (-10, 5), (10, 10), (-10, 10))]
+    enrich.enrich_kerbs(e, osm_nodes, ps, _points([], KERB=[], CHECK=[], CAPTUREYEAR=[]), None, "frederick_ramps",
+                        parcels=_parcels(new))
+    row = e.iloc[0]
+    assert {row["kerb_a"], row["kerb_b"]} == {"ramp_present"}
+    assert {row["kerb_a_status"], row["kerb_b_status"]} == {"inferred"} and row["kerb_a_source"] == "derived:post_ada_parcels"
+    # a verified record at one end stands
+    e2, osm_nodes, ps, ramps = _one_crossing()
+    enrich.enrich_kerbs(e2, osm_nodes, ps, ramps, None, "frederick_ramps", parcels=_parcels(new))
+    assert sorted([e2.iloc[0]["kerb_a_status"], e2.iloc[0]["kerb_b_status"]]) == ["inferred", "verified"]

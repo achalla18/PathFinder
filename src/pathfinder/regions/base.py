@@ -33,6 +33,7 @@ ROLES = (
     "dtm",               # bare-earth elevation tiles
     "report_districts",  # reporting units for the coverage report (DC: wards)
     "field_checks",      # the team's own on-site observations of curbs: KIND, KERB, VISITED
+    "parcels",           # tax parcel points with the year built: YEARBLT, SDATDATE
 )
 
 # Families of "absence is evidence". Each is "boundary" (the inventory covers public streets
@@ -67,6 +68,9 @@ class Source:
     # arcgis_layer: fields dropped on ingest. Privacy: editor and staff identifiers are not
     # needed for routing and are never stored.
     drop_fields: tuple[str, ...] = field(default_factory=tuple)
+    # arcgis_layer: when set, the only fields requested. Privacy: a layer with personal fields
+    # (owner names and addresses) is fetched with the fields the pipeline needs and no others.
+    out_fields: tuple[str, ...] = field(default_factory=tuple)
     # arcgis_first_date only
     group_field: str | None = None
     date_field: str | None = None

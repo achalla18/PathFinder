@@ -15,10 +15,10 @@ See "How to update" at the bottom.
 | | |
 |---|---|
 | **Product** | **City accessibility app** (refocused 2026-10-15): step-free routes from mobility profiles first, plus a city barrier map. Dimensions: crossings & curbs / slope / sidewalk |
-| **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) and sidewalks from the surveys (both towns) in. Each town passes 3 of 5 accessibility criteria |
-| **Next** | Frederick is 7 trips short of criterion 4 and 3.2 points short of criterion 3. The City of Frederick allows internal use only and will supply nothing new (2026-10-20), so both gaps need field checks or mapping, and Phase E (testers) cannot see anything built on the city's data. Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
+| **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) sidewalks from the surveys (both towns) and the post-ADA ramp rule (Frederick) in. Frederick passes 4 of 5 accessibility criteria, Gaithersburg 3 of 5 |
+| **Next** | Frederick clears criterion 4 (52.2%, 2026-10-21) and is 3.2 points short of criterion 3 (sidewalk evidence), which needs mapping. The City of Frederick allows internal use only (2026-10-20), so Phase E (testers) cannot see anything built on the city's data. Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
 | **Repo** | `C:\dev\PathFinder` (moved out of OneDrive 2026-10-19), its own git repository; no remote |
-| **Tests** | 226 pass on the Frederick graph (unit and data-invariant; 1 skipped by design), 2026-10-20 |
+| **Tests** | 229 pass on each town's graph (unit and data-invariant; 1 skipped by design), 2026-10-21 |
 
 ### Key metrics over time
 
@@ -37,13 +37,13 @@ See "How to update" at the bottom.
 **Accessibility bar** (fixed 2026-10-15, before any accessibility source; see Decisions log). All
 figures inside the city line:
 
-| Criterion | Gaithersburg 2026-10-15 | Gaithersburg 2026-10-16 | Frederick 2026-10-15 | Frederick 2026-10-16 | Frederick 2026-10-19 (Fort Detrick removed) |
-|---|---|---|---|---|---|
-| 1. Curb evidence at crossing ends, implicit included (≥ 60%) | 18.9% | 18.9% — misses (no ramp inventory) | 17.3% | **67.0%** (6,872 of 10,253) — passes | 69.2% (6,766 of 9,771) — passes |
-| 2. Slope verified (≥ 80% of walkable length) | 0% | **89.4%** — passes | 0% | **96.0%** — passes | 95.8% — passes |
-| 3. Sidewalk evidence (≥ 60% of walkable length) | 51.4%* | 52.5% — misses; **61.7% — passes** with sidewalks from the survey (see below) | 47.6%* | 50.8% — misses; 54.6% — still misses with sidewalks from the survey | 56.8% — misses |
-| 4. Manual-wheelchair route exists, allow likely (≥ 50% of trip sample) | — | **2.7%** of 300 trips — misses (no ramp inventory) | — | **44.0%** of 300 trips — misses | 47.5% of 276 trips — misses (7 short) |
-| 5. Main component (≥ 90%) | 97.9% | 97.9% — passes | 96.8% | 96.8% — passes | 96.9% — passes |
+| Criterion | Gaithersburg 2026-10-15 | Gaithersburg 2026-10-16 | Frederick 2026-10-15 | Frederick 2026-10-16 | Frederick 2026-10-19 (Fort Detrick removed) | Frederick 2026-10-21 (post-ADA rule) |
+|---|---|---|---|---|---|---|
+| 1. Curb evidence at crossing ends, implicit included (≥ 60%) | 18.9% | 18.9% — misses (no ramp inventory) | 17.3% | **67.0%** (6,872 of 10,253) — passes | 69.2% (6,766 of 9,771) — passes | **81.2%** (7,937 of 9,771) — passes |
+| 2. Slope verified (≥ 80% of walkable length) | 0% | **89.4%** — passes | 0% | **96.0%** — passes | 95.8% — passes | 95.8% — passes |
+| 3. Sidewalk evidence (≥ 60% of walkable length) | 51.4%* | 52.5% — misses; **61.7% — passes** with sidewalks from the survey (see below) | 47.6%* | 50.8% — misses; 54.6% — still misses with sidewalks from the survey | 56.8% — misses | 56.8% — misses |
+| 4. Manual-wheelchair route exists, allow likely (≥ 50% of trip sample) | — | **2.7%** of 300 trips — misses (no ramp inventory) | — | **44.0%** of 300 trips — misses | 47.5% of 276 trips — misses (7 short) | **52.2% of 276 trips** (144) — passes |
+| 5. Main component (≥ 90%) | 97.9% | 97.9% — passes | 96.8% | 96.8% — passes | 96.9% — passes | 96.9% — passes |
 
 \* computed then over the whole graph, buffer included; the 2026-10-16 figures count only the
 network inside the city line, as the other criteria do.
@@ -799,6 +799,62 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 - Tests: 226 pass on the Frederick graph (new: field corner first and dated, radius, junction
   override, a corner answer not read as a junction, sheet validation).
 
+### 2026-10-21 — Post-ADA ramp rule passes its bar; Frederick clears criterion 4
+
+- **Why:** the city will not check the blocking corners. Asked whether the bar could be met without
+  a field visit (owner), PathFinder tried inferring ramps from when a neighbourhood was built.
+- **The rule and its bar were fixed before any parcel was fetched** (Decisions log, 2026-10-21).
+  - A place is post-ADA when at least 4 built parcels lie within 60 m and the oldest was built in
+    1995 or later.
+  - A post-ADA junction gets `ramp_likely` and a crossing end `ramp_present`, both `inferred`
+    (`derived:post_ada_parcels`, dated by the parcel data, 2026-05). The rule fills only curbs no
+    source records.
+- **Data:** SDAT parcel points from MD iMAP (`frederick_parcels`, 43,768 points, 41,106 with a year
+  built). Only `YEARBLT`, `LU` and `SDATDATE` are requested: owner names and addresses are never
+  fetched (new `Source.out_fields`).
+- **Scored once against the city's ramp survey** (`tools/post_ada/evaluate.py`,
+  [`reports/frederick/post_ada/evaluation.md`](../reports/frederick/post_ada/evaluation.md), internal):
+
+  | Test | Rule-positive | Correct | Precision | Wilson lower bound | Bar |
+  |---|---|---|---|---|---|
+  | 1. Junctions (≥ 2 survey records within 20 m) | 317 | 315 | 99.4% | 97.7% | passes |
+  | 2. Crossing ends (record within 8 m) | 544 | 544 | 100.0% | 99.3% | passes |
+  | 3. Oldest building 2005 or later | 348 | 347 | 99.7% | 98.4% | passes |
+
+  - Two earlier runs stopped before printing anything (a missing role, then a missing table
+    library). The scored run is the only one whose result was read.
+  - Bar criterion 4 (a street-level photo check of rule-positive *worklist* places) cannot run as
+    written: only 1 worklist place is rule-positive (Tuscanny Drive), and Mapillary has no photo
+    there. With fewer than 10 checkable places the protocol leaves the decision to 1–3.
+  - **A wider photo check, beyond the bar** (`tools/post_ada/mapillary_check.py`,
+    [`photo_sample.csv`](../reports/frederick/post_ada/photo_sample.csv)):
+    - Mapillary's image search returns nothing anywhere (even Times Square), so photo locations come
+      from its coverage tiles (154,111 photos of Frederick, 2014–2026). Uploader ids are dropped.
+    - Of the 556 places the rule filled, 80 have a photo within 20 m taken after their oldest
+      building. A random sample of 40 was drawn (seed 20261021). For each, the photos pointed at the
+      place (within 50° of the camera heading, 3–25 m away) were looked at.
+    - **Result: 23 show ramps (most with tactile pads), 0 show a missing ramp,** 11 cannot be told
+      and 6 had no photo pointed at the place. That is within the 1-in-20 limit.
+    - Six of the 11 were construction sites with no sidewalk built yet when photographed (2018–2024).
+      The rule can call a corner ramped before its sidewalk exists (open issue).
+    - The verdicts were made by Claude reading the photos, not by a person on site; the sheet keeps
+      the photo ids for a spot check.
+- **What it does not reach:** it calls only 1 of the 11 worklist junctions post-ADA (Tuscanny Drive,
+  oldest building 2002). The others are older (oldest buildings from 1964 to 1987) or have no
+  buildings within 60 m.
+- **Frederick rebuilt** (`pf enrich` → `pf crux --fresh --per-bin 100`):
+  - The rule fills 837 junction ends and 538 crossing-edge ends. Unknown junction ends: 2,499 → 1,662.
+  - **Criterion 4: 47.5% → 52.2%** (131 → 144 of 276 trips) — **passes**, 6 trips above the bar.
+    The opened trips run through other junctions the rule fills, not through the worklist.
+  - Criterion 1: 69.2% → 81.2% (7,937 of 9,771 ends).
+  - Criterion 3: unchanged, 56.8% — still misses.
+  - Barrier map: unrecorded crossing-end curbs 1,122 → 748, junction curbs 1,883 → 1,086.
+  - Blocked trips: 132 remain. 60 are blocked only by unknowns, 67 also by measured slope, and 5
+    have no step-free route.
+- **Frederick now passes 4 of 5 criteria.** Sidewalk evidence (criterion 3) is the last gap.
+- Not used in Gaithersburg: it has no ramp survey to test the rule against.
+- Tests: 229 pass on each town's graph.
+
 ### 2026-10-19 — Web app: faster start and easier on phones
 
 - **Measured first** on an emulated phone (Chrome, 390×844, touch, 4× slower CPU, 1.6 Mbps and
@@ -887,6 +943,7 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 | 2026-10-20 | **The team's field checks are a source:** a corner seen on site is verified and comes first; a junction answer stays inferred; typos stop the pipeline | A direct observation is the best evidence of a curb, but a junction answer cannot say which corners a walker uses; a silently skipped row would hide a check someone made |
 | 2026-10-20 | **City of Frederick layers stay internal** (the city's answer: internal use only, no further data) | Rule 7 unchanged: nothing built on them is shown outside the team |
 | 2026-10-20 | **Closed areas are cut at their boundary**, not removed by a share of each edge: only the parts of a walkway outside are kept, the cut ends are never bridged, and no connector may enter. A trip end inside one is told so | Review finding: the half-inside rule kept gate roads reaching up to 20 m behind the fence and corners walkable through the area |
+| 2026-10-21 | **Post-ADA ramp rule and its bar, fixed before any parcel is fetched or any result computed.** *Rule:* SDAT parcel points (MD iMAP `MD_PropertyData` layer 0, fields `YEARBLT` and `LU` only: owner fields are never fetched); a parcel is built when `YEARBLT` is a year from 1700 to 2026. A place (a flagged junction node, or the outer end of a mapped crossing) is **post-ADA** when at least 4 built parcels lie within 60 m and the oldest of them was built in 1995 or later. A post-ADA junction gets `ramp_likely`, a post-ADA crossing end `ramp_present`, both `inferred`, source `derived:post_ada_parcels`, dated by the parcel data (`SDATDATE`), and only where every other source left the curb unknown and the walker is not in the roadway. *Test,* with the rule computed from parcels alone: junctions inside the city line with at least 2 City of Frederick ramp-survey records within 20 m (correct when none is "No ramp"), and crossing ends with a survey record within 8 m (correct when it is a ramp). *Bar, all of:* (1) junctions: precision ≥ 95% over ≥ 100 rule-positive test junctions, Wilson 95% lower bound ≥ 92%; (2) crossing ends: the same; (3) rule-positive test places whose oldest nearby building is from 2005 or later: precision ≥ 95% over ≥ 30; (4) when a Mapillary token exists, rule-positive worklist places with a usable street-level photo taken after the place was built: at most 5% wrong (reported; fewer than 10 checkable places leaves the decision to 1–3). Too few test places is a fail, not a pass. *Result:* pass → used as `inferred`; fail → not used, and the year, radius and count are not tuned on this test set | The blocked corners sit in subdivisions the city's survey does not reach; ADA Title II has required curb ramps on new streets since 1992 (three years' margin for streets laid before the houses). A rule is used only after it is tested against the survey; the blocked corners are newer than most, hence criterion 3. The survey stays internal: it only decides whether the rule is used |
 
 ---
 
@@ -913,6 +970,11 @@ first, and folded crossings into accessibility, removing after-dark and crime.
   state roads in both towns stay without it until SHA shares it.
 - Condition bands are product judgments; Frederick's survey report (O'Connell & Lawrence)
   would give the index's own categories. Ask the city for it.
+- The post-ADA rule can call a corner ramped in a subdivision still being built, before the sidewalk
+  exists: 6 of 40 photo-checked places were unfinished when photographed (2018–2024). The parcel data
+  (2026-05) is newer than the photos, so most are likely finished now; not checked.
+- The post-ADA rule is tested inside the city line only; 13 of the junctions it fills lie outside,
+  in county subdivisions the test does not reach.
 - Neither pilot can clear criterion 1 through surveys: it needs walkways mapped as their own
   ways. Routes to it: mapping sidewalks in OSM (a partner or community mapping effort), or
   deriving sidewalk ways from the surveys as `inferred` geometry (plan, Risks). Either is a
@@ -927,9 +989,10 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 
 1. ~~City of Frederick brief~~ (answered 2026-10-20): internal use only; scope, report and
    corner check declined.
-   - Frederick's criterion 4 (7 trips short): visit the 13 places on `field/frederick.csv`
-     (instructions in `field/README.md`), then `pf fetch` → `pf enrich` → `pf coverage` →
-     `pf barriers` → `pf crux --fresh` → `tools/blocked_trips`. The source is ready (2026-10-20).
+   - Frederick's criterion 4 passes with the post-ADA rule (2026-10-21). The field sheet
+     (`field/frederick.csv`) stays useful: a visit gives verified curbs where the rule says nothing.
+   - Post-ADA photo check done (23 ramps seen, 0 missing). Optional: the owner spot-checks a few of
+     the photo ids in `reports/frederick/post_ada/photo_sample.csv`.
    - Testers in Frederick: decide whether to ask the city again later, or to show testers a
      Frederick built without the city's layers.
 2. Data requests (owner): MDOT SHA's ADA inventory (27 of Frederick's 145 blocked trips touch a

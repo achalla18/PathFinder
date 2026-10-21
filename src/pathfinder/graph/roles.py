@@ -44,6 +44,8 @@ CANONICAL: dict[str, tuple[str, ...]] = {
     # KIND: corner (one curb at the end of a mapped crossing) | junction (a street crossed
     # where no crossing is mapped); KERB: enrich's value for that kind; VISITED: ISO day
     "field_checks": ("KIND", "KERB", "VISITED"),
+    # YEARBLT: the main structure's year built (0 or blank: none); SDATDATE: "2026MAY"
+    "parcels": ("YEARBLT", "SDATDATE"),
 }
 
 # Montgomery Planning's capture codes (SOURCE_CODE) -> capture year. The layer dates a

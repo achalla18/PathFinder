@@ -222,6 +222,28 @@ def _field_checks(region_id: str) -> Source:
     )
 
 
+SDAT_PARCEL_POINTS = "https://mdgeodata.md.gov/imap/rest/services/PlanningCadastre/MD_PropertyData/MapServer/0"
+
+
+def _parcels(region_id: str, extent: tuple[float, float, float, float]) -> Source:
+    return Source(
+        id=f"{region_id}_parcels",
+        kind="arcgis_layer",
+        url=SDAT_PARCEL_POINTS,
+        bbox=_box(extent),
+        out_fields=("YEARBLT", "LU", "SDATDATE"),
+        title="Maryland tax parcel points (SDAT, via MD iMAP): year built and land use",
+        license="No license stated on the service; MD iMAP public data (MD iMAP, MDP, SDAT)",
+        limitations=(
+            "One point per tax account, near the parcel's centre. YEARBLT is the main structure's "
+            "year built as assessed (0 or blank: no structure); it dates the buildings, not the "
+            "street. Owner names and addresses are never fetched (out_fields)."
+        ),
+        verified_on=date(2026, 10, 21),
+        tags=("parcels",),
+    )
+
+
 MONTGOMERY_SIGNALS = "https://services.arcgis.com/hdlG36cOubTzNDBb/arcgis/rest/services/Traffic_Signals_Bill_1123/FeatureServer/0"
 
 
@@ -319,6 +341,7 @@ FREDERICK = _region("frederick", "Frederick, MD", "Frederick",
                     _FREDERICK_EXTENT, center=(-77.4105, 39.4143),
                     extra=(_frederick_sidewalks(), _frederick_sidewalk_photos(), _frederick_ramps(),
                            _frederick_county_signals(_FREDERICK_EXTENT), _field_checks("frederick"),
+                           _parcels("frederick", _FREDERICK_EXTENT),
                            _dtm("frederick", "frederick", _FREDERICK_EXTENT, "2021-12-14",
                                 "Frederick County bare-earth DEM, metres (USGS MD Western 2021 lidar; MD iMAP)",
                                 "Public domain (USGS 3DEP, contract G17PC00015), served by MD iMAP",
@@ -333,5 +356,9 @@ FREDERICK = _region("frederick", "Frederick, MD", "Frederick",
                     # (median 3 m), 2026-10-16. Coverage None: 45 of OSM's 116 signalized
                     # intersections have no record.
                     # Field checks: the team's own visits to places that block trips (field/README.md)
+                    # Parcels: the post-ADA ramp rule passed its bar against the city's ramp survey on
+                    # 2026-10-21 (reports/frederick/post_ada/evaluation.md). Not for Gaithersburg: it has
+                    # no ramp survey to test the rule against.
                     roles={"planimetrics": "frederick_sidewalks", "dtm": "frederick_dtm", "ramps": "frederick_ramps",
-                           "signals": "frederick_county_signals", "field_checks": "frederick_field_checks"})
+                           "signals": "frederick_county_signals", "field_checks": "frederick_field_checks",
+                           "parcels": "frederick_parcels"})

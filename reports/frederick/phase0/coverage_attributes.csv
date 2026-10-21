@@ -8,8 +8,8 @@ crossed_lanes,crossings,count,1793,22.3,0.0,77.7,osm_frederick 100%,2026.0,2026�
 crossed_width_m,crossings,count,1793,0.0,0.0,100.0,,,
 crossed_speed_mph,crossings,count,1793,15.9,0.0,84.1,osm_frederick 100%,2026.0,2026–2026
 crossed_aadt,crossings,count,1793,0.0,0.0,100.0,,,
-kerb_a,crossings,count,1793,68.0,0.0,32.0,frederick_ramps 98%; osm_frederick 2%,2025.0,2025–2026
-kerb_b,crossings,count,1793,65.6,0.0,34.4,frederick_ramps 98%; osm_frederick 2%,2025.0,2025–2026
+kerb_a,crossings,count,1793,68.0,9.3,22.7,frederick_ramps 86%; derived:post_ada_parcels 12%; osm_frederick 2%,2025.0,2025–2026
+kerb_b,crossings,count,1793,65.6,11.5,22.9,frederick_ramps 84%; derived:post_ada_parcels 15%; osm_frederick 1%,2025.0,2025–2026
 ramp_check_a,crossings,count,1793,66.3,0.0,33.7,frederick_ramps 100%,2025.0,2025–2025
 ramp_check_b,crossings,count,1793,63.9,0.0,36.1,frederick_ramps 100%,2025.0,2025–2025
 step_free,all edges,length,27893,0.0,100.0,0.0,derived:absent_from_osm_steps_outside_inventory 79%; derived:absent_from_osm_steps_offstreet 20%; derived:inferred_connector_no_stairs_polygon 1%,2026.0,2026–2026

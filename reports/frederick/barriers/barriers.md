@@ -19,8 +19,8 @@ Walkable network inside the line: 1,200 km.
 | no_sidewalk | barrier | Street with no sidewalk recorded: walking in the roadway | 18 | 1.0 | 100.0 |
 | sidewalk_poor_condition | barrier | Sidewalk with a survey condition index under 40 of 100 | 325 | 19.4 | 69.5 |
 | sidewalk_narrow | barrier | Sidewalk recorded narrower than 1.2 m (4 ft) | 5 | 0.4 | 0.0 |
-| curb_unknown | unknown | Crossing end where the curb is not recorded | 1,122 |  | 0.0 |
-| junction_curb_unknown | unknown | Junction corner where the curb is not recorded | 1,883 |  | 0.0 |
+| curb_unknown | unknown | Crossing end where the curb is not recorded | 748 |  | 0.0 |
+| junction_curb_unknown | unknown | Junction corner where the curb is not recorded | 1,086 |  | 0.0 |
 | sidewalk_unknown | unknown | Street where it is not recorded whether there is a sidewalk | 2,479 | 125.3 | 0.0 |
 
 ## By census tract (most unknowns per km first)
@@ -29,20 +29,20 @@ Tracts with at least 1 km of walkable network inside the line. Full table: [`bar
 
 | GEOID | barriers | unknowns | network_km | barriers_per_km | unknowns_per_km |
 |---|---|---|---|---|---|
-| 24021751203 | 34 | 270 | 25.5 | 1.33 | 10.59 |
-| 24021750100 | 104 | 119 | 15.8 | 6.59 | 7.54 |
-| 24021751301 | 54 | 578 | 76.7 | 0.7 | 7.54 |
-| 24021750504 | 199 | 465 | 71.0 | 2.8 | 6.55 |
-| 24021750802 | 71 | 616 | 97.5 | 0.73 | 6.32 |
-| 24021750505 | 161 | 281 | 48.1 | 3.35 | 5.84 |
-| 24021751202 | 82 | 324 | 59.5 | 1.38 | 5.44 |
-| 24021772200 | 230 | 575 | 119.5 | 1.92 | 4.81 |
-| 24021750506 | 74 | 233 | 49.2 | 1.5 | 4.73 |
+| 24021750100 | 104 | 117 | 15.8 | 6.59 | 7.42 |
+| 24021751203 | 34 | 168 | 25.5 | 1.33 | 6.59 |
+| 24021750505 | 161 | 275 | 48.1 | 3.35 | 5.72 |
+| 24021751301 | 54 | 410 | 76.7 | 0.7 | 5.35 |
+| 24021750504 | 199 | 360 | 71.0 | 2.8 | 5.07 |
+| 24021750802 | 71 | 459 | 97.5 | 0.73 | 4.71 |
 | 24021750801 | 349 | 330 | 72.4 | 4.82 | 4.56 |
-| 24021751201 | 70 | 276 | 62.1 | 1.13 | 4.44 |
-| 24021750805 | 239 | 291 | 68.5 | 3.49 | 4.25 |
-| 24021750508 | 77 | 143 | 38.9 | 1.98 | 3.68 |
+| 24021772200 | 230 | 483 | 119.5 | 1.92 | 4.04 |
+| 24021750506 | 74 | 159 | 49.2 | 1.5 | 3.23 |
+| 24021750508 | 77 | 115 | 38.9 | 1.98 | 2.96 |
+| 24021751201 | 70 | 183 | 62.1 | 1.13 | 2.95 |
+| 24021750805 | 239 | 201 | 68.5 | 3.49 | 2.93 |
+| 24021751202 | 82 | 171 | 59.5 | 1.38 | 2.87 |
 | 24021751701 | 57 | 110 | 44.3 | 1.29 | 2.48 |
-| 24021750804 | 52 | 93 | 39.1 | 1.33 | 2.38 |
+| 24021750300 | 103 | 40 | 16.9 | 6.1 | 2.37 |
 
 ![map_barriers.png](map_barriers.png)

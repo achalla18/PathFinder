@@ -8,8 +8,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021750100,crossed_width_m,crossings,count,64,0.0,0.0,100.0
 24021750100,crossed_speed_mph,crossings,count,64,20.3,0.0,79.7
 24021750100,crossed_aadt,crossings,count,64,0.0,0.0,100.0
-24021750100,kerb_a,crossings,count,64,71.9,0.0,28.1
-24021750100,kerb_b,crossings,count,64,73.4,0.0,26.6
+24021750100,kerb_a,crossings,count,64,71.9,1.6,26.6
+24021750100,kerb_b,crossings,count,64,73.4,1.6,25.0
 24021750100,ramp_check_a,crossings,count,64,71.9,0.0,28.1
 24021750100,ramp_check_b,crossings,count,64,73.4,0.0,26.6
 24021750100,step_free,all edges,length,578,0.0,100.0,0.0
@@ -74,8 +74,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021750504,crossed_width_m,crossings,count,113,0.0,0.0,100.0
 24021750504,crossed_speed_mph,crossings,count,113,13.3,0.0,86.7
 24021750504,crossed_aadt,crossings,count,113,0.0,0.0,100.0
-24021750504,kerb_a,crossings,count,113,56.6,0.0,43.4
-24021750504,kerb_b,crossings,count,113,57.5,0.0,42.5
+24021750504,kerb_a,crossings,count,113,56.6,21.2,22.1
+24021750504,kerb_b,crossings,count,113,57.5,21.2,21.2
 24021750504,ramp_check_a,crossings,count,113,56.6,0.0,43.4
 24021750504,ramp_check_b,crossings,count,113,57.5,0.0,42.5
 24021750504,step_free,all edges,length,1831,0.1,99.9,0.0
@@ -118,8 +118,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021750506,crossed_width_m,crossings,count,92,0.0,0.0,100.0
 24021750506,crossed_speed_mph,crossings,count,92,4.3,0.0,95.7
 24021750506,crossed_aadt,crossings,count,92,0.0,0.0,100.0
-24021750506,kerb_a,crossings,count,92,59.8,0.0,40.2
-24021750506,kerb_b,crossings,count,92,43.5,0.0,56.5
+24021750506,kerb_a,crossings,count,92,59.8,19.6,20.7
+24021750506,kerb_b,crossings,count,92,43.5,31.5,25.0
 24021750506,ramp_check_a,crossings,count,92,57.6,0.0,42.4
 24021750506,ramp_check_b,crossings,count,92,41.3,0.0,58.7
 24021750506,step_free,all edges,length,893,0.0,100.0,0.0
@@ -206,8 +206,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021750701,crossed_width_m,crossings,count,140,0.0,0.0,100.0
 24021750701,crossed_speed_mph,crossings,count,140,19.3,0.0,80.7
 24021750701,crossed_aadt,crossings,count,140,0.0,0.0,100.0
-24021750701,kerb_a,crossings,count,140,72.9,0.0,27.1
-24021750701,kerb_b,crossings,count,140,74.3,0.0,25.7
+24021750701,kerb_a,crossings,count,140,72.9,5.0,22.1
+24021750701,kerb_b,crossings,count,140,74.3,5.0,20.7
 24021750701,ramp_check_a,crossings,count,140,70.7,0.0,29.3
 24021750701,ramp_check_b,crossings,count,140,72.9,0.0,27.1
 24021750701,step_free,all edges,length,1977,0.0,100.0,0.0
@@ -272,8 +272,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021750802,crossed_width_m,crossings,count,152,0.0,0.0,100.0
 24021750802,crossed_speed_mph,crossings,count,152,12.5,0.0,87.5
 24021750802,crossed_aadt,crossings,count,152,0.0,0.0,100.0
-24021750802,kerb_a,crossings,count,152,47.4,0.0,52.6
-24021750802,kerb_b,crossings,count,152,50.7,0.0,49.3
+24021750802,kerb_a,crossings,count,152,47.4,19.7,32.9
+24021750802,kerb_b,crossings,count,152,50.7,16.4,32.9
 24021750802,ramp_check_a,crossings,count,152,47.4,0.0,52.6
 24021750802,ramp_check_b,crossings,count,152,50.0,0.0,50.0
 24021750802,step_free,all edges,length,2360,0.0,100.0,0.0
@@ -294,8 +294,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021750804,crossed_width_m,crossings,count,73,0.0,0.0,100.0
 24021750804,crossed_speed_mph,crossings,count,73,12.3,0.0,87.7
 24021750804,crossed_aadt,crossings,count,73,0.0,0.0,100.0
-24021750804,kerb_a,crossings,count,73,57.5,0.0,42.5
-24021750804,kerb_b,crossings,count,73,57.5,0.0,42.5
+24021750804,kerb_a,crossings,count,73,57.5,35.6,6.8
+24021750804,kerb_b,crossings,count,73,57.5,35.6,6.8
 24021750804,ramp_check_a,crossings,count,73,54.8,0.0,45.2
 24021750804,ramp_check_b,crossings,count,73,54.8,0.0,45.2
 24021750804,step_free,all edges,length,673,0.0,100.0,0.0
@@ -316,8 +316,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021750805,crossed_width_m,crossings,count,165,0.0,0.0,100.0
 24021750805,crossed_speed_mph,crossings,count,165,26.1,0.0,73.9
 24021750805,crossed_aadt,crossings,count,165,0.0,0.0,100.0
-24021750805,kerb_a,crossings,count,165,73.9,0.0,26.1
-24021750805,kerb_b,crossings,count,165,66.1,0.0,33.9
+24021750805,kerb_a,crossings,count,165,73.9,17.6,8.5
+24021750805,kerb_b,crossings,count,165,66.1,26.1,7.9
 24021750805,ramp_check_a,crossings,count,165,73.9,0.0,26.1
 24021750805,ramp_check_b,crossings,count,165,66.1,0.0,33.9
 24021750805,step_free,all edges,length,1292,0.0,100.0,0.0
@@ -404,8 +404,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021751201,crossed_width_m,crossings,count,76,0.0,0.0,100.0
 24021751201,crossed_speed_mph,crossings,count,76,44.7,0.0,55.3
 24021751201,crossed_aadt,crossings,count,76,0.0,0.0,100.0
-24021751201,kerb_a,crossings,count,76,50.0,0.0,50.0
-24021751201,kerb_b,crossings,count,76,48.7,0.0,51.3
+24021751201,kerb_a,crossings,count,76,50.0,15.8,34.2
+24021751201,kerb_b,crossings,count,76,48.7,17.1,34.2
 24021751201,ramp_check_a,crossings,count,76,50.0,0.0,50.0
 24021751201,ramp_check_b,crossings,count,76,48.7,0.0,51.3
 24021751201,step_free,all edges,length,1072,0.0,100.0,0.0
@@ -426,8 +426,8 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021751202,crossed_width_m,crossings,count,62,0.0,0.0,100.0
 24021751202,crossed_speed_mph,crossings,count,62,4.8,0.0,95.2
 24021751202,crossed_aadt,crossings,count,62,0.0,0.0,100.0
-24021751202,kerb_a,crossings,count,62,58.1,0.0,41.9
-24021751202,kerb_b,crossings,count,62,29.0,0.0,71.0
+24021751202,kerb_a,crossings,count,62,58.1,32.3,9.7
+24021751202,kerb_b,crossings,count,62,29.0,62.9,8.1
 24021751202,ramp_check_a,crossings,count,62,58.1,0.0,41.9
 24021751202,ramp_check_b,crossings,count,62,29.0,0.0,71.0
 24021751202,step_free,all edges,length,813,0.0,100.0,0.0
@@ -449,7 +449,7 @@ ward,attribute,scope,weighted_by,n,verified,inferred,unknown
 24021751203,crossed_speed_mph,crossings,count,5,20.0,0.0,80.0
 24021751203,crossed_aadt,crossings,count,5,0.0,0.0,100.0
 24021751203,kerb_a,crossings,count,5,80.0,0.0,20.0
-24021751203,kerb_b,crossings,count,5,80.0,0.0,20.0
+24021751203,kerb_b,crossings,count,5,80.0,20.0,0.0
 24021751203,ramp_check_a,crossings,count,5,80.0,0.0,20.0
 24021751203,ramp_check_b,crossings,count,5,80.0,0.0,20.0
 24021751203,step_free,all edges,length,290,0.0,100.0,0.0

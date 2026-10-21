@@ -1,34 +1,34 @@
 {
  "trips": 276,
- "with_route": 131,
- "blocked": 145,
- "short_of_bar": 7,
+ "with_route": 144,
+ "blocked": 132,
+ "short_of_bar": -6,
  "opened_by": {
-  "allow_unknown": 73,
   "allow_unknown+no_grade": 67,
+  "allow_unknown": 60,
   "none (no step-free route at all)": 5
  },
- "blocked_only_by_unknowns": 73,
+ "blocked_only_by_unknowns": 60,
  "touching_major_road": 27,
  "touching_outside_line": 74,
  "places_by_reason": {
-  "curb unknown, unmarked junction crossing": 202,
-  "curb unknown, marked crossing": 179,
-  "steeper than 8.33%": 103,
-  "slope unknown": 6
+  "curb unknown, unmarked junction crossing": 137,
+  "curb unknown, marked crossing": 119,
+  "steeper than 8.33%": 101,
+  "slope unknown": 7
  },
- "unknown_curbs_inside_line": 252,
- "unknown_curbs_inside_line_no_ramp_record_within_50m": 171,
- "places_to_close_gap": 13,
- "worklist_inside_line": 5,
+ "unknown_curbs_inside_line": 133,
+ "unknown_curbs_inside_line_no_ramp_record_within_50m": 96,
+ "places_to_close_gap": 1,
+ "worklist_inside_line": 1,
  "greedy": {
-  "10": 5,
-  "20": 13,
-  "30": 17,
-  "40": 20,
-  "50": 24,
-  "75": 36,
-  "100": 40,
-  "257": 73
+  "10": 8,
+  "20": 18,
+  "30": 24,
+  "40": 27,
+  "50": 33,
+  "75": 43,
+  "100": 49,
+  "159": 60
  }
 }

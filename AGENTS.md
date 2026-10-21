@@ -83,6 +83,8 @@ src/pathfinder/
                              a missing role is an empty frame, so its attributes stay unknown;
                              without a roadway inventory the streets come from OSM
   graph/enrich.py            evidence-graded attributes (crossings, kerbs, sidewalks, slope, ...)
+  graph/post_ada.py          post-ADA ramp rule: buildings all from 1995 on within 60 m -> ramps
+                             likely (inferred); tested against Frederick's survey 2026-10-21
   graph/elevation.py         sustained slope from a 1 m bare-earth DTM (10 m fitted windows on
                              three parallel lines); none registered for MD yet
   routing/cost.py            requirements + "felt minutes" penalty tables (PENALTIES); the
@@ -108,6 +110,7 @@ src/pathfinder/
 field/<region>.csv           the team's field checks of blocking curbs (field/README.md); the only
                              data kept in the repo, read as source <region>_field_checks
 tools/field_checks/          make_sheet.py: the field sheet from the blocked-trip worklist
+tools/post_ada/              evaluate.py: scores the post-ADA rule against a ramp survey (internal)
 web/                         phone web app (React + TypeScript + MapLibre GL, built with Vite)
 tests/                       unit tests (synthetic) + data invariants (marked `data`)
 reports/<region>/            generated, committed, human-readable outputs (do not hand-edit)
@@ -285,6 +288,17 @@ reports/<region>/            generated, committed, human-readable outputs (do no
   coordinates are the graph's own); a junction answer replaces the ramp count and stays
   `inferred`. A typo or an undated answer is an error (`roles.field_checks`). Not under rule 7.
   The sheet is never rewritten by code: answered rows are evidence.
+- **Post-ADA ramps** (`graph/post_ada.py`, the `parcels` role; Frederick only): SDAT parcel points
+  (`<region>_parcels`, fetched with `out_fields` so owner names and addresses never arrive). Where
+  no source records a curb and at least 4 buildings within 60 m all date from 1995 or later, a
+  junction is `ramp_likely` and a crossing end `ramp_present`, `inferred`, source
+  `derived:post_ada_parcels`, dated by the parcel data. Passed its fixed bar on 2026-10-21 (99.4% of
+  317 junctions, 100% of 544 crossing ends). A region gets the role only after the rule passes
+  against its own ramp survey; Gaithersburg has none. The constants are the protocol: never tune them.
+- **Mapillary** (`tools/post_ada/mapillary_check.py`, token `PF_MAPILLARY_TOKEN` in `.env`, read
+  only): the image search returns nothing for any box (2026-10-21), so photo locations come from the
+  coverage tiles (`pip install -e ".[tools]"`); single photos come from the graph API. Uploader ids
+  are never kept.
 - Census tracts (2020, TIGERweb, public domain) are each pilot's `report_districts`, keyed by
   `GEOID`: coverage and barriers break down by tract.
 - Imagery for inspection: MD iMAP `SixInch/SixInchImagery2023_2024_2025` (export in
