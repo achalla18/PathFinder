@@ -799,6 +799,25 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 - Tests: 226 pass on the Frederick graph (new: field corner first and dated, radius, junction
   override, a corner answer not read as a junction, sheet validation).
 
+### 2026-10-21 — Sidewalk mapping: worklist, mapper's guide, and OSM edits reach the pipeline
+
+- **Why:** criterion 3 needs 38.4 km more street with sidewalk evidence, and the parcel rule failed.
+  Tagging `sidewalk=*` on OSM streets adds their whole length, "no" included, and OSM data is
+  open, unlike the city's survey.
+- **Worklist** (`tools/sidewalk_mapping/make_worklist.py` →
+  [`reports/frederick/sidewalk_mapping/README.md`](../reports/frederick/sidewalk_mapping/README.md),
+  internal): 1,092 OSM streets inside the line, 125.3 km, have no sidewalk evidence. They are grouped
+  into 800 m areas, largest first; the first **10 areas (38.6 km)** would clear the bar. Every way has
+  an iD edit link and a Mapillary photo link. Service roads and alleys are left out: tagging parking
+  aisles would lift the number without helping anyone walk.
+- **Mapper's guide** (`field/sidewalk_mapping.md`): which tags to use, what may be mapped from
+  (on site, Mapillary, iD's imagery layers) and what may not (the city's survey, which is internal
+  and not licensed for OSM; Google). The OSM Foundation's Organised Editing Guidelines ask for a wiki
+  page before a team campaign starts (owner).
+- **Fix: OSM edits never reached the pipeline.** The statewide extract was downloaded once and kept
+  for good, even with `--force`. Now `pf fetch --force osm_<region>` takes a newer Geofabrik build
+  when the server has one, and keeps the old file otherwise (new test).
+
 ### 2026-10-21 — Post-ADA sidewalk rule fails its bar; not used
 
 - **Why:** criterion 3 (sidewalk evidence) is Frederick's last gap, 38.4 km short. 125 km of ordinary
@@ -1037,6 +1056,8 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 3. Frederick's sidewalk evidence beyond the survey: service roads, lots, and streets the survey shows
    without a sidewalk; mapping with partners. Imagery detection is closed (2026-10-19), and so is
    the parcel-age sidewalk rule (62.7% right in street photos against a 95% bar, 2026-10-21).
+   Mapping in OSM is ready to start (2026-10-21): the worklist's first 10 areas (38.6 km) clear the
+   bar; `field/sidewalk_mapping.md`. Owner: the OSM wiki page and hashtag, then mappers.
 4. Phase E, The Freedom Center: testers and the profile numbers. Blocked in Frederick while the
    city's data is internal only (2026-10-20).
 

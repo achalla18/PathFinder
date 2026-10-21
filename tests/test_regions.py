@@ -136,6 +136,38 @@ def test_clip_keeps_ways_touching_the_box_complete_and_drops_the_rest(tmp_path):
     assert set(nodes) == {1, 2, 3}  # node 3 lies outside the box but its way needs it
 
 
+def test_refresh_replaces_the_statewide_extract_only_when_the_server_has_a_newer_build(tmp_path, monkeypatch):
+    """Sidewalks the team maps in OSM arrive only in a newer extract, so `pf fetch --force`
+    must take one; without a newer build it keeps the file it has."""
+    from contextlib import contextmanager
+    from types import SimpleNamespace
+
+    from pathfinder import fetch
+
+    monkeypatch.setattr(fetch, "SHARED_DIR", tmp_path)
+    served = {"lm": "Tue, 20 Oct 2026 20:00:00 GMT", "body": b"new build"}
+    monkeypatch.setattr(fetch, "_request", lambda method, url, **kw: SimpleNamespace(headers={"Last-Modified": served["lm"]}))
+
+    @contextmanager
+    def get(url, **kw):
+        yield SimpleNamespace(raise_for_status=lambda: None, headers={"Last-Modified": served["lm"]},
+                              iter_content=lambda n: [served["body"]])
+
+    monkeypatch.setattr(fetch._session, "get", get)
+    out = tmp_path / "maryland-latest.osm.pbf"
+    out.write_bytes(b"old build")
+    out.with_name(out.name + ".last_modified").write_text("Mon, 19 Oct 2026 20:00:00 GMT")
+    url = "https://example.org/maryland-latest.osm.pbf"
+
+    assert fetch._shared_download(url) == (out, "Mon, 19 Oct 2026 20:00:00 GMT")  # no refresh asked
+    assert out.read_bytes() == b"old build"
+    assert fetch._shared_download(url, refresh=True) == (out, served["lm"])
+    assert out.read_bytes() == b"new build"
+    served["body"] = b"must not be downloaded"
+    fetch._shared_download(url, refresh=True)  # the server's build is the one kept
+    assert out.read_bytes() == b"new build"
+
+
 def test_clip_keeps_a_military_area_relation_with_all_its_members(tmp_path):
     """Fort Detrick is mapped only as a relation: the clip must keep it, and the member ways
     that lie outside the box, or the area would be lost and its streets routed as public."""

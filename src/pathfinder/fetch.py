@@ -343,13 +343,22 @@ def fetch_image_service(source: Source, *, tile_px: int = 2000) -> Path:
 # --------------------------------------------------------------------------- OSM clip
 
 
-def _shared_download(url: str) -> tuple[Path, str | None]:
+def _shared_download(url: str, refresh: bool = False) -> tuple[Path, str | None]:
     """A large file several regions cut from (a statewide OSM extract), downloaded once into
     SHARED_DIR. Returns its path and the server's Last-Modified, kept beside it, which dates
-    every clip taken from it."""
+    every clip taken from it. With ``refresh``, a newer build on the server replaces it: edits
+    mapped in OSM reach the pipeline only through a new extract (Geofabrik builds daily)."""
     SHARED_DIR.mkdir(parents=True, exist_ok=True)
     out = SHARED_DIR / Path(url).name
     stamp = out.with_name(out.name + ".last_modified")
+    if refresh and out.exists():
+        served = _request("HEAD", url).headers.get("Last-Modified") or ""
+        kept = stamp.read_text().strip() if stamp.exists() else ""
+        if served and served != kept:
+            log.info("%s: the server has a newer build (%s; kept %s), downloading it", out.name, served, kept or "undated")
+            out.unlink()
+        else:
+            log.info("%s: the kept build is the server's current one (%s)", out.name, kept)
     if not out.exists():
         tmp = out.with_suffix(out.suffix + ".part")
         with _session.get(url, stream=True, timeout=600) as r:
@@ -413,10 +422,10 @@ def clip_pbf(src: Path, out: Path, bbox: tuple[float, float, float, float]) -> d
     return {"ways": n_ways, "tagged_nodes_inside": n_nodes, "nodes_inside": len(inside), "area_relations": n_rels}
 
 
-def fetch_pbf_clip(source: Source) -> Path:
+def fetch_pbf_clip(source: Source, refresh: bool = False) -> Path:
     if not source.bbox:
         raise RuntimeError(f"{source.id}: a pbf_clip source needs a bbox")
-    src, last_modified = _shared_download(source.url)
+    src, last_modified = _shared_download(source.url, refresh=refresh)
     out = raw_path(source.id)
     out.parent.mkdir(parents=True, exist_ok=True)
     counts = clip_pbf(src, out, source.bbox)
@@ -565,4 +574,7 @@ def fetch(source_ids: list[str] | None = None, *, force: bool = False) -> None:
             log.info("skip %s (already fetched)", sid)
             continue
         log.info("fetching %s", sid)
-        _FETCHERS[s.kind](s)
+        if s.kind == "pbf_clip" and force:  # also take a newer statewide extract, with new OSM edits
+            _FETCHERS[s.kind](s, refresh=True)
+        else:
+            _FETCHERS[s.kind](s)

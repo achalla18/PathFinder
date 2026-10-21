@@ -109,9 +109,11 @@ src/pathfinder/
   cli.py                     `pf` command
 field/<region>.csv           the team's field checks of blocking curbs (field/README.md); the only
                              data kept in the repo, read as source <region>_field_checks
+field/sidewalk_mapping.md    how the team tags sidewalks in OSM, and what it may map from
 tools/field_checks/          make_sheet.py: the field sheet from the blocked-trip worklist
 tools/post_ada/              evaluate.py: scores the post-ADA rule against a ramp survey (internal);
                              sidewalk_check.py: the blind photo test of the sidewalk rule (failed)
+tools/sidewalk_mapping/      make_worklist.py: OSM streets with no sidewalk evidence, by area (internal)
 web/                         phone web app (React + TypeScript + MapLibre GL, built with Vite)
 tests/                       unit tests (synthetic) + data invariants (marked `data`)
 reports/<region>/            generated, committed, human-readable outputs (do not hand-edit)
@@ -231,7 +233,9 @@ reports/<region>/            generated, committed, human-readable outputs (do no
 ## Data facts worth knowing
 
 - OSM: Geofabrik's Maryland extract (~216 MB) is cut per town by `fetch.clip_pbf`, keeping
-  every way with a node in the box complete. Its Last-Modified date is every clip's `as_of`.
+  every way with a node in the box complete. Its Last-Modified date is every clip's `as_of`. It is
+  downloaded once into the shared dir; `pf fetch --force osm_<region>` takes a newer build when
+  Geofabrik has one (daily), which is how mapped edits arrive.
   The only relations kept are `landuse=military` areas (`fetch.CLIP_RELATION_TAGS`).
 - **Closed areas are not walkable.** Fort Detrick, a closed Army post inside Frederick, is mapped
   only as a relation, and its streets carry `access=yes`. Until 2026-10-19 its 60 km of streets
