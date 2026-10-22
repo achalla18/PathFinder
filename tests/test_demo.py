@@ -27,3 +27,36 @@ def test_example_trips_keep_only_well_formed_entries(tmp_path, monkeypatch):
     good = {"label": "To the library", "note": "avoids a steep block", "from": [-77.41, 39.41, "Home"], "to": [-77.40, 39.42, "Library"]}
     (tmp_path / f"{api.REGION.id}.json").write_text(json.dumps([good, {"label": "broken", "from": [1, 2]}]), encoding="utf-8")
     assert api._examples() == [good]
+
+
+def test_readiness_probe_passes_the_password_the_servers_ask_for(monkeypatch):
+    """With PF_APP_PASSWORD set, every place's server asks for it on /api/health too; the
+    launcher must send it, or it waits out its timeout and stops a demo that was healthy."""
+    from fastapi.testclient import TestClient
+
+    monkeypatch.setenv(api.PASSWORD_ENV, "s3cret")
+    client = TestClient(api.create_app())  # the real password gate; /api/health needs no planner
+    seen = []
+
+    def get(url, timeout, auth=None):
+        seen.append(auth)
+        return client.get("/api/health", auth=auth)
+
+    monkeypatch.setattr(demo.requests, "get", get)
+    running = type("Proc", (), {"poll": lambda self: None})()
+    demo._wait("http://127.0.0.1:8001/", [running], timeout_s=5)
+    assert seen == [("pathfinder", "s3cret")]
+
+
+def test_readiness_probe_stops_at_once_on_a_wrong_password(monkeypatch):
+    import pytest
+    from fastapi.testclient import TestClient
+
+    monkeypatch.setenv(api.PASSWORD_ENV, "right")
+    client = TestClient(api.create_app())
+    # the server expects another password than the one that reaches it: it answers 401, and the
+    # launcher must say so at once instead of waiting out its timeout
+    monkeypatch.setattr(demo.requests, "get", lambda url, timeout, auth=None: client.get("/api/health", auth=("x", "wrong")))
+    running = type("Proc", (), {"poll": lambda self: None})()
+    with pytest.raises(SystemExit, match="refused"):
+        demo._wait("http://127.0.0.1:8001/", [running], timeout_s=5)

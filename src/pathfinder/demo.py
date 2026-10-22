@@ -22,6 +22,7 @@ from dataclasses import dataclass
 
 import requests
 
+from .api import PASSWORD_ENV
 from .config import REPO_ROOT
 from .regions import REGIONS, is_internal
 
@@ -99,13 +100,20 @@ def _check_open() -> None:
 
 
 def _wait(url: str, procs: list[subprocess.Popen], timeout_s: float = 120) -> None:
+    # The servers inherit PF_APP_PASSWORD (from the environment or the repo's .env) and then ask
+    # every request for it, health checks included; any user name is accepted.
+    password = os.environ.get(PASSWORD_ENV)
+    auth = ("pathfinder", password) if password else None
     end = time.time() + timeout_s
     while time.time() < end:
         if any(p.poll() is not None for p in procs):
             raise SystemExit("a place's server stopped while starting; see its log above")
         try:
-            if requests.get(url + "api/health", timeout=2).ok:
+            r = requests.get(url + "api/health", timeout=2, auth=auth)
+            if r.status_code < 400:
                 return
+            if r.status_code == 401:
+                raise SystemExit(f"{url} refused the demo's password ({PASSWORD_ENV}); check it")
         except requests.RequestException:
             pass
         time.sleep(0.5)
@@ -124,8 +132,8 @@ def run(open_browser: bool = True) -> None:
             procs.append(subprocess.Popen([sys.executable, "-m", "pathfinder.cli", "serve", "--port", str(p.port)], env=env))
         for p in PLACES:
             _wait(p.url, procs)
-            print(f"  {p.name}: {p.url}")
-        print(f"PathFinder demo: {home}  (Ctrl-C stops everything)")
+            print(f"  {p.name}: {p.url}", flush=True)
+        print(f"PathFinder demo: {home}  (Ctrl-C stops everything)", flush=True)
         if open_browser:
             threading.Timer(1.0, webbrowser.open, args=(home,)).start()
         uvicorn.run(landing_app(), host=HOST, port=LANDING_PORT, log_level="warning")
