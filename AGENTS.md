@@ -120,6 +120,7 @@ tools/post_ada/              evaluate.py: scores the post-ADA rule against a ram
 tools/sidewalk_mapping/      make_worklist.py: OSM streets with no sidewalk evidence, by area (internal);
                              propose.py: sidewalk tags from Mapillary photos, and the review page
 tools/demo/                  card_maps.py: the landing page's map of each place
+tools/field_checks/add_reports.py  barrier reports from the app -> unanswered field-sheet rows
 demo/<region>.json           example trips the app offers before anything is chosen
 web/landing/                 the demo's landing page (served by `pf demo`)
 web/                         phone web app (React + TypeScript + MapLibre GL, built with Vite)

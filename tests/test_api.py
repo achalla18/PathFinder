@@ -179,3 +179,18 @@ def test_built_page_is_revalidated_and_hashed_assets_are_kept(planner, monkeypat
         assert r.status_code == 200 and r.headers["cache-control"] == "no-cache", path
     assert c.get("/manifest.webmanifest").headers["content-type"].startswith("application/manifest+json")
     assert "immutable" in c.get("/assets/index-abc123.js").headers["cache-control"]
+
+
+def test_barrier_report_keeps_only_place_kind_note_and_day(planner, monkeypatch, tmp_path):  # noqa: F811
+    import csv
+
+    monkeypatch.delenv(api.PASSWORD_ENV, raising=False)
+    monkeypatch.setattr(api, "REPORTS_FILE", tmp_path / "reports" / "barrier_reports.csv")
+    c = TestClient(api.create_app(planner))
+    lon, lat = api.REGION.center
+    assert c.post("/api/report", json={"lat": lat, "lon": lon, "kind": "broken_ramp", "note": "  cracked,\n  lip  "},
+                  headers={"User-Agent": "a-phone"}).status_code == 201
+    assert c.post("/api/report", json={"lat": lat, "lon": lon, "kind": "pothole"}).status_code == 422  # not a kind we take
+    assert c.post("/api/report", json={"lat": 0.0, "lon": 0.0, "kind": "other"}).status_code == 422  # outside the region
+    (row,) = list(csv.DictReader(api.REPORTS_FILE.open(encoding="utf-8")))
+    assert set(row) == {"day", "kind", "lat", "lon", "note"} and row["kind"] == "broken_ramp" and row["note"] == "cracked, lip"

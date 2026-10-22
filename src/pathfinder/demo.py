@@ -11,6 +11,7 @@ Local only: it is for recording the demo video, not for deployment.
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
@@ -38,6 +39,7 @@ class Place:
     port: int
     md6: bool          # in Maryland's 6th congressional district
     blurb: str
+    blurb_es: str
 
     @property
     def url(self) -> str:
@@ -46,11 +48,14 @@ class Place:
 
 PLACES = (
     Place("dc", "Washington, DC", 8001, False,
-          "A city that publishes its sidewalks, curb ramps, signals and terrain as open data."),
+          "A city that publishes its sidewalks, curb ramps, signals and terrain as open data.",
+          "Una ciudad que publica sus aceras, rampas, semáforos y terreno como datos abiertos."),
     Place("gaithersburg_public", "Gaithersburg", 8002, True,
-          "Montgomery County. Built from OpenStreetMap and public terrain data."),
+          "Montgomery County. Built from OpenStreetMap and public terrain data.",
+          "Condado de Montgomery. Hecho con OpenStreetMap y datos públicos del terreno."),
     Place("frederick_public", "Frederick", 8003, True,
-          "Frederick County. Built from OpenStreetMap and public terrain data."),
+          "Frederick County. Built from OpenStreetMap and public terrain data.",
+          "Condado de Frederick. Hecho con OpenStreetMap y datos públicos del terreno."),
 )
 
 # coverage.md's accessibility-bar rows: "| 1. Curb evidence ... | 17.1 | 60.0 | misses | ..."
@@ -65,9 +70,27 @@ def evidence(region_id: str) -> dict[str, float | None]:
     return {"curbs": val("1"), "slope": val("2"), "sidewalks": val("3")}
 
 
+# The trip-sample experiment's manual-wheelchair scenario (pf crux): step-free, at most 8.33%
+# sustained grade, curbs recorded or likely. Its share of sampled trips with a route is the
+# accessibility bar's criterion 4.
+WHEELCHAIR_SCENARIO = "stepfree_likely"
+
+
+def wheelchair_trips(region_id: str) -> dict | None:
+    """Of the sampled trips in a place, how many a manual wheelchair user can be given a route
+    for on recorded or likely curbs; None until ``pf crux`` has run there."""
+    path = REPO_ROOT / "reports" / region_id / "phase0" / "crux_summary.json"
+    if not path.exists():
+        return None
+    s = json.loads(path.read_text(encoding="utf-8"))
+    p = s.get("profiles", {}).get(WHEELCHAIR_SCENARIO)
+    return {"planned_pct": p["feasible_pct"], "trips": p["n"]} if p else None
+
+
 def places_json() -> list[dict]:
-    return [{"id": p.region, "name": p.name, "url": p.url, "md6": p.md6, "blurb": p.blurb,
-             "image": f"img/{p.region}.png", "evidence": evidence(p.region)} for p in PLACES]
+    return [{"id": p.region, "name": p.name, "url": p.url, "md6": p.md6, "blurb": p.blurb, "blurb_es": p.blurb_es,
+             "image": f"img/{p.region}.png", "evidence": evidence(p.region), "wheelchair": wheelchair_trips(p.region)}
+            for p in PLACES]
 
 
 def landing_app():

@@ -1,8 +1,9 @@
 import { Component, lazy, type ReactNode, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchProfiles, townInfo, type Example } from "./api";
+import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchProfiles, type ReportKind, sendReport, townInfo, type Example } from "./api";
 import { BARRIER_COLORS, ESTIMATED_SIDEWALK_COLOR, LEGEND } from "./barrierStyle";
 import { Conditions, Fact, streetName } from "./Conditions";
 import { Feedback } from "./Feedback";
+import { plural, setLang, t, tProfile, useLang } from "./i18n";
 import { cumulative, distance, metres, pointAt, project, split } from "./geo";
 import { NextStep, upcoming } from "./Guidance";
 import { SearchBox } from "./SearchBox";
@@ -15,7 +16,7 @@ const SLOPES: [number | null, string][] = [[null, "Any slope"], [5, "≤ 5%"], [
 // One colour per route, shared by its line on the map, its card and its territory in the
 // triangle. The fastest route is always the neutral one.
 const FASTEST_COLOR = "#64748b";
-const ROUTE_COLORS = ["#2f6df6", "#12a594", "#e4572e", "#8e4ec6", "#d6409f", "#c88a04", "#30a46c", "#0e7490"];
+const ROUTE_COLORS = ["#2f6df6", "#12a594", "#e4572e", "#8e4ec6", "#b83289", "#c88a04", "#30a46c", "#0e7490"];
 const DIMS = [["cross", "Crossings & curbs", "var(--cross)"], ["slope", "Slope", "var(--slope)"], ["sidewalk", "Sidewalk", "var(--sidewalk)"]] as const;
 // Walking guidance
 const OFF_ROUTE_M = 40; // farther than this from the route, twice in a row, and the trip is re-planned
@@ -44,8 +45,8 @@ class MapBoundary extends Component<{ children: ReactNode; onRetry: () => void }
     if (!this.state.failed) return this.props.children;
     return (
       <div className="map map-failed">
-        <p>The map could not load. Search and routes still work.</p>
-        <button className="btn ghost" onClick={() => { this.setState({ failed: false }); this.props.onRetry(); }}>Try again</button>
+        <p>{t("The map could not load. Search and routes still work.")}</p>
+        <button className="btn ghost" onClick={() => { this.setState({ failed: false }); this.props.onRetry(); }}>{t("Try again")}</button>
       </div>
     );
   }
@@ -153,6 +154,9 @@ function useDarkTheme(): boolean {
 export function App() {
   const dark = useDarkTheme();
   const online = useOnline();
+  const language = useLang(); // re-renders the page when the language changes
+  // a barrier report being made from the Barriers tab: placed by a tap on the map
+  const [report, setReport] = useState<ReportDraft | null>(null);
   const [townName, setTownName] = useState("");
   const [home, setHome] = useState<string | null>(null);
   const [examples, setExamples] = useState<Example[]>([]);
@@ -314,6 +318,7 @@ export function App() {
 
   function tap(p: LonLat) {
     if (walking) return;
+    if (report && tab === "barriers") { setReport({ ...report, at: p, state: "draft" }); return; }
     clearPlan();
     if (tapSets === "origin") { setPinnedOrigin({ at: p, label: "Pinned on the map" }); setTapSets("destination"); }
     else setDestination({ at: p, label: "Pinned on the map" });
@@ -509,9 +514,9 @@ export function App() {
   }
   const locate = user ? (
     <button className={walking && !following ? "locate wide-label" : "locate"} onClick={() => setRecenter((n) => n + 1)}
-            aria-label={walking && !following ? "Follow my position again" : "Show my position"}>
+            aria-label={walking && !following ? t("Follow my position again") : t("Show my position")}>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /><circle cx="12" cy="12" r="8" fill="none" /></svg>
-      {walking && !following && <span>Re-center</span>}
+      {walking && !following && <span>{t("Re-center")}</span>}
     </button>
   ) : null;
   const requirementCount = Number(settings.stepFree) + Number(settings.maxGrade != null) + Number(settings.certainty !== "allow_likely");
@@ -525,32 +530,35 @@ export function App() {
                selectedId={selected} places={chosenPlaces} openPlace={openPlace} colors={colors} dark={dark}
                walked={parts?.behind ?? null} ahead={parts?.ahead ?? null} follow={walking} layout={walking ? "walking" : sheet}
                recenter={recenter} onFollowChange={setFollowing}
-               mode={tab === "barriers" && !walking ? "barriers" : "routes"} barriers={barriers}
+               report={tab === "barriers" ? report?.at ?? null : null}
+               mode={tab === "barriers" && !walking && !report ? "barriers" : "routes"} barriers={barriers}
                onBarrier={(b) => { setBarrier(b); if (b) setSheet((s) => (s === "low" ? "mid" : s)); }} onView={setView}
                onTap={tap} onPlace={(i) => { setOpenPlace(i); setTab("routes"); setSheet((s) => (s === "low" ? "mid" : s)); }} />}
       </Suspense>
       </MapBoundary>
 
       {/* no box of its own, except on a phone held sideways: then it stacks the card and the panel down one side */}
-      <div className="side">
+      <div className="side" role="main">
       {!walking && (
         <header ref={topEl} className={destination ? "top compact" : "top"}>
           <div className="brand"><span className="mark" aria-hidden="true" />PathFinder
-            {home ? <a className="town" href={home} title="Choose another place">{townName || "Change place"} <span aria-hidden="true">▾</span></a>
-                  : <small>{townName || "curbs, slopes and sidewalks, as recorded"}</small>}
+            {home ? <a className="town" href={home + (language === "es" ? "?lang=es" : "")} title={t("Choose another place")}>{townName || t("Change place")} <span aria-hidden="true">▾</span></a>
+                  : <small>{townName || t("curbs, slopes and sidewalks, as recorded")}</small>}
+            <button className="lang" onClick={() => setLang(language === "es" ? "en" : "es")} lang={language === "es" ? "en" : "es"}
+                    aria-label={language === "es" ? "Switch to English" : "Cambiar a español"}>{language === "es" ? "EN" : "ES"}</button>
           </div>
-          <SearchBox kind="start" placeholder="Where from?" near={user}
-                     label={pinnedOrigin ? pinnedOrigin.label : user ? "My location" : ""}
+          <SearchBox kind="start" placeholder={t("Where from?")} near={user}
+                     label={pinnedOrigin ? pinnedOrigin.label : user ? t("My location") : ""}
                      active={tapSets === "origin"} onFocus={() => setTapSets("origin")}
                      recent={recent}
                      onPick={(at, label) => { clearPlan(); setPinnedOrigin({ at, label }); remember({ at, label }); setTapSets("destination"); }}
                      onMyLocation={gps ? () => { clearPlan(); setPinnedOrigin(null); setTapSets("destination"); } : undefined} />
-          <button className="swap" onClick={swap} disabled={!destination} aria-label="Swap start and destination">⇅</button>
-          <SearchBox kind="finish" placeholder="Where to?" near={origin}
+          <button className="swap" onClick={swap} disabled={!destination} aria-label={t("Swap start and destination")}>⇅</button>
+          <SearchBox kind="finish" placeholder={t("Where to?")} near={origin}
                      label={destination?.label ?? ""} active={tapSets === "destination"} onFocus={() => setTapSets("destination")}
                      recent={recent}
                      onPick={(at, label) => { clearPlan(); setDestination({ at, label }); remember({ at, label }); }} />
-          {!online && <p className="hint offline">You are offline. The map and routes need a connection.</p>}
+          {!online && <p className="hint offline">{t("You are offline. The map and routes need a connection.")}</p>}
           {locationNote && !pinnedOrigin && <p className="hint">{locationNote}</p>}
           {error && online && <p className="error">{error}</p>}
         </header>
@@ -561,20 +569,20 @@ export function App() {
           {locate}
           {/* the content scrolls inside, so the locate button can float above the panel */}
           <div className="walk-body">
-          {arrived ? <h2 className="big">You have arrived</h2> : (
+          {arrived ? <h2 className="big">{t("You have arrived")}</h2> : (
             <>
               {ahead[0] ? (
                 <>
                   <NextStep next={ahead[0]} then={then} />
-                  {setOff && progress && progress.along < START_HINT_M && <p className="hint">Set off heading {setOff}.</p>}
-                  <p className="togo"><b>{metres(remaining)}</b> · about {min((chosen.minutes * remaining) / Math.max(total, 1))} to go · arrive {clock((chosen.minutes * remaining) / Math.max(total, 1))}</p>
+                  {setOff && progress && progress.along < START_HINT_M && <p className="hint">{t("Set off heading {dir}.", { dir: setOff })}</p>}
+                  <p className="togo"><b>{metres(remaining)}</b> · {t("about {m} to go", { m: min((chosen.minutes * remaining) / Math.max(total, 1)) })} · {t("arrive {time}", { time: clock((chosen.minutes * remaining) / Math.max(total, 1)) })}</p>
                 </>
               ) : (
-                <h2 className="big">{metres(remaining)} <small>about {min((chosen.minutes * remaining) / Math.max(total, 1))} to go · arrive {clock((chosen.minutes * remaining) / Math.max(total, 1))}</small></h2>
+                <h2 className="big">{metres(remaining)} <small>{t("about {m} to go", { m: min((chosen.minutes * remaining) / Math.max(total, 1)) })} · {t("arrive {time}", { time: clock((chosen.minutes * remaining) / Math.max(total, 1)) })}</small></h2>
               )}
               <div className="progress" aria-hidden="true"><i style={{ width: `${100 * (1 - remaining / Math.max(total, 1))}%` }} /></div>
-              {progress && progress.off > OFF_ROUTE_M && <p className="callout warn">You are {metres(progress.off)} from the route. Finding a new one…</p>}
-              {replanned > 0 && <p className="hint">Route updated from where you are.</p>}
+              {progress && progress.off > OFF_ROUTE_M && <p className="callout warn">{t("You are {d} from the route. Finding a new one…", { d: metres(progress.off) })}</p>}
+              {replanned > 0 && <p className="hint">{t("Route updated from where you are.")}</p>}
               {nextPlace && nextPlace.ahead <= NEXT_PLACE_ALERT_M
                 ? <button className="callout" onClick={() => setOpenPlace(nextPlace.index)}>
                     <b>{nextPlace.index + 1}</b> Decision point {nextPlace.ahead > 15 ? `in ${metres(nextPlace.ahead)}` : "here"}: your route leaves the fastest one. <u>See why</u>
@@ -600,50 +608,53 @@ export function App() {
                   onClick={() => setSheet((s) => (s === "low" ? "mid" : "low"))} />
           <nav className="tabs" role="tablist">
             <button role="tab" aria-selected={tab === "priorities"} onClick={() => setTab("priorities")}>
-              What matters{requirementCount > 0 && <em>{requirementCount}</em>}
+              {t("What matters")}{requirementCount > 0 && <em>{requirementCount}</em>}
             </button>
-            <button role="tab" aria-selected={tab === "routes"} onClick={() => setTab("routes")}>Routes{all.length > 0 && <em>{all.length}</em>}</button>
-            <button role="tab" aria-selected={tab === "barriers"} onClick={() => setTab("barriers")}>Barriers</button>
+            <button role="tab" aria-selected={tab === "routes"} onClick={() => setTab("routes")}>{t("Routes")}{all.length > 0 && <em>{all.length}</em>}</button>
+            <button role="tab" aria-selected={tab === "barriers"} onClick={() => setTab("barriers")}>{t("Barriers")}</button>
           </nav>
           </div>
 
           {tab === "barriers" ? (
-            <BarrierPane barriers={barriers} error={barrierError} chosen={barrier} onClose={() => setBarrier(null)} />
+            report ? <ReportPane draft={report} onChange={setReport} onDone={() => setReport(null)}
+                                 centre={view ? [(view[0] + view[2]) / 2, (view[1] + view[3]) / 2] : null} />
+                   : <BarrierPane barriers={barriers} error={barrierError} chosen={barrier} onClose={() => setBarrier(null)}
+                                  onReport={() => { setBarrier(null); setReport({ at: null, kind: null, note: "", state: "draft" }); }} />
           ) : tab === "priorities" ? (
             <div className="pane">
-              <h3>How I get around</h3>
-              <p className="hint profile-prompt">Tap the one that fits you. You can fine-tune it below.</p>
-              <div className="profiles" role="radiogroup" aria-label="How I get around">
+              <h3>{t("How I get around")}</h3>
+              <p className="hint profile-prompt">{t("Tap the one that fits you. You can fine-tune it below.")}</p>
+              <div className="profiles" role="radiogroup" aria-label={t("How I get around")}>
                 {profileList.map((p) => (
                   <button key={p.id} role="radio" aria-checked={settings.profile === p.id}
-                          className={settings.profile === p.id ? "chip on" : "chip"} onClick={() => chooseProfile(p)}>{p.label}</button>
+                          className={settings.profile === p.id ? "chip on" : "chip"} onClick={() => chooseProfile(p)}>{tProfile(p.id, p.label)}</button>
                 ))}
               </div>
-              {profile && <p className="hint profile-note">{profile.description}</p>}
+              {profile && <p className="hint profile-note">{tProfile(profile.id, profile.description, "description")}</p>}
               <Triangle mix={mix} onChange={setMix} winners={plan?.status === "ok" ? winners : undefined} colors={colors} chosen={selected} />
               <p className="hint center">
                 {plan?.status === "ok" && chosen
-                  ? <>Each colour is a route. At this mix: <b style={{ color: colors[chosen.id] }}>{chosen.is_fastest ? "the fastest route" : `${min(chosen.minutes)}, ${min(chosen.compared_with_fastest?.extra_minutes ?? 0)} longer`}</b></>
-                  : "Drag the point toward what matters most on this walk."}
+                  ? <>{t("Each colour is a route. At this mix:")} <b style={{ color: colors[chosen.id] }}>{chosen.is_fastest ? t("the fastest route") : t("{m}, {extra} longer", { m: min(chosen.minutes), extra: min(chosen.compared_with_fastest?.extra_minutes ?? 0) })}</b></>
+                  : t("Drag the point toward what matters most on this walk.")}
               </p>
 
               <div className="row">
-                <label className="budget">Up to <b>{settings.budgetMin} min</b> longer
+                <label className="budget">{t("Up to {n} min longer", { n: settings.budgetMin })}
                   <input type="range" min={0} max={15} step={1} value={settings.budgetMin} onChange={(e) => set("budgetMin", Number(e.target.value))} />
                 </label>
               </div>
 
-              <h3>Must have <small>never traded away</small></h3>
+              <h3>{t("Must have")} <small>{t("never traded away")}</small></h3>
               <div className="chips">
-                <button className={settings.stepFree ? "chip on" : "chip"} aria-pressed={settings.stepFree} onClick={() => setRequirement("stepFree", !settings.stepFree)}>Step-free</button>
+                <button className={settings.stepFree ? "chip on" : "chip"} aria-pressed={settings.stepFree} onClick={() => setRequirement("stepFree", !settings.stepFree)}>{t("Step-free")}</button>
                 {SLOPES.map(([v, label]) => (
-                  <button key={label} className={settings.maxGrade === v ? "chip on" : "chip"} aria-pressed={settings.maxGrade === v} onClick={() => setRequirement("maxGrade", v)}>{label}</button>
+                  <button key={label} className={settings.maxGrade === v ? "chip on" : "chip"} aria-pressed={settings.maxGrade === v} onClick={() => setRequirement("maxGrade", v)}>{t(label)}</button>
                 ))}
               </div>
-              <h3>Evidence I accept</h3>
+              <h3>{t("Evidence I accept")}</h3>
               <div className="chips segmented">
                 {CERTAINTY.map(([v, label]) => (
-                  <button key={v} className={settings.certainty === v ? "chip on" : "chip"} aria-pressed={settings.certainty === v} onClick={() => setRequirement("certainty", v)}>{label}</button>
+                  <button key={v} className={settings.certainty === v ? "chip on" : "chip"} aria-pressed={settings.certainty === v} onClick={() => setRequirement("certainty", v)}>{t(label)}</button>
                 ))}
               </div>
             </div>
@@ -657,11 +668,11 @@ export function App() {
                 </div>
               )}
               {feedback !== "closed" && <Feedback walked={feedback === "after-walk"} onClose={() => setFeedback("closed")} />}
-              {!plan && busy && <div className="skeleton" aria-label="Finding routes"><i /><i /><i /></div>}
-              {!plan && !busy && <p className="empty">{ready ? "Ready when you are." : "Choose where from and where to, by searching above or tapping the map."}</p>}
+              {!plan && busy && <div className="skeleton" aria-label={t("Finding routes")}><i /><i /><i /></div>}
+              {!plan && !busy && <p className="empty">{ready ? t("Ready when you are.") : t("Choose where from and where to, by searching above or tapping the map.")}</p>}
               {!plan && !busy && !destination && examples.length > 0 && (
                 <div className="examples">
-                  <h3>Try an example</h3>
+                  <h3>{t("Try an example")}</h3>
                   {examples.map((e) => (
                     <button key={e.label} className="example" onClick={() => {
                       const p = profileList.find((x) => x.id === e.profile);
@@ -674,7 +685,7 @@ export function App() {
                       setDestination({ at: [e.to[0], e.to[1]], label: e.to[2] });
                       setTapSets("destination");
                     }}>
-                      <b>{e.label}</b>{e.note && <span>{e.note}</span>}
+                      <b>{(language === "es" && e.label_es) || e.label}</b>{e.note && <span>{(language === "es" && e.note_es) || e.note}</span>}
                     </button>
                   ))}
                 </div>
@@ -683,17 +694,21 @@ export function App() {
                                 feltTotal={feltTotal} feltSaved={feltSaved}
                                 onSelect={(id) => { setSelected(id); setOpenPlace(null); }}
                                 places={chosenPlaces} openPlace={openPlace} onPlace={setOpenPlace} />}
-              {plan && feedback === "closed" && <button className="link block" onClick={() => setFeedback("open")}>Tell us how this is working</button>}
+              {plan && feedback === "closed" && <button className="link block" onClick={() => setFeedback("open")}>{t("Tell us how this is working")}</button>}
             </div>
           )}
 
+          {/* what a screen reader hears when routes arrive */}
+          <p className="sr-only" role="status" aria-live="polite">{busy ? t("Finding routes…") : !plan ? ""
+            : plan.status === "ok" ? plural(all.length, "{n} route found.", "{n} routes found.") + (chosen ? " " + t("Selected: {name}, {m}.", { name: t(chosen.id === bestId ? "Best fit" : chosen.is_fastest ? "Fastest" : "Alternative"), m: min(chosen.minutes) }) : "")
+            : plan.status === "no_feasible_route" ? t("No route meets everything you asked for.") : plan.message ?? ""}</p>
           <footer className="cta">
             {plan?.status === "ok" && chosen
-              ? <button className="btn primary" style={{ background: colors[chosen.id] }} onClick={startWalking}>
-                  {DEMO ? "Start walking (demo)" : "Start walking"} · {min(chosen.minutes)} · arrive {clock(chosen.minutes)}
+              ? <button className="btn primary" style={{ background: colors[chosen.id], color: textOn(colors[chosen.id]) }} onClick={startWalking}>
+                  {DEMO ? t("Start walking (demo)") : t("Start walking")} · {min(chosen.minutes)} · {t("arrive {time}", { time: clock(chosen.minutes) })}
                 </button>
               : <button className="btn primary" disabled={!ready || busy} onClick={() => find()}>
-                  {busy ? "Finding routes…" : !destination ? "Where to?" : !origin ? "Where from?" : "Find routes"}
+                  {busy ? t("Finding routes…") : !destination ? t("Where to?") : !origin ? t("Where from?") : t("Find routes")}
                 </button>}
             {plan?.status === "ok" && busy && <span className="spinner" aria-label="Updating" />}
           </footer>
@@ -704,14 +719,78 @@ export function App() {
   );
 }
 
+const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Text colour for a label on a route-coloured button: white or ink, whichever reads better. */
+function textOn(hex: string): string {
+  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4));
+  const l = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  return 1.05 / (l + 0.05) >= (l + 0.05) / (0.0099 + 0.05) ? "#ffffff" : "#101a2b";
+}
+
+interface ReportDraft { at: LonLat | null; kind: ReportKind | null; note: string; state: "draft" | "sending" | "sent" | "failed" }
+const REPORT_KINDS: [ReportKind, string][] = [["broken_ramp", "Broken curb ramp"], ["no_ramp", "No curb ramp"], ["blocked_sidewalk", "Sidewalk blocked"],
+                                               ["no_sidewalk", "No sidewalk"], ["too_steep", "Too steep"], ["other", "Other"]];
+
+/** Report a barrier: tap the map, say what is there, send. It is kept by this server for the team
+ *  to check in person and changes nothing on the map until then. */
+function ReportPane({ draft, onChange, onDone, centre }: { draft: ReportDraft; onChange: (d: ReportDraft) => void; onDone: () => void; centre: LonLat | null }) {
+  async function send() {
+    if (!draft.at || !draft.kind) return;
+    onChange({ ...draft, state: "sending" });
+    try {
+      await sendReport(draft.at, draft.kind, draft.note);
+      onChange({ ...draft, state: "sent" });
+    } catch {
+      onChange({ ...draft, state: "failed" });
+    }
+  }
+  if (draft.state === "sent") {
+    return (
+      <div className="pane report">
+        <div className="place" role="status">
+          <h4>{t("Thank you. Your report is saved for the team to check in person.")}</h4>
+          <p className="hint">{t("Nothing changes on the map until someone has checked it on site. Only the place, what you chose and today's date are kept.")}</p>
+        </div>
+        <div className="row-buttons">
+          <button className="btn ghost" onClick={() => onChange({ at: null, kind: null, note: "", state: "draft" })}>{t("Report another")}</button>
+          <button className="btn ghost" onClick={onDone}>{t("close")}</button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="pane report">
+      <h3>{t("Report a barrier")}</h3>
+      <p className={draft.at ? "hint" : "hint callout"} aria-live="polite">{draft.at ? `✓ ${draft.at[1].toFixed(5)}, ${draft.at[0].toFixed(5)}` : t("Tap the map where the barrier is.")}</p>
+      {centre && <button className="link block" onClick={() => onChange({ ...draft, at: centre })}>{t("Or use the centre of the map")}</button>}
+      <h3>{t("What is there?")}</h3>
+      <div className="chips" role="radiogroup" aria-label={t("What is there?")}>
+        {REPORT_KINDS.map(([k, label]) => (
+          <button key={k} role="radio" aria-checked={draft.kind === k} className={draft.kind === k ? "chip on" : "chip"}
+                  onClick={() => onChange({ ...draft, kind: k })}>{t(label)}</button>
+        ))}
+      </div>
+      <textarea className="report-note" aria-label={t("Anything else? (optional)")} placeholder={t("Anything else? (optional)")} maxLength={300} rows={2}
+                value={draft.note} onChange={(e) => onChange({ ...draft, note: e.target.value })} />
+      {draft.state === "failed" && <p className="error" role="alert">{t("That did not go through. Try again in a moment.")}</p>}
+      <div className="row-buttons">
+        <button className="btn primary" disabled={!draft.at || !draft.kind || draft.state === "sending"} onClick={() => void send()}>{t("Send report")}</button>
+        <button className="btn ghost" onClick={onDone}>{t("Cancel")}</button>
+      </div>
+      <p className="fine">{t("Nothing changes on the map until someone has checked it on site. Only the place, what you chose and today's date are kept.")}</p>
+    </div>
+  );
+}
+
 function PlaceCard({ place, index, onClose }: { place: Place; index: number; onClose: () => void }) {
   return (
     <div className="place">
-      <h4><b className="num">{index + 1}</b>Decision point<button className="link" onClick={onClose}>close</button></h4>
-      <p className="lede">{min(place.extra_minutes)} longer here, and it feels {min(place.net_felt_minutes_saved)} easier.</p>
+      <h4><b className="num">{index + 1}</b>{t("Decision point")}<button className="link" onClick={onClose}>{t("close")}</button></h4>
+      <p className="lede">{t("{extra} longer here, and it feels {felt} easier.", { extra: min(place.extra_minutes), felt: min(place.net_felt_minutes_saved) })}</p>
       <div className="versus">
-        <div><h5 className="this">Your route · {place.this_route.length_m} m</h5><Conditions items={place.this_route.conditions} /></div>
-        <div><h5 className="fastest">Fastest · {place.fastest_route.length_m} m</h5><Conditions items={place.fastest_route.conditions} /></div>
+        <div><h5 className="this">{t("Your route · {len} m", { len: place.this_route.length_m })}</h5><Conditions items={place.this_route.conditions} /></div>
+        <div><h5 className="fastest">{t("Fastest · {len} m", { len: place.fastest_route.length_m })}</h5><Conditions items={place.fastest_route.conditions} /></div>
       </div>
     </div>
   );
@@ -729,12 +808,13 @@ function Results({ plan, options, total, selected, colors, bestId, feltTotal, fe
     const r = plan.relaxation;
     return (
       <div className="results">
-        <p className="callout warn"><b>!</b> No route meets everything you asked for.</p>
+        <p className="callout warn"><b>!</b> {t("No route meets everything you asked for.")}</p>
         {r ? (
           <div className="place">
-            <h4>Smallest compromise</h4>
-            <p className="lede">{r.compromise[0].toUpperCase() + r.compromise.slice(1)}: {min(r.route.minutes)}, {metres(r.route.length_m)}, with {r.edges_outside_original_requirements} stretch{r.edges_outside_original_requirements === 1 ? "" : "es"} outside what you asked for.</p>
-            <h5>Where you would be accepting it</h5>
+            <h4>{t("Smallest compromise")}</h4>
+            <p className="lede">{t(r.edges_outside_original_requirements === 1 ? "{what}: {m}, {len}, with {n} stretch outside what you asked for." : "{what}: {m}, {len}, with {n} stretches outside what you asked for.",
+                                   { what: capital(t(r.compromise)), m: min(r.route.minutes), len: metres(r.route.length_m), n: r.edges_outside_original_requirements })}</p>
+            <h5>{t("Where you would be accepting it")}</h5>
             <Conditions items={r.where_it_applies} />
           </div>
         ) : <p className="hint">{plan.message}</p>}
@@ -762,32 +842,33 @@ function Results({ plan, options, total, selected, colors, bestId, feltTotal, fe
         return (
           <button key={o.id} className={o.id === selected ? "route chosen" : "route"} style={{ "--route": colors[o.id] } as React.CSSProperties} onClick={() => onSelect(o.id)}>
             <span className="swatch" />
-            <span className="name">{o.id === bestId ? (o.is_fastest ? "Fastest · best fit" : "Best fit") : o.is_fastest ? "Fastest" : "Alternative"}
-              <small>{metres(o.length_m)}{c ? ` · differs in ${c.places_that_differ} place${c.places_that_differ === 1 ? "" : "s"}` : ""}</small></span>
+            <span className="name">{t(o.id === bestId ? (o.is_fastest ? "Fastest · best fit" : "Best fit") : o.is_fastest ? "Fastest" : "Alternative")}
+              <small>{metres(o.length_m)}{c ? ` · ${plural(c.places_that_differ, "differs in {n} place", "differs in {n} places")}` : ""}</small></span>
             <span className="time">{Math.round(o.minutes)}<small>min</small></span>
-            <span className="bar" aria-label={`${min(o.minutes)} of walking plus ${min(feltTotal(o) - o.minutes)} of felt effort`}>
+            <span className="bar" aria-label={t("{walk} of walking plus {felt} of felt effort", { walk: min(o.minutes), felt: min(feltTotal(o) - o.minutes) })}>
               <i className="walk" style={{ width: `${(100 * o.minutes) / scale}%` }} />
               {dims.map(([k, , color]) => <i key={k} style={{ width: `${(100 * (o.felt_minutes[k] ?? 0)) / scale}%`, background: color }} />)}
             </span>
-            {c && <span className="delta">+{min(c.extra_minutes)} walking{feltSaved(o) > 0.05 ? `, feels ${min(feltSaved(o))} easier` : feltSaved(o) < -0.05 ? `, feels ${min(-feltSaved(o))} harder at this mix` : ""} · arrive {clock(o.minutes)}</span>}
-            {!c && <span className="delta">arrive {clock(o.minutes)}</span>}
+            {c && <span className="delta">{t("+{extra} walking", { extra: min(c.extra_minutes) })}{feltSaved(o) > 0.05 ? t(", feels {m} easier", { m: min(feltSaved(o)) }) : feltSaved(o) < -0.05 ? t(", feels {m} harder at this mix", { m: min(-feltSaved(o)) }) : ""} · {t("arrive {time}", { time: clock(o.minutes) })}</span>}
+            {!c && <span className="delta">{t("arrive {time}", { time: clock(o.minutes) })}</span>}
           </button>
         );
       })}
-      <p className="legend"><span><i className="walk" />walking</span>{dims.map(([k, label, color]) => <span key={k}><i style={{ background: color }} />{label.toLowerCase()}</span>)}</p>
-      {total > options.length && <p className="hint">{total - options.length} more route{total - options.length === 1 ? "" : "s"} win elsewhere in the triangle. Drag the point under “What matters” to reach them.</p>}
+      <p className="legend"><span><i className="walk" />{t("walking")}</span>{dims.map(([k, label, color]) => <span key={k}><i style={{ background: color }} />{t(label.toLowerCase())}</span>)}</p>
+      {total > options.length && <p className="hint">{plural(total - options.length, "{n} more route wins elsewhere in the triangle. Drag the point under “What matters” to reach them.", "{n} more routes win elsewhere in the triangle. Drag the point under “What matters” to reach them.")}</p>}
       {plan.note && <p className="hint">{plan.note}</p>}
-      {places.length > 0 && !open && <p className="hint">Numbered points on the map are where this route leaves the fastest one. Tap one to see why.</p>}
+      {places.length > 0 && !open && <p className="hint">{t("Numbered points on the map are where this route leaves the fastest one. Tap one to see why.")}</p>}
       {open && <PlaceCard place={open} index={openPlace!} onClose={() => onPlace(null)} />}
       <p className="fine">{plan.disclaimer}</p>
     </div>
   );
 }
 
-function BarrierPane({ barriers, error, chosen, onClose }: { barriers: Barriers | null; error: string | null; chosen: BarrierProps | null; onClose: () => void }) {
+function BarrierPane({ barriers, error, chosen, onClose, onReport }: { barriers: Barriers | null; error: string | null; chosen: BarrierProps | null; onClose: () => void; onReport: () => void }) {
   return (
     <div className="pane">
-      <p className="hint">What the city's and OpenStreetMap's records show in this view: barriers in colour, and in grey the places nobody has recorded. Tap one to see its source and date.</p>
+      <button className="btn ghost wide report-start" onClick={onReport}>{t("Report a barrier")}</button>
+      <p className="hint">{t("What the city's and OpenStreetMap's records show in this view: barriers in colour, and in grey the places nobody has recorded. Tap one to see its source and date.")}</p>
       {error && <p className="error">{error}</p>}
       <ul className="legend-list">
         {LEGEND.map((row) => (
@@ -808,7 +889,7 @@ function BarrierPane({ barriers, error, chosen, onClose }: { barriers: Barriers 
       {barriers?.truncated && <p className="hint">Counted in full, but too many to draw at once: zoom in to see every unrecorded place.</p>}
       {chosen && (
         <div className="place">
-          <h4>{chosen.kind === "barrier" ? "Barrier" : chosen.kind === "evidence" ? "Sidewalk (estimated line)" : "Not recorded"}<button className="link" onClick={onClose}>close</button></h4>
+          <h4>{t(chosen.kind === "barrier" ? "Barrier" : chosen.kind === "evidence" ? "Sidewalk (estimated line)" : "Not recorded")}<button className="link" onClick={onClose}>{t("close")}</button></h4>
           <ul className="facts">
             <Fact text={`${chosen.what}${chosen.street ? ` · ${streetName(chosen.street)}` : ""}${chosen.length_m ? ` (${Math.round(chosen.length_m)} m)` : ""}`}
                   claim={{ status: chosen.status, source: chosen.source, as_of: chosen.as_of }} />
@@ -818,7 +899,7 @@ function BarrierPane({ barriers, error, chosen, onClose }: { barriers: Barriers 
       {barriers && barriers.unlicensed_sources.length > 0 && (
         <p className="fine internal">Internal: built in part on city data shared without an open license ({barriers.unlicensed_sources.join(", ")}). Not for use outside until the owners agree.</p>
       )}
-      <p className="fine">Nothing here certifies a place as accessible. Slope is from the county's elevation survey, dated by its flight.</p>
+      <p className="fine">{t("Nothing here certifies a place as accessible.")}</p>
     </div>
   );
 }

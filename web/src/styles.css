@@ -5,13 +5,14 @@
 :root {
   --ink: #101a2b;
   --ink-2: #33415a;
-  --muted: #66758c;
+  --muted: #596780; /* 4.97:1 on the darkest light panel (WCAG AA) */
   --paper: #fbfaf7;
   --surface: #ffffff;
   --surface-2: #f1efe9;
   --line: #e4e0d6;
   --line-strong: #c9c3b4;
   --cross: #e4572e;
+  --cross-text: #b8401c; /* coral dark enough to read as text: 5.5:1 */
   --slope: #12a594;
   --sidewalk: #5b5bd6;
   --warn-bg: #fdf0e6;
@@ -37,6 +38,7 @@
   --line: #2a3650;
   --line-strong: #3d4b69;
   --cross: #ff7a52;
+  --cross-text: #ff8a66;
   --slope: #2fd0bd;
   --sidewalk: #8f8ff5;
   --warn-bg: #33261a;
@@ -175,7 +177,7 @@ h3 small { text-transform: none; letter-spacing: 0; font-weight: 500; margin-lef
 .switch.record { margin: 12px 0 10px; }
 .fine { color: var(--muted); font-size: 0.74rem; margin-top: 12px; }
 .empty { color: var(--muted); text-align: center; padding: 26px 12px; }
-.error { color: var(--cross); font-weight: 600; margin-top: 8px; }
+.error { color: var(--cross-text); font-weight: 600; margin-top: 8px; }
 
 /* the locate button floats just above the panel's top edge, so it moves with the panel */
 .locate { position: absolute; z-index: 1; top: -60px; right: 12px; display: inline-flex; align-items: center; gap: 6px;
@@ -346,3 +348,17 @@ input[type="range"] { width: 100%; accent-color: var(--ink); margin: 2px 0 0; }
 .example b { display: block; }
 .example span { display: block; color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
 .example:hover, .example:focus-visible { border-color: var(--line-strong); }
+
+.end-pin.report { width: 22px; height: 22px; background: var(--cross); border: 3px solid #fff; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); }
+.report-start { margin: 0 0 10px; }
+.pane.report h3 { margin-top: 10px; }
+.report-note { width: 100%; margin: 10px 0; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: max(0.92rem, 16px); resize: vertical; }
+.row-buttons { display: flex; gap: 8px; margin: 8px 0; }
+.row-buttons .btn { flex: 1; }
+.brand .lang { font: inherit; font-size: 0.78rem; font-weight: 700; margin-left: 6px; padding: 3px 7px; border-radius: 8px;
+  border: 1px solid var(--line-strong); background: transparent; color: var(--ink); cursor: pointer; }
+
+/* Keyboard focus: one clear ring on everything that can take it (WCAG 2.4.7) */
+:where(button, a, input, textarea, select, summary, [tabindex]):focus-visible { outline: 3px solid var(--sidewalk); outline-offset: 2px; }
+.search:focus-within { box-shadow: 0 0 0 3px var(--sidewalk); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

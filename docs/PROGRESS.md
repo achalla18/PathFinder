@@ -799,6 +799,39 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 - Tests: 226 pass on the Frederick graph (new: field corner first and dated, radius, junction
   override, a corner answer not read as a junction, sheet validation).
 
+### 2026-10-22 — Demo: headline number, accessibility pass, barrier reports, Spanish
+
+- **Headline (open data only, `pf crux --fresh --per-bin 100`):** share of sampled trips a manual
+  wheelchair user can be routed on with every curb recorded or likely passable (scenario
+  `stepfree_likely`, criterion 4):
+
+  | Place | Routable | Trips sampled | Note |
+  |---|---|---|---|
+  | Frederick public | 3.3% | 276 | the internal build: 52.2% |
+  | Gaithersburg public | 2.7% | 300 | same as the internal build |
+  | DC | 65.3% | 300 | |
+
+  - The Maryland runs reuse each town's own trip sample, so the numbers compare.
+  - Shown on the landing page (headline and one stat per card) from `crux_summary.json`.
+  - The first run ran out of memory beside the demo servers; it was rerun with `--workers 1`.
+- **Accessibility:** axe-core (WCAG 2.1 A/AA) finds no violations on the landing page or in any app
+  state checked. Fixes:
+  - Muted grey darkened to 4.97:1; coral as text `--cross-text` (5.5:1).
+  - Button text on route colours picks white or ink by contrast; the pink route darkened.
+  - A focus ring everywhere a keyboard reaches; a main landmark.
+  - A screen-reader announcement when routes arrive ("13 routes found. Selected: Best fit, 23 min.").
+  - A keyboard way to place a report ("use the centre of the map").
+  - A real screen-reader pass by a person is still to do.
+- **Report a barrier** (Barriers tab): tap the map, choose what is there, send.
+  - `POST /api/report` keeps day, kind, place and note only, inside the region's box, in
+    `<data dir>/reports/barrier_reports.csv`; nothing is sent elsewhere.
+  - `tools/field_checks/add_reports.py` puts reports on the field sheet as unanswered rows: a
+    `corner` for curb reports, a `note` (never read by the pipeline) for the rest. Nothing changes
+    until a visit.
+- **Spanish** (`web/src/i18n.ts`, keyed by the English text, `?lang=es` or the EN/ES button):
+  - Translated: the app's own text, profiles, example trips and the landing page.
+  - Still English: server-written steps and conditions, and map labels.
+
 ### 2026-10-21 — Demo for the Congressional App Challenge: DC, Gaithersburg and Frederick
 
 - **The submission is a recorded video.** `pf demo` serves a landing page on :8000 where a viewer

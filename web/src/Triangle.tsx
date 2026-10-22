@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { t } from "./i18n";
 
 // The Tradeoff Triangle: one point sets the mix of the three priorities. Once routes are
 // planned, the triangle is also a map of which route wins for every mix, so dragging the
@@ -86,7 +87,7 @@ export function Triangle({ mix, onChange, onRelease, winners, colors, chosen }: 
   return (
     <div className="triangle">
       <svg ref={svg} viewBox={`0 0 ${W} ${H}`} role="slider" tabIndex={0}
-           aria-label="Priorities: drag to set the mix of crossings and curbs, slope, and sidewalk"
+           aria-label={t("Priorities: drag to set the mix of crossings and curbs, slope, and sidewalk")}
            aria-valuetext={`Crossings and curbs ${pct[0]} percent, slope ${pct[1]} percent, sidewalk ${pct[2]} percent`}
            onPointerDown={(e) => { dragging.current = true; (e.target as Element).setPointerCapture?.(e.pointerId); fromEvent(e); }}
            onPointerMove={(e) => dragging.current && fromEvent(e)}
@@ -121,9 +122,9 @@ export function Triangle({ mix, onChange, onRelease, winners, colors, chosen }: 
         <circle cx={x} cy={y} r="13" fill="var(--ink)" fillOpacity="0.12" />
         <circle cx={x} cy={y} r="8.5" fill="#fff" stroke="var(--ink)" strokeWidth="3" />
       </svg>
-      <span className="corner at-top"><i style={{ background: "var(--cross)" }} />Crossings &amp; curbs <b>{pct[0]}%</b></span>
-      <span className="corner at-left"><i style={{ background: "var(--slope)" }} />Slope <b>{pct[1]}%</b></span>
-      <span className="corner at-right"><i style={{ background: "var(--sidewalk)" }} />Sidewalk <b>{pct[2]}%</b></span>
+      <span className="corner at-top"><i style={{ background: "var(--cross)" }} />{t("Crossings & curbs")} <b>{pct[0]}%</b></span>
+      <span className="corner at-left"><i style={{ background: "var(--slope)" }} />{t("Slope")} <b>{pct[1]}%</b></span>
+      <span className="corner at-right"><i style={{ background: "var(--sidewalk)" }} />{t("Sidewalk")} <b>{pct[2]}%</b></span>
     </div>
   );
 }

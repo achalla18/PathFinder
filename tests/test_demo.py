@@ -60,3 +60,33 @@ def test_readiness_probe_stops_at_once_on_a_wrong_password(monkeypatch):
     running = type("Proc", (), {"poll": lambda self: None})()
     with pytest.raises(SystemExit, match="refused"):
         demo._wait("http://127.0.0.1:8001/", [running], timeout_s=5)
+
+
+def test_reports_become_unanswered_field_sheet_rows_once():
+    """A report is a place to visit, never an answer: it reaches the sheet with no result, a
+    curb report as a corner and anything else as a note the pipeline does not read."""
+    import importlib.util
+
+    import pandas as pd
+
+    from pathfinder.config import REPO_ROOT
+
+    spec = importlib.util.spec_from_file_location("add_reports", REPO_ROOT / "tools" / "field_checks" / "add_reports.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    reports = pd.DataFrame([{"day": "2026-10-22", "kind": "no_ramp", "lat": "39.41", "lon": "-77.41", "note": ""},
+                            {"day": "2026-10-22", "kind": "blocked_sidewalk", "lat": "39.42", "lon": "-77.40", "note": "bins"}])
+    rows = mod.rows(reports)
+    assert rows["kind"].tolist() == ["corner", "note"]
+    assert (rows["result"] == "").all() and (rows["visited_on"] == "").all()
+    assert rows["place"].tolist() == mod.rows(reports)["place"].tolist()  # same report, same place: added once
+    assert "bins" in rows["notes"].iat[1]
+
+
+def test_landing_page_reads_the_wheelchair_trip_share_from_the_trip_experiment(tmp_path, monkeypatch):
+    out = tmp_path / "reports" / "somewhere" / "phase0"
+    out.mkdir(parents=True)
+    (out / "crux_summary.json").write_text(json.dumps({"profiles": {"stepfree_likely": {"n": 276, "feasible_pct": 12.3}}}))
+    monkeypatch.setattr(demo, "REPO_ROOT", tmp_path)
+    assert demo.wheelchair_trips("somewhere") == {"planned_pct": 12.3, "trips": 276}
+    assert demo.wheelchair_trips("nowhere") is None

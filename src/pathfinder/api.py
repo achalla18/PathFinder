@@ -10,6 +10,7 @@ location, address or device details.
 
 from __future__ import annotations
 
+import csv
 import json
 import mimetypes
 import os
@@ -102,6 +103,22 @@ class Feedback(BaseModel):
         return self
 
 
+# What someone can report from the map. Curb reports become corners on the team's field sheet
+# (tools/field_checks/add_reports.py); the rest become notes to look at. A report never changes
+# a route: only a team member's visit does.
+REPORT_KINDS = ("broken_ramp", "no_ramp", "blocked_sidewalk", "no_sidewalk", "too_steep", "other")
+REPORTS_FILE = DATA_DIR / "reports" / "barrier_reports.csv"
+REPORT_COLUMNS = ("day", "kind", "lat", "lon", "note")
+
+
+class BarrierReport(BaseModel):
+    """A barrier someone saw: where, what, and an optional note. Nothing about who sent it."""
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    kind: Literal[REPORT_KINDS]  # type: ignore[valid-type]
+    note: str = Field("", max_length=300)
+
+
 def _require_password(credentials: HTTPBasicCredentials | None = Depends(_basic)) -> None:
     expected = os.environ.get(PASSWORD_ENV)
     if not expected:
@@ -124,7 +141,7 @@ def _examples() -> list[dict]:
     for e in json.loads(path.read_text(encoding="utf-8")):
         ends = [e.get("from"), e.get("to")]
         if isinstance(e.get("label"), str) and all(isinstance(x, list) and len(x) == 3 for x in ends):
-            extra = {k: e[k] for k in ("profile", "certainty") if isinstance(e.get(k), str)}
+            extra = {k: e[k] for k in ("profile", "certainty", "label_es", "note_es") if isinstance(e.get(k), str)}
             out.append({"label": e["label"], "note": str(e.get("note", "")), **extra,
                         "from": [float(ends[0][0]), float(ends[0][1]), str(ends[0][2])],
                         "to": [float(ends[1][0]), float(ends[1][1]), str(ends[1][2])]})
@@ -200,6 +217,25 @@ def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = N
             feedback_path.parent.mkdir(parents=True, exist_ok=True)
             with feedback_path.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
+        return {"status": "saved"}
+
+    @app.post("/api/report", status_code=status.HTTP_201_CREATED)
+    def report(body: BarrierReport) -> dict:
+        """Keep a barrier report on this computer for the team to check on site. It is not sent
+        anywhere and changes no route; inside the region's box only."""
+        xmin, ymin, xmax, ymax = REGION.bbox
+        if not (xmin <= body.lon <= xmax and ymin <= body.lat <= ymax):
+            raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, f"that point is outside {REGION.name}")
+        row = {"day": date.today().isoformat(), "kind": body.kind, "lat": round(body.lat, 6), "lon": round(body.lon, 6),
+               "note": " ".join(body.note.split())}
+        with _feedback_lock:
+            REPORTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            new = not REPORTS_FILE.exists()
+            with REPORTS_FILE.open("a", encoding="utf-8", newline="") as f:
+                w = csv.DictWriter(f, fieldnames=REPORT_COLUMNS)
+                if new:
+                    w.writeheader()
+                w.writerow(row)
         return {"status": "saved"}
 
     @app.get("/api/barriers")

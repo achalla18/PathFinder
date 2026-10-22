@@ -39,6 +39,14 @@ export interface FeedbackAnswers {
   comment: string;
 }
 
+/** A barrier someone saw. Kept by this server for the team to check on site; nothing else is sent. */
+export type ReportKind = "broken_ramp" | "no_ramp" | "blocked_sidewalk" | "no_sidewalk" | "too_steep" | "other";
+export async function sendReport(at: LonLat, kind: ReportKind, note: string): Promise<void> {
+  const res = await get("/api/report", { method: "POST", headers: { "Content-Type": "application/json" },
+                                          body: JSON.stringify({ lon: at[0], lat: at[1], kind, note }) });
+  if (!res.ok) throw new Error(`The service answered ${res.status}.`);
+}
+
 /** Send a tester's answers. Nothing else goes with them. */
 export async function sendFeedback(answers: FeedbackAnswers): Promise<void> {
   const res = await get("/api/feedback", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(answers) });
@@ -82,6 +90,7 @@ export async function profiles(): Promise<Profile[]> {
 export interface Example {
   label: string; note: string; from: [number, number, string]; to: [number, number, string];
   profile?: string; certainty?: "verified_only" | "allow_likely" | "allow_unknown";
+  label_es?: string; note_es?: string;
 }
 export async function townInfo(): Promise<{ name: string; home: string | null; examples: Example[] }> {
   try {

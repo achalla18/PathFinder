@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { searchPlaces } from "./api";
 import type { LonLat, PlaceResult } from "./types";
+import { t } from "./i18n";
 
 interface Props {
   kind: "start" | "finish";
@@ -50,7 +51,7 @@ export function SearchBox({ kind, label, placeholder, near, active, onFocus, onP
         autoComplete="off" enterKeyHint="search" autoCorrect="off" spellCheck={false}
       />
       {editing && text && (
-        <button className="clear" aria-label="Clear" onMouseDown={(e) => { e.preventDefault(); setText(""); }}>×</button>
+        <button className="clear" aria-label={t("Clear")} onMouseDown={(e) => { e.preventDefault(); setText(""); }}>×</button>
       )}
       {editing && (
         <ul className="suggestions">
@@ -62,13 +63,13 @@ export function SearchBox({ kind, label, placeholder, near, active, onFocus, onP
               </button>
             </li>
           ))}
-          {searched && results.length === 0 && <li className="none">No match. Try a street address or a place name, or tap the map.</li>}
+          {searched && results.length === 0 && <li className="none">{t("No match. Try a street address or a place name, or tap the map.")}</li>}
           {!searched && recent.map((r, i) => (
             <li key={`recent-${i}`}>
               <button onMouseDown={(e) => { e.preventDefault(); onPick(r.at, r.label); done(); }}>{r.label}<small>recent</small></button>
             </li>
           ))}
-          {!searched && <li className="none">Type a place or address, or tap the map.</li>}
+          {!searched && <li className="none">{t("Type a place or address, or tap the map.")}</li>}
         </ul>
       )}
     </div>

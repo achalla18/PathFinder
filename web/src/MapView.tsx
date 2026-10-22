@@ -106,6 +106,7 @@ interface Props {
   layout: string; // changes when the panel takes more or less of the screen: the trip is framed again
   recenter: number; // bumped by the locate button: go to the user (and, while walking, follow again)
   onFollowChange?: (following: boolean) => void; // while walking: false once the user pans the map away
+  report?: LonLat | null; // where a barrier report is being placed
   mode: "routes" | "barriers"; // barriers: the city barrier map; a tap picks a barrier, not a destination
   barriers: Barriers | null;
   onTap: (p: LonLat) => void;
@@ -121,7 +122,7 @@ export function MapView(props: Props) {
   const [styled, setStyled] = useState(false); // the style has loaded: sources exist and can be drawn
   const following = useRef(true); // while walking: the map keeps the user in view until they pan it
   const markers = useRef<Marker[]>([]);
-  const ends = useRef<Partial<Record<"origin" | "destination" | "user", Marker>>>({});
+  const ends = useRef<Partial<Record<"origin" | "destination" | "user" | "report", Marker>>>({});
   const latest = useRef(props);
   latest.current = props;
 
@@ -348,8 +349,8 @@ export function MapView(props: Props) {
   useEffect(() => {
     const m = map.current;
     if (!styled || !m) return;
-    for (const kind of ["origin", "destination", "user"] as const) {
-      const at = latest.current[kind];
+    for (const kind of ["origin", "destination", "user", "report"] as const) {
+      const at = latest.current[kind] ?? null;
       const existing = ends.current[kind];
       if (!at) { existing?.remove(); delete ends.current[kind]; continue; }
       if (existing) { existing.setLngLat(at); continue; }
@@ -358,7 +359,8 @@ export function MapView(props: Props) {
       dot.setAttribute("aria-hidden", "true");
       ends.current[kind] = new Marker({ element: dot }).setLngLat(at).addTo(m);
     }
-  }, [styled, props.origin?.[0], props.origin?.[1], props.destination?.[0], props.destination?.[1], props.user?.[0], props.user?.[1]]);
+  }, [styled, props.origin?.[0], props.origin?.[1], props.destination?.[0], props.destination?.[1], props.user?.[0], props.user?.[1],
+      props.report?.[0], props.report?.[1]]);
 
   // frame the trip when a new set of routes arrives
   const fitKey = props.options.map((o) => o.geometry.length).join(",") + (props.extraRoute?.length ?? "");

@@ -39,5 +39,18 @@ intersection (junction).
 Then rerun `pf enrich`, `pf coverage`, `pf barriers`, `pf crux --fresh` and
 `python tools/blocked_trips/blocked_trips.py` to see what opened.
 
+## Reports from the app
+
+Anyone using the app can report a barrier from the map (Barriers → Report a barrier). Reports
+stay on the computer running the server. To put them on this sheet as places to visit, run
+`python tools/field_checks/add_reports.py` (with `PF_REGION` set to the region).
+
+- A curb report (broken or missing ramp) becomes a `corner` row: visit it and answer it like any
+  corner.
+- Anything else becomes a `note` row. The pipeline never reads these. Write what you found in
+  `notes`, and leave `result` blank: a result on a `note` row stops `pf enrich`.
+
+A report alone changes nothing PathFinder says; only your visit does.
+
 To add new worklist places after a rerun:
 `python tools/field_checks/make_sheet.py --update`. It never rewrites answered rows.

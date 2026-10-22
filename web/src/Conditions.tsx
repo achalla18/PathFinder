@@ -1,4 +1,5 @@
 import type { Claim, Condition } from "./types";
+import { t } from "./i18n";
 
 // Every statement shown to a user carries its status, source and date (product rule 4).
 
@@ -68,7 +69,7 @@ export function kerbs(c: { curb_ramps?: Claim[] | Claim }): Claim[] {
 }
 
 export function Conditions({ items }: { items: Condition[] }) {
-  if (items.length === 0) return <p className="muted">Nothing notable is recorded on this stretch.</p>;
+  if (items.length === 0) return <p className="muted">{t("Nothing notable is recorded on this stretch.")}</p>;
   return (
     <ul className="facts">
       {items.map((c, i) => {
