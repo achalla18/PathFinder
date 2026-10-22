@@ -7,10 +7,8 @@ public builds of Gaithersburg and Frederick.
 
 1. `pf demo` (from `C:\dev\PathFinder`, with the venv's `pf.exe`). Wait for
    "PathFinder demo: http://127.0.0.1:8000". It opens the browser.
-2. **Warm up every place once.** The first trip after start-up is slow while each server loads its
-   graph (the Zoo trip takes about 12 s the first time).
-   - Open each card and click each example once.
-   - Then return to the landing page.
+2. **Wait for "example trips ready"** in the `pf demo` window. It plans every example once at start-up,
+   so each one opens instantly on camera (even the Zoo trip, which takes a few seconds to work out).
 3. **Browser window:** 1920×1080 with no other tabs or bookmarks bar showing. Zoom at 100%.
    Extensions with toolbars or pop-ups should be hidden or off. Light theme reads best on video.
 4. **Recording:** Windows: Win+Alt+R (Xbox Game Bar), or OBS at 1080p, 30 fps.
@@ -21,7 +19,7 @@ public builds of Gaithersburg and Frederick.
 |---|---|---|---|
 | 1 | 0:00–0:20 | Landing page; the cards rise in and the evidence bars fill (the number is said, not shown) | "In Frederick, PathFinder can give a wheelchair user a route for only 3 of every 100 trips with every curb recorded or likely passable. In Washington, 65. For people who use a wheelchair, a walker or a stroller, the fastest route often isn't one they can take." |
 | 2 | 0:20–0:35 | Point at the three cards and the bars: DC 92% curb evidence, Frederick 17% | "It works anywhere the data exists. Washington publishes its sidewalks and curb ramps; in Maryland's 6th district, most of it has never been recorded." |
-| 3 | 0:35–1:05 | Click **Washington, DC**. The map glides in. Click **Gallery Place to Ford's Theatre**. The routes draw in. | "Here's a manual-wheelchair trip downtown. PathFinder finds several routes and recommends the one with the easiest crossings, for the same eight minutes." |
+| 3 | 0:35–1:05 | Click **Washington, DC**. The map glides in. Click **Sheridan Circle to the West End Library**. The routes draw in, and a tag on the fastest route shows what the recommended one avoids ("No sidewalk"). | "Here's a manual-wheelchair trip. The fastest route runs along a street with no sidewalk; PathFinder flags it on the map and recommends a route a minute longer that avoids it." |
 | 4 | 1:05–1:20 | Open **What matters**: the profiles, then drag the point in the triangle | "Everyone's needs differ. Pick how you get around, then drag toward what matters most: crossings, slope or sidewalks." |
 | 5 | 1:20–1:45 | Back to **Routes**. Click **Woodley Park Metro to the National Zoo** | "And when no route meets your needs, PathFinder says so. This hill is steeper than an ADA ramp. It shows the smallest compromise, and exactly where, with the source: DC's 2024 LiDAR survey." |
 | 6 | 1:45–2:00 | **Barriers** tab; pan the map a little; then **Report a barrier**: tap a corner, choose "No curb ramp", send | "Every curb, slope and sidewalk carries its source and date. And anyone can report a barrier they find; the team checks it in person before anything changes." |
@@ -31,8 +29,10 @@ public builds of Gaithersburg and Frederick.
 | 8c | (optional, 10 s) | Click **ES** in the header: the whole app switches to Spanish | "Frederick has a large Spanish-speaking community, so PathFinder speaks Spanish too." |
 | 9 | 2:45–3:00 | Back on the landing page (place menu → All places); hold on the three cards and their bars | "The gap can be closed. A community mapping campaign in OpenStreetMap can record Frederick's sidewalks street by street, and every tag makes PathFinder better for everyone." |
 
-**Simulated walk (shot 8):** add `?demo` before the `#`, for example
-`http://127.0.0.1:8003/?demo#from=…`. The blue dot then moves along the route on its own. Without
+**Simulated walk (shot 8):** open the demo as `http://127.0.0.1:8000/?demo`. Every place then
+simulates your position: the blue dot waits at the trip's start, and after **Start walking** it
+walks the whole route in about 18 seconds, with the guidance and the map following it. The panel
+says "Demo: the position is simulated along the route"; say so in the narration too. Without
 `?demo` the app waits for real GPS.
 
 ## Facts to keep straight on camera

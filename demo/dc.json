@@ -17,6 +17,23 @@
   "note_es": "Silla de ruedas manual · los mismos 8 minutos, con un cruce más fácil"
  },
  {
+  "label": "Sheridan Circle to the West End Library",
+  "note": "Manual wheelchair · 1.2 min longer, around a stretch with no sidewalk",
+  "from": [
+   -77.05046,
+   38.91184,
+   "Sheridan Circle"
+  ],
+  "to": [
+   -77.05096,
+   38.9039,
+   "West End Neighborhood Library"
+  ],
+  "profile": "manual_wheelchair",
+  "label_es": "De Sheridan Circle a la biblioteca de West End",
+  "note_es": "Silla de ruedas manual · 1,2 min más, evitando un tramo sin acera"
+ },
+ {
   "label": "Woodley Park Metro to the National Zoo",
   "note": "Manual wheelchair · the hill is steeper than a ramp: PathFinder says so and shows the gentlest way",
   "from": [

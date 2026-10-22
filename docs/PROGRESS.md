@@ -834,6 +834,28 @@ first, and folded crossings into accessibility, removing after-dark and crime.
   - Translated: the app's own text, profiles, example trips and the landing page.
   - Still English: server-written steps and conditions, and map labels.
 
+### 2026-10-22 — Demo polish: app-style landing, simulated walk, warm-up, map tags
+
+- **Landing page** reworked as one app screen: app bar, three place tiles with a card map and
+  curb, slope and sidewalk meters; a list layout on phones. The lede and text sections are gone.
+- **Simulated walk** (`?demo`, carried from the landing page and the place menu): the position
+  stands at the start, then covers the route in 18 s (100 ms steps, the map gliding linearly).
+- **Warm-up:** `pf demo` plans every example trip once as the page sends it ("example trips
+  ready: 7 planned"); `/api/plan` keeps the last 64 answers (`PLAN_CACHE_SIZE`), so the Zoo trip
+  (no feasible route, about 4.4 s) comes back at once.
+- **Map tags** (`web/src/hazards.ts`): at each place the chosen route leaves the fastest one, a tag
+  on the fastest route's stretch names the worst thing the chosen route avoids (coral: steps, no
+  curb ramp, steep, no sidewalk; grey: curb not recorded, unmarked, no signal). It marks the
+  stretch, not a point. A third DC example (Sheridan Circle to the West End Library) shows
+  "No sidewalk".
+- **Spanish** now also covers walking guidance, the walking panel, conditions with their sources,
+  pinned places and the "no walkway nearby" message. Maryland terrain and signal sources show by
+  name instead of their ids.
+- **Checked in Chrome:** landing page, Frederick in Spanish with `?demo`, tags on DC and
+  Frederick trips, decision-point card, a full simulated walk to "Ha llegado". The first tag
+  version sat in the map's corner (its pop-in animation overrode the marker's position); the tag
+  now animates inside a holder.
+
 ### 2026-10-21 — Demo for the Congressional App Challenge: DC, Gaithersburg and Frederick
 
 - **The submission is a recorded video.** `pf demo` serves a landing page on :8000 where a viewer

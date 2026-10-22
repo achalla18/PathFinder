@@ -1,5 +1,5 @@
 import type { Claim, Condition } from "./types";
-import { t } from "./i18n";
+import { plural, t } from "./i18n";
 
 // Every statement shown to a user carries its status, source and date (product rule 4).
 
@@ -8,6 +8,10 @@ const SOURCES: Record<string, string> = {
   montgomery_sidewalks: "Montgomery Planning sidewalk survey",
   frederick_sidewalks: "City of Frederick sidewalk survey",
   frederick_ramps: "City of Frederick ramp survey",
+  gaithersburg_dtm: "Maryland LiDAR terrain",
+  frederick_dtm: "Maryland LiDAR terrain",
+  montgomery_signals: "Montgomery County signal inventory",
+  frederick_county_signals: "Frederick County signal inventory",
 
   sidewalks_2021: "DC planimetric survey",
   sidewalk_ramps_2010: "DC ramp survey",
@@ -46,18 +50,18 @@ export const streetName = (s: string) =>
   s.toLowerCase().replace(/(^|[\s-])([a-z])/g, (_, gap: string, c: string) => gap + c.toUpperCase()).replace(/\b(Nw|Ne|Sw|Se)$/, (q) => q.toUpperCase());
 
 function backing(c: Partial<Claim>): string {
-  if (!c.status || c.status === "unknown") return "no record";
+  if (!c.status || c.status === "unknown") return t("no record");
   // a claim merged from two halves of a crossing may name several sources, ", "-separated
-  const label = (s: string) => SOURCES[s] ?? (s.startsWith("osm_") ? "OpenStreetMap" : s.startsWith("derived") ? "estimated" : s);
-  const src = c.source ? [...new Set(c.source.split(", ").map(label))].join(" and ") : "";
+  const label = (s: string) => t(SOURCES[s] ?? (s.startsWith("osm_") ? "OpenStreetMap" : s.startsWith("derived") ? "estimated" : s));
+  const src = c.source ? [...new Set(c.source.split(", ").map(label))].join(` ${t("and")} `) : "";
   const year = c.as_of ? ` ${String(c.as_of).slice(0, 4)}` : "";
-  return `${c.status === "inferred" ? "likely" : "recorded"}${src ? ` · ${src}` : ""}${year}`;
+  return `${t(c.status === "inferred" ? "likely" : "recorded")}${src ? ` · ${src}` : ""}${year}`;
 }
 
 export function Fact({ text, claim }: { text: string; claim: Partial<Claim> }) {
   return (
     <li className={`fact ${claim.status ?? "unknown"}`}>
-      <span>{text}</span>
+      <span>{t(text)}</span>
       <small>{backing(claim)}</small>
     </li>
   );
@@ -76,7 +80,8 @@ export function Conditions({ items }: { items: Condition[] }) {
         const key = `${c.type}-${i}`;
         if (c.type === "crossing" || c.type === "unmapped_crossing") {
           const control = c.control?.value ? (CONTROL[String(c.control.value)] ?? String(c.control.value)) : "control not recorded";
-          const name = c.type === "crossing" ? `Crossing${c.street ? ` of ${streetName(c.street)}` : ""}` : "Street crossing that is not mapped";
+          const name = c.type !== "crossing" ? t("Street crossing that is not mapped")
+            : c.street ? t("Crossing of {street}", { street: streetName(c.street) }) : t("Crossing");
           return (
             <li key={key} className="group">
               <strong>{name}</strong>
@@ -94,14 +99,14 @@ export function Conditions({ items }: { items: Condition[] }) {
         }
         const m = c.length_m != null ? `${Math.round(c.length_m)} m` : "";
         const text: Record<string, string> = {
-          steps: `Steps (${m})`,
-          steepest_sustained_grade_pct: `Steepest sustained slope ${c.value}%`,
-          slope_unknown: `Slope not measured for ${m}`,
-          no_sidewalk: `No sidewalk for ${m}`,
-          sidewalk_one_side_recorded: `Sidewalk recorded on one side for ${m}; the other side is not recorded`,
-          lowest_sidewalk_condition: `Lowest sidewalk condition on record: ${Math.round(Number(c.value))} of 100 (the survey's index, higher is better)`,
-          narrowest_sidewalk_width_m: `Narrowest sidewalk on record: ${c.value} m`,
-          inferred_link: `${c.count} short link${c.count === 1 ? "" : "s"} assumed walkable (gap in the map)`,
+          steps: t("Steps ({m})", { m }),
+          steepest_sustained_grade_pct: t("Steepest sustained slope {g}%", { g: String(c.value) }),
+          slope_unknown: t("Slope not measured for {m}", { m }),
+          no_sidewalk: t("No sidewalk for {m}", { m }),
+          sidewalk_one_side_recorded: t("Sidewalk recorded on one side for {m}; the other side is not recorded", { m }),
+          lowest_sidewalk_condition: t("Lowest sidewalk condition on record: {v} of 100 (the survey's index, higher is better)", { v: Math.round(Number(c.value)) }),
+          narrowest_sidewalk_width_m: t("Narrowest sidewalk on record: {v} m", { v: String(c.value) }),
+          inferred_link: plural(c.count ?? 0, "{n} short link assumed walkable (gap in the map)", "{n} short links assumed walkable (gap in the map)"),
         };
         return <Fact key={key} text={text[c.type] ?? c.type} claim={c} />;
       })}

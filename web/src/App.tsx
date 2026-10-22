@@ -3,6 +3,7 @@ import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchPro
 import { BARRIER_COLORS, ESTIMATED_SIDEWALK_COLOR, LEGEND } from "./barrierStyle";
 import { Conditions, Fact, streetName } from "./Conditions";
 import { Feedback } from "./Feedback";
+import { hazards as hazardsOf } from "./hazards";
 import { plural, setLang, t, tProfile, useLang } from "./i18n";
 import { cumulative, distance, metres, pointAt, project, split } from "./geo";
 import { NextStep, upcoming } from "./Guidance";
@@ -26,9 +27,11 @@ const NEXT_PLACE_ALERT_M = 80;
 const THEN_WITHIN_M = 30; // a second step this close behind the next one is announced with it
 const START_HINT_M = 25; // which way to set off is said until the walker is this far along
 // ?demo in the address replaces the phone's position with one that walks the chosen route,
-// so guidance can be tried on a desk.
+// so guidance can be shown on a desk or in a presentation: the position stands at the trip's
+// start until walking begins, then covers the whole route in about DEMO_ROUTE_S seconds.
 const DEMO = new URLSearchParams(window.location.search).has("demo");
-const DEMO_SPEED_MPS = 12;
+const DEMO_ROUTE_S = 18;
+const DEMO_TICK_MS = 100; // ten positions a second; the map glides between them
 
 // The map library is most of the page's weight. It is fetched and started only once the search
 // card and the panel have been painted: starting the map's graphics first held the whole page
@@ -233,7 +236,7 @@ export function App() {
     }
     const id = navigator.geolocation.watchPosition(
       (p) => { accuracy.current = p.coords.accuracy; setGps([p.coords.longitude, p.coords.latitude]); setLocationNote(null); },
-      () => setLocationNote("Location is off. Search for a start or tap the map."),
+      () => setLocationNote(t("Location is off. Search for a start or tap the map.")),
       { enableHighAccuracy: true, maximumAge: 5000 },
     );
     return () => navigator.geolocation.clearWatch(id);
@@ -361,6 +364,8 @@ export function App() {
   const bestId = (mixMoved ? winners.get(gridKey(snap(mix))) : undefined) ?? all.find((o) => o.is_recommended)?.id ?? null;
   const chosen = all.find((o) => o.id === selected);
   const chosenPlaces = useMemo(() => places(chosen), [chosen]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const avoided = useMemo(() => (chosen && !chosen.is_fastest ? hazardsOf(chosenPlaces) : []), [chosenPlaces, chosen, language]);
   const set = <K extends keyof Settings>(k: K, v: Settings[K]) => { setSettings((s) => ({ ...s, [k]: v })); clearPlan(); };
   // A requirement changed by hand: the settings are no longer the profile's.
   const setRequirement = <K extends "stepFree" | "maxGrade" | "certainty">(k: K, v: Settings[K]) => {
@@ -456,18 +461,23 @@ export function App() {
     if (feedback === "closed") setFeedback("after-walk");
   }
 
-  // demo: move a stand-in position along the chosen route
+  // demo: a stand-in position at the trip's start, then walking the chosen route
   useEffect(() => {
-    if (!DEMO || !walking || !line || !cum) return;
+    if (!DEMO) return;
+    if (!walking) { setDemoAt(pinnedOrigin?.at ?? null); return; }
+    if (!line || !cum) return;
+    const total = cum[cum.length - 1];
+    const step = (total * DEMO_TICK_MS) / (DEMO_ROUTE_S * 1000);
     let along = 0;
     setDemoAt(line[0]);
     const timer = setInterval(() => {
-      along = Math.min(along + DEMO_SPEED_MPS, cum[cum.length - 1]);
+      along = Math.min(along + step, total);
       setDemoAt(pointAt(line, cum, along));
-    }, 1000);
+      if (along >= total) clearInterval(timer);
+    }, DEMO_TICK_MS);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walking, selected, plan]);
+  }, [walking, selected, plan, pinnedOrigin?.at?.[0], pinnedOrigin?.at?.[1]]);
 
   // a phone that sleeps mid-walk is no guide: hold the screen on while walking, where the browser allows
   useEffect(() => {
@@ -530,6 +540,8 @@ export function App() {
                options={walking ? [] : options} extraRoute={plan?.relaxation?.route.geometry ?? null}
                selectedId={selected} places={chosenPlaces} openPlace={openPlace} colors={colors} dark={dark}
                walked={parts?.behind ?? null} ahead={parts?.ahead ?? null} follow={walking} layout={walking ? "walking" : sheet}
+               followMs={DEMO ? DEMO_TICK_MS + 30 : undefined}
+               hazards={walking ? [] : avoided}
                recenter={recenter} onFollowChange={setFollowing}
                report={tab === "barriers" ? report?.at ?? null : null}
                mode={tab === "barriers" && !walking && !report ? "barriers" : "routes"} barriers={barriers}
@@ -549,14 +561,14 @@ export function App() {
                     aria-label={language === "es" ? "Switch to English" : "Cambiar a español"}>{language === "es" ? "EN" : "ES"}</button>
           </div>
           <SearchBox kind="start" placeholder={t("Where from?")} near={user}
-                     label={pinnedOrigin ? pinnedOrigin.label : user ? t("My location") : ""}
+                     label={pinnedOrigin ? t(pinnedOrigin.label) : user ? t("My location") : ""}
                      active={tapSets === "origin"} onFocus={() => setTapSets("origin")}
                      recent={recent}
                      onPick={(at, label) => { clearPlan(); setPinnedOrigin({ at, label }); remember({ at, label }); setTapSets("destination"); }}
                      onMyLocation={gps ? () => { clearPlan(); setPinnedOrigin(null); setTapSets("destination"); } : undefined} />
           <button className="swap" onClick={swap} disabled={!destination} aria-label={t("Swap start and destination")}>⇅</button>
           <SearchBox kind="finish" placeholder={t("Where to?")} near={origin}
-                     label={destination?.label ?? ""} active={tapSets === "destination"} onFocus={() => setTapSets("destination")}
+                     label={destination ? t(destination.label) : ""} active={tapSets === "destination"} onFocus={() => setTapSets("destination")}
                      recent={recent}
                      onPick={(at, label) => { clearPlan(); setDestination({ at, label }); remember({ at, label }); }} />
           {!online && <p className="hint offline">{t("You are offline. The map and routes need a connection.")}</p>}
@@ -586,18 +598,20 @@ export function App() {
               {replanned > 0 && <p className="hint">{t("Route updated from where you are.")}</p>}
               {nextPlace && nextPlace.ahead <= NEXT_PLACE_ALERT_M
                 ? <button className="callout" onClick={() => setOpenPlace(nextPlace.index)}>
-                    <b>{nextPlace.index + 1}</b> Decision point {nextPlace.ahead > 15 ? `in ${metres(nextPlace.ahead)}` : "here"}: your route leaves the fastest one. <u>See why</u>
+                    <b>{nextPlace.index + 1}</b> {nextPlace.ahead > 15
+                      ? t("Decision point in {d}: your route leaves the fastest one.", { d: metres(nextPlace.ahead) })
+                      : t("Decision point here: your route leaves the fastest one.")} <u>{t("See why")}</u>
                   </button>
-                : nextPlace && <p className="hint">Next decision point in {metres(nextPlace.ahead)}.</p>}
+                : nextPlace && <p className="hint">{t("Next decision point in {d}.", { d: metres(nextPlace.ahead) })}</p>}
             </>
           )}
           {openPlace != null && chosenPlaces[openPlace] && <PlaceCard place={chosenPlaces[openPlace]} index={openPlace} onClose={() => setOpenPlace(null)} />}
           <label className="switch record">
             <input type="checkbox" checked={recording} onChange={(e) => { setRecording(e.target.checked); save({ recordWalks: e.target.checked }); }} />
-            <span>Record this walk <small>{recording ? `${recorded} positions, kept on this phone` : "to help tune guidance"}</small></span>
+            <span>{t("Record this walk")} <small>{recording ? t("{n} positions, kept on this phone", { n: recorded }) : t("to help tune guidance")}</small></span>
           </label>
-          <button className="btn ghost wide" onClick={stopWalking}>{arrived ? "Done" : "Stop"}</button>
-          {DEMO && <p className="hint">Demo: the position is simulated along the route.</p>}
+          <button className="btn ghost wide" onClick={stopWalking}>{t(arrived ? "Done" : "Stop")}</button>
+          {DEMO && <p className="hint">{t("Demo: the position is simulated along the route.")}</p>}
           </div>
         </section>
       ) : (
@@ -727,7 +741,10 @@ const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 function PlaceMenu({ current, places, home, lang }: { current: string; places: PlaceLink[]; home: string | null; lang: string }) {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
-  const suffix = lang === "es" ? "?lang=es" : "";
+  const q = new URLSearchParams();
+  if (lang === "es") q.set("lang", "es");
+  if (DEMO) q.set("demo", "");
+  const suffix = q.toString() ? `?${q.toString().replace(/=$|=(?=&)/g, "")}` : "";
   useEffect(() => {
     if (!open) return;
     const away = (e: Event) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
@@ -836,8 +853,15 @@ interface ResultsProps {
   onSelect: (id: number) => void; places: Place[]; openPlace: number | null; onPlace: (i: number | null) => void;
 }
 
+/** The planner's message for a trip end too far from any walkway, translated when it is the usual one. */
+function farMessage(message: string): string {
+  const m = /^There is no mapped walkway within (\d+) m of the (origin|destination)\.$/.exec(message);
+  if (!m) return message;
+  return t(m[2] === "origin" ? "There is no mapped walkway within {d} m of the start." : "There is no mapped walkway within {d} m of the destination.", { d: m[1] });
+}
+
 function Results({ plan, options, total, selected, colors, bestId, feltTotal, feltSaved, onSelect, places, openPlace, onPlace }: ResultsProps) {
-  if (plan.status === "not_near_network") return <p className="empty">{plan.message}</p>;
+  if (plan.status === "not_near_network") return <p className="empty">{farMessage(plan.message ?? "")}</p>;
   if (plan.status === "no_feasible_route") {
     const r = plan.relaxation;
     return (

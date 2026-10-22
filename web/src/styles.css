@@ -373,3 +373,19 @@ input[type="range"] { width: 100%; accent-color: var(--ink); margin: 2px 0 0; }
 .place-list a.here { background: var(--surface-2); }
 .place-list a small { font-weight: 500; color: var(--muted); font-size: 0.78rem; }
 .place-list a.all { border-top: 1px solid var(--line); border-radius: 0 0 10px 10px; margin-top: 4px; color: var(--muted); font-weight: 600; }
+
+/* What the chosen route avoids: a tag standing on the fastest route */
+.hazard-tag { position: relative; display: flex; align-items: center; gap: 6px; padding: 5px 9px 5px 7px; border-radius: 999px;
+  background: #fff; color: #8f2f12; border: 2px solid #e4572e; box-shadow: 0 4px 12px rgb(16 26 43 / 0.22);
+  font: 700 0.76rem/1.1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; white-space: nowrap; pointer-events: none;
+  animation: tag-in 0.35s cubic-bezier(.2,.7,.2,1) both 0.5s; }
+.hazard-tag::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 10px; height: 10px; margin-left: -5px;
+  background: #fff; border-right: 2px solid #e4572e; border-bottom: 2px solid #e4572e; transform: rotate(45deg); }
+.hazard-tag i { width: 16px; height: 16px; flex: none; border-radius: 50%; background: #e4572e; position: relative; }
+.hazard-tag i::before { content: "!"; position: absolute; inset: 0; color: #fff; font: 900 0.7rem/16px system-ui, sans-serif; text-align: center; font-style: normal; }
+.hazard-tag.curb_unknown, .hazard-tag.unmarked, .hazard-tag.no_signal { color: #4b5563; border-color: #8a94a6; }
+.hazard-tag.curb_unknown::after, .hazard-tag.unmarked::after, .hazard-tag.no_signal::after { border-color: #8a94a6; }
+.hazard-tag.curb_unknown i, .hazard-tag.unmarked i, .hazard-tag.no_signal i { background: #8a94a6; }
+.hazard-tag.curb_unknown i::before { content: "?"; }
+@keyframes tag-in { from { opacity: 0; transform: translateY(6px) scale(0.9); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hazard-tag { animation: none; } }

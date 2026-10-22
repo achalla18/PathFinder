@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbfaf7">
 <title>PathFinder</title>
 <meta name="description" content="Walking routes that know about curbs, slopes and sidewalks.">
 <style>
@@ -11,9 +12,10 @@
   --paper: #fbfaf7; --surface: #ffffff; --surface-2: #f1efe9;
   --line: #e4e0d6; --line-strong: #c9c3b4;
   --cross: #e4572e; --cross-text: #b8401c; --slope: #12a594; --sidewalk: #5b5bd6;
-  --shadow: 0 18px 40px rgb(16 26 43 / 0.12), 0 2px 6px rgb(16 26 43 / 0.06);
+  --shadow: 0 10px 30px rgb(16 26 43 / 0.10), 0 1px 3px rgb(16 26 43 / 0.06);
+  --bar-h: 60px;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  color: var(--ink); line-height: 1.45; -webkit-font-smoothing: antialiased;
+  color: var(--ink); line-height: 1.4; -webkit-font-smoothing: antialiased;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -21,7 +23,7 @@
     --paper: #0f1624; --surface: #172033; --surface-2: #1f2a41;
     --line: #2a3650; --line-strong: #3d4b69;
     --cross: #ff7a52; --cross-text: #ff8a66; --slope: #2fd0bd; --sidewalk: #8f8ff5;
-    --shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+    --shadow: 0 10px 30px rgb(0 0 0 / 0.45);
   }
 }
 :root[data-theme="dark"] {
@@ -29,115 +31,139 @@
   --paper: #0f1624; --surface: #172033; --surface-2: #1f2a41;
   --line: #2a3650; --line-strong: #3d4b69;
   --cross: #ff7a52; --cross-text: #ff8a66; --slope: #2fd0bd; --sidewalk: #8f8ff5;
-  --shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  --shadow: 0 10px 30px rgb(0 0 0 / 0.45);
 }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); min-height: 100vh; }
-.wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-
-header.hero { position: relative; padding: 30px 0 8px; }
-body { overflow-x: hidden; }
-header.hero::before {
-  content: ""; position: absolute; inset: -40% -10% auto auto; width: 720px; height: 720px; border-radius: 50%;
-  background: conic-gradient(from 210deg, var(--slope), var(--sidewalk), var(--cross), var(--slope));
-  opacity: 0.13; filter: blur(60px); pointer-events: none;
+html, body { height: 100%; }
+body { margin: 0; background: var(--paper); overflow-x: hidden; display: flex; flex-direction: column;
+  transition: opacity 0.22s ease, transform 0.22s ease; }
+body.leaving { opacity: 0; transform: scale(0.985); }
+body::before { /* a soft wash of the three colours behind everything */
+  content: ""; position: fixed; inset: -30% -20% auto auto; width: 70vw; height: 70vw; border-radius: 50%; z-index: -1;
+  background: conic-gradient(from 210deg, var(--slope), var(--sidewalk), var(--cross), var(--slope)); opacity: 0.10; filter: blur(80px);
 }
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; font-size: 1.15rem; }
-.mark { width: 26px; height: 23px; background: conic-gradient(from 210deg at 50% 60%, var(--slope), var(--sidewalk), var(--cross), var(--slope));
+
+/* app bar */
+.appbar { position: sticky; top: 0; z-index: 10; height: calc(var(--bar-h) + env(safe-area-inset-top)); padding: env(safe-area-inset-top) 20px 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: color-mix(in srgb, var(--paper) 82%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.02em; font-size: 1.12rem; }
+.mark { width: 24px; height: 21px; background: conic-gradient(from 210deg at 50% 60%, var(--slope), var(--sidewalk), var(--cross), var(--slope));
   clip-path: polygon(50% 0, 100% 100%, 0 100%); }
-h1 { font-size: clamp(2rem, 3.8vw, 3.1rem); line-height: 1.06; letter-spacing: -0.035em; margin: 18px 0 10px; max-width: 24ch; }
-h1 .c { color: var(--cross-text); } h1 .s { color: var(--slope); } h1 .w { color: var(--sidewalk); }
-.lede { font-size: clamp(1rem, 1.4vw, 1.12rem); color: var(--ink-2); max-width: 60ch; margin: 0; }
-.pick { margin: 20px 0 4px; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-bottom: 36px; }
-@media (max-width: 920px) { .cards { grid-template-columns: 1fr; } }
-a.card { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--surface);
-  border: 1px solid var(--line); border-radius: 22px; overflow: hidden; box-shadow: var(--shadow);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; opacity: 0; transform: translateY(16px);
-  animation: rise 0.6s cubic-bezier(.2,.7,.2,1) forwards; }
-a.card:nth-child(2) { animation-delay: 0.12s; } a.card:nth-child(3) { animation-delay: 0.24s; }
-@keyframes rise { to { opacity: 1; transform: none; } }
-a.card:hover, a.card:focus-visible { transform: translateY(-4px); border-color: var(--line-strong); outline: none; }
-a.card:focus-visible { box-shadow: 0 0 0 3px var(--sidewalk), var(--shadow); outline: 3px solid var(--sidewalk); outline-offset: 3px; }
-.map { position: relative; aspect-ratio: 1 / 0.62; background: var(--surface-2); }
-.map img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-.badge { position: absolute; top: 12px; left: 12px; font-size: 0.74rem; font-weight: 700; padding: 5px 9px; border-radius: 999px;
-  background: var(--ink); color: var(--paper); letter-spacing: 0.02em; }
-.badge.alt { background: var(--surface); color: var(--ink-2); border: 1px solid var(--line-strong); }
-.body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-.body h2 { margin: 0; font-size: 1.45rem; letter-spacing: -0.02em; }
-.body p { margin: 0; color: var(--muted); font-size: 0.95rem; }
-.bars { display: grid; gap: 8px; margin-top: 4px; }
-.bar { display: grid; grid-template-columns: 112px 1fr 46px; align-items: center; gap: 10px; font-size: 0.86rem; color: var(--ink-2); }
-.track { display: block; height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
-.fill { display: block; height: 100%; width: 0; border-radius: 99px; transition: width 1.1s cubic-bezier(.2,.7,.2,1); }
-.bar b { text-align: right; font-variant-numeric: tabular-nums; }
-.go { margin-top: auto; padding-top: 6px; font-weight: 700; color: var(--sidewalk); }
-.legend { font-size: 0.8rem; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 10px; }
-.legend i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
-
-footer { border-top: 1px solid var(--line); padding: 18px 0 40px; font-size: 0.8rem; color: var(--muted); }
-.err { color: var(--cross-text); }
-.top-row { display: flex; align-items: center; justify-content: space-between; }
-.lang { font: inherit; font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--line-strong);
+.lang { font: inherit; font-size: 0.85rem; font-weight: 700; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line-strong);
   background: var(--surface); color: var(--ink); cursor: pointer; }
-.lang:focus-visible { outline: 3px solid var(--sidewalk); outline-offset: 2px; }
+.lang:active { transform: scale(0.96); }
+
+/* home */
+main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 28px 20px 16px; display: flex; flex-direction: column; justify-content: center; }
+h1 { margin: 0 0 6px; font-size: clamp(1.6rem, 2.8vw, 2.4rem); line-height: 1.1; letter-spacing: -0.03em; max-width: 30ch; }
+h1 .c { color: var(--cross-text); } h1 .s { color: var(--slope); } h1 .w { color: var(--sidewalk); }
+.sub { margin: 0 0 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pick { margin: 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.legend { font-size: 0.78rem; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; margin: 0; }
+.legend i { display: inline-block; width: 16px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+
+/* place tiles */
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+a.tile { position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 24px; overflow: hidden; box-shadow: var(--shadow); -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  opacity: 0; transform: translateY(14px); animation: rise 0.5s cubic-bezier(.2,.7,.2,1) forwards; }
+a.tile:nth-child(2) { animation-delay: 0.08s; } a.tile:nth-child(3) { animation-delay: 0.16s; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+a.tile:hover { transform: translateY(-3px); border-color: var(--line-strong); }
+a.tile:active { transform: scale(0.98); transition-duration: 0.08s; }
+a.tile:focus-visible { outline: 3px solid var(--sidewalk); outline-offset: 3px; }
+.thumb { position: relative; aspect-ratio: 1 / 0.6; background: var(--surface-2); }
+.thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.badge { position: absolute; top: 12px; left: 12px; font-size: 0.72rem; font-weight: 700; padding: 5px 10px; border-radius: 999px;
+  background: var(--ink); color: var(--paper); }
+.badge.alt { background: var(--surface); color: var(--ink-2); border: 1px solid var(--line-strong); }
+.info { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px; }
+.title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.info h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.02em; }
+.go { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--paper);
+  font-size: 1.2rem; font-weight: 700; transition: transform 0.18s ease; }
+a.tile:hover .go { transform: translateX(3px); }
+.meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.meter { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 14px; background: var(--surface-2); }
+.meter b { font-size: 1.15rem; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.meter span { font-size: 0.72rem; color: var(--ink-2); line-height: 1.2; }
+.track { display: block; height: 5px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.fill { display: block; height: 100%; width: 0; border-radius: 99px; transition: width 1s cubic-bezier(.2,.7,.2,1); }
+
+/* a phone: the tiles become rows of an app list */
+@media (max-width: 760px) {
+  main { justify-content: flex-start; padding-top: 22px; }
+  .tiles { grid-template-columns: 1fr; gap: 12px; }
+  a.tile { flex-direction: row; border-radius: 20px; }
+  .thumb { flex: none; width: 112px; aspect-ratio: auto; }
+  .badge { top: auto; bottom: 8px; left: 8px; right: 8px; text-align: center; font-size: 0.62rem; padding: 4px 6px; }
+  .info { flex: 1; padding: 12px 14px; gap: 10px; min-width: 0; }
+  .info h2 { font-size: 1.12rem; }
+  .go { width: 34px; height: 34px; font-size: 1rem; }
+  .meter { padding: 7px; gap: 4px; } .meter b { font-size: 0.98rem; } .meter span { font-size: 0.64rem; }
+}
+
+footer { padding: 10px 20px calc(14px + env(safe-area-inset-bottom)); font-size: 0.72rem; color: var(--muted); text-align: center; }
+.err { color: var(--cross-text); }
+:where(button, a):focus-visible { outline: 3px solid var(--sidewalk); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  a.tile { animation: none; opacity: 1; transform: none; }
+  body, .fill, a.tile, .go { transition: none; }
+}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="wrap">
-    <div class="top-row">
-      <div class="brand"><span class="mark" aria-hidden="true"></span>PathFinder</div>
-      <button class="lang" id="lang" type="button"></button>
-    </div>
-    <h1 data-i18n="h1"></h1>
-    <p class="lede" data-i18n="lede"></p>
-    <p class="pick" data-i18n="pick"></p>
-  </div>
+<header class="appbar">
+  <div class="brand"><span class="mark" aria-hidden="true"></span>PathFinder</div>
+  <button class="lang" id="lang" type="button"></button>
 </header>
 
-<main class="wrap" id="main">
-  <p class="legend" data-i18n-label="key">
-    <span><i style="background: var(--sidewalk)"></i><span data-i18n="sidewalk_recorded"></span></span>
-    <span><i style="background: var(--line-strong)"></i><span data-i18n="nothing_recorded"></span></span>
-    <span><i style="background: var(--cross); width: 6px; height: 6px; border-radius: 50%"></i><span data-i18n="curb_recorded"></span></span>
-  </p>
-  <div class="cards" id="cards"></div>
-
+<main id="main">
+  <h1 data-i18n="h1"></h1>
+  <div class="sub">
+    <p class="pick" data-i18n="pick"></p>
+    <p class="legend" data-i18n-label="key">
+      <span><i style="background: var(--sidewalk)"></i><span data-i18n="sidewalk_recorded"></span></span>
+      <span><i style="background: var(--line-strong)"></i><span data-i18n="nothing_recorded"></span></span>
+      <span><i style="background: var(--cross); width: 6px; height: 6px; border-radius: 50%"></i><span data-i18n="curb_recorded"></span></span>
+    </p>
+  </div>
+  <div class="tiles" id="tiles"></div>
 </main>
 
-<footer>
-  <div class="wrap" data-i18n="footer"></div>
-</footer>
+<footer data-i18n="footer"></footer>
 
 <script>
 const TEXT = {
   en: {
     h1: 'Walking routes that know about <span class="c">curbs</span>, <span class="s">slopes</span> and <span class="w">sidewalks</span>.',
-    lede: "For people who use a wheelchair, a walker, a cane or a stroller, the fastest route is often not one they can take. PathFinder plans around missing curb ramps, steep grades and streets without sidewalks, and says plainly what nobody has recorded yet.",
     pick: "Choose a place", key: "Map key", sidewalk_recorded: "sidewalk recorded", nothing_recorded: "nothing recorded", curb_recorded: "curb recorded",
-    footer: "Map data © OpenStreetMap contributors (ODbL) · Washington, DC data: Open Data DC (CC BY 4.0) · Project Sidewalk (CC0) · Terrain: USGS 3DEP, MD iMAP and DC LiDAR · U.S. Census Bureau · Basemap: Protomaps",
+    footer: "© OpenStreetMap contributors (ODbL) · Open Data DC (CC BY 4.0) · Project Sidewalk (CC0) · USGS 3DEP, MD iMAP, DC LiDAR · U.S. Census Bureau · Protomaps",
     toggle: "Español", toggle_label: "Cambiar a español",
-    rows: ["Curb evidence", "Slope measured", "Sidewalk evidence"], md6: "Maryland's 6th district", open: "Where the data is open",
-    go: "Open navigation →", open_for: (n) => `Open PathFinder for ${n}`, alt: (n) => `Walkways of ${n}, coloured by what is recorded`,
+    rows: ["Curbs", "Slope", "Sidewalks"], rows_long: ["Curb evidence", "Slope measured", "Sidewalk evidence"],
+    md6: "Maryland's 6th district", open: "Open data city",
+    open_for: (n) => `Open PathFinder for ${n}`, alt: (n) => `Walkways of ${n}, coloured by what is recorded`,
     error: 'The places could not be loaded. Is <code>pf demo</code> running?',
   },
   es: {
     h1: 'Rutas a pie que conocen los <span class="c">bordillos</span>, las <span class="s">pendientes</span> y las <span class="w">aceras</span>.',
-    lede: "Para quien usa silla de ruedas, andador, bastón o cochecito, la ruta más rápida muchas veces no es una que pueda tomar. PathFinder planifica evitando rampas que faltan, cuestas empinadas y calles sin aceras, y dice claramente lo que nadie ha registrado todavía.",
     pick: "Elija un lugar", key: "Leyenda del mapa", sidewalk_recorded: "acera registrada", nothing_recorded: "nada registrado", curb_recorded: "bordillo registrado",
-    footer: "Datos del mapa © colaboradores de OpenStreetMap (ODbL) · Datos de Washington, DC: Open Data DC (CC BY 4.0) · Project Sidewalk (CC0) · Terreno: USGS 3DEP, MD iMAP y LiDAR de DC · Oficina del Censo de EE. UU. · Mapa base: Protomaps",
+    footer: "© colaboradores de OpenStreetMap (ODbL) · Open Data DC (CC BY 4.0) · Project Sidewalk (CC0) · USGS 3DEP, MD iMAP, LiDAR de DC · Oficina del Censo de EE. UU. · Protomaps",
     toggle: "English", toggle_label: "Switch to English",
-    rows: ["Datos de bordillos", "Pendiente medida", "Datos de aceras"], md6: "6.º distrito de Maryland", open: "Donde los datos son abiertos",
-    go: "Abrir la navegación →", open_for: (n) => `Abrir PathFinder para ${n}`, alt: (n) => `Caminos de ${n}, coloreados según lo registrado`,
+    rows: ["Bordillos", "Pendiente", "Aceras"], rows_long: ["Datos de bordillos", "Pendiente medida", "Datos de aceras"],
+    md6: "6.º distrito de Maryland", open: "Ciudad de datos abiertos",
+    open_for: (n) => `Abrir PathFinder para ${n}`, alt: (n) => `Caminos de ${n}, coloreados según lo registrado`,
     error: 'No se pudieron cargar los lugares. ¿Está en marcha <code>pf demo</code>?',
   },
 };
 const COLORS = ["var(--cross)", "var(--slope)", "var(--sidewalk)"];
 const KEYS = ["curbs", "slope", "sidewalks"];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const DEMO = new URLSearchParams(location.search).has("demo"); // simulated walking in every place
 let lang = new URLSearchParams(location.search).get("lang") === "es" ? "es" : "en";
 let places = null;
 
@@ -149,32 +175,44 @@ function render() {
   const btn = document.getElementById("lang");
   btn.textContent = T.toggle; btn.setAttribute("aria-label", T.toggle_label); btn.lang = lang === "es" ? "en" : "es";
   if (!places) return;
-  const suffix = lang === "es" ? "?lang=es" : "";
-  document.getElementById("cards").innerHTML = places.map((p) => `
-    <a class="card" href="${esc(p.url + suffix)}" aria-label="${esc(T.open_for(p.name))}">
-      <div class="map"><img src="${esc(p.image)}" alt="${esc(T.alt(p.name))}" onerror="this.remove()">
+  const q = [lang === "es" ? "lang=es" : "", DEMO ? "demo" : ""].filter(Boolean).join("&");
+  const suffix = q ? `?${q}` : "";
+  document.getElementById("tiles").innerHTML = places.map((p) => `
+    <a class="tile" href="${esc(p.url + suffix)}" aria-label="${esc(T.open_for(p.name))}">
+      <div class="thumb"><img src="${esc(p.image)}" alt="${esc(T.alt(p.name))}" onerror="this.remove()">
         <span class="badge ${p.md6 ? "" : "alt"}">${p.md6 ? T.md6 : T.open}</span></div>
-      <div class="body">
-        <h2>${esc(p.name)}</h2>
-        <p>${esc(lang === "es" ? p.blurb_es : p.blurb)}</p>
-        <div class="bars">${KEYS.map((k, i) => {
+      <div class="info">
+        <div class="title-row"><h2>${esc(p.name)}</h2><span class="go" aria-hidden="true">›</span></div>
+        <div class="meters">${KEYS.map((k, i) => {
           const v = p.evidence[k];
           const text = v == null ? "–" : Math.round(v) + "%";
-          return `<div class="bar"><span>${T.rows[i]}</span><span class="track" role="img" aria-label="${T.rows[i]}: ${text}"><span class="fill" data-v="${v ?? 0}" style="background:${COLORS[i]}"></span></span><b aria-hidden="true">${text}</b></div>`;
+          return `<div class="meter" role="img" aria-label="${T.rows_long[i]}: ${text}"><b aria-hidden="true">${text}</b><span class="track" aria-hidden="true"><span class="fill" data-v="${v ?? 0}" style="background:${COLORS[i]}"></span></span><span aria-hidden="true">${T.rows[i]}</span></div>`;
         }).join("")}</div>
-        <span class="go" aria-hidden="true">${T.go}</span>
       </div>
     </a>`).join("");
-  requestAnimationFrame(() => setTimeout(() => document.querySelectorAll(".fill").forEach((f) => { f.style.width = f.dataset.v + "%"; }), 350));
+  requestAnimationFrame(() => setTimeout(() => document.querySelectorAll(".fill").forEach((f) => { f.style.width = f.dataset.v + "%"; }), REDUCED ? 0 : 300));
 }
+
+// Opening a place: a short fade, as an app moves to its next screen.
+document.getElementById("tiles").addEventListener("click", (e) => {
+  const a = e.target.closest("a.tile");
+  if (!a || REDUCED || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+  e.preventDefault();
+  document.body.classList.add("leaving");
+  setTimeout(() => { location.href = a.href; }, 200);
+});
+// Coming back with the browser's Back button: show the page again.
+addEventListener("pageshow", () => document.body.classList.remove("leaving"));
+
 document.getElementById("lang").addEventListener("click", () => {
   lang = lang === "es" ? "en" : "es";
-  history.replaceState(null, "", lang === "es" ? "?lang=es" : location.pathname);
+  const q = [lang === "es" ? "lang=es" : "", DEMO ? "demo" : ""].filter(Boolean).join("&");
+  history.replaceState(null, "", q ? `?${q}` : location.pathname);
   render();
 });
 render();
 fetch("api/places").then((r) => r.json()).then((p) => { places = p; render(); })
-  .catch(() => { document.getElementById("cards").innerHTML = `<p class="err">${TEXT[lang].error}</p>`; });
+  .catch(() => { document.getElementById("tiles").innerHTML = `<p class="err">${TEXT[lang].error}</p>`; });
 </script>
 </body>
 </html>

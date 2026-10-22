@@ -126,6 +126,41 @@ def _wait(url: str, procs: list[subprocess.Popen], timeout_s: float = 120) -> No
     raise SystemExit(f"{url} did not answer within {timeout_s:.0f} s")
 
 
+def warm_examples(places=PLACES) -> int:
+    """Plan each place's example trips once, as the page does when one is clicked, so that the
+    server's answer is ready (api.PLAN_CACHE_SIZE) and nothing stalls on camera. Returns how many
+    were planned."""
+    password = os.environ.get(PASSWORD_ENV)
+    auth = ("pathfinder", password) if password else None
+    n = 0
+    for p in places:
+        path = REPO_ROOT / "demo" / f"{p.region}.json"
+        if not path.exists():
+            continue
+        for e in json.loads(path.read_text(encoding="utf-8")):
+            body = {"origin": {"lon": e["from"][0], "lat": e["from"][1]}, "destination": {"lon": e["to"][0], "lat": e["to"][1]}}
+            body.update(_page_settings(p.url, e, auth))
+            try:
+                requests.post(p.url + "api/plan", json=body, auth=auth, timeout=120).raise_for_status()
+                n += 1
+            except requests.RequestException as err:
+                print(f"  could not warm {p.name}: {e['label']} ({err})", flush=True)
+    return n
+
+
+def _page_settings(url: str, example: dict, auth) -> dict:
+    """The settings the page sends for an example: its profile's requirements and mix, with the
+    example's evidence level (App.tsx, the example buttons)."""
+    profiles = requests.get(url + "api/region", auth=auth, timeout=30).json().get("profiles", [])
+    prof = next((x for x in profiles if x["id"] == example.get("profile")), None)
+    if prof is None:
+        return {}
+    r, mix = prof["requirements"], prof["mix"]
+    return {"step_free": r["step_free"], "max_grade_pct": r["max_grade_pct"],
+            "certainty": example.get("certainty") or r["certainty"], "budget_min": 5,
+            "priorities": {"cross": mix["cross"], "slope": mix["slope"], "sidewalk": mix["sidewalk"]}}
+
+
 def run(open_browser: bool = True) -> None:
     import uvicorn
 
@@ -141,6 +176,8 @@ def run(open_browser: bool = True) -> None:
             _wait(p.url, procs)
             print(f"  {p.name}: {p.url}", flush=True)
         print(f"PathFinder demo: {home}  (Ctrl-C stops everything)", flush=True)
+        threading.Thread(target=lambda: print(f"  example trips ready: {warm_examples()} planned", flush=True),
+                         daemon=True).start()
         if open_browser:
             threading.Timer(1.0, webbrowser.open, args=(home,)).start()
         uvicorn.run(landing_app(), host=HOST, port=LANDING_PORT, log_level="warning")

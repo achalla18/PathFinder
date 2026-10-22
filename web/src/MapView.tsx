@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { basemapInfo } from "./api";
 import { BARRIER_COLORS, ESTIMATED_SIDEWALK_COLOR } from "./barrierStyle";
 import type { BarrierProps, Barriers, LonLat, Place, RouteOption } from "./types";
+import type { Hazard } from "./hazards";
 
 // The backdrop is drawn from this server's own vector tiles when it has them (`pf fetch
 // basemap_dc basemap_fonts`), so no outside service sees where anyone is looking. The two
@@ -107,6 +108,8 @@ interface Props {
   recenter: number; // bumped by the locate button: go to the user (and, while walking, follow again)
   onFollowChange?: (following: boolean) => void; // while walking: false once the user pans the map away
   report?: LonLat | null; // where a barrier report is being placed
+  hazards?: Hazard[]; // what the chosen route avoids, labelled on the fastest route
+  followMs?: number; // how long the map glides to each new position while following (default 800)
   mode: "routes" | "barriers"; // barriers: the city barrier map; a tap picks a barrier, not a destination
   barriers: Barriers | null;
   onTap: (p: LonLat) => void;
@@ -122,6 +125,7 @@ export function MapView(props: Props) {
   const [styled, setStyled] = useState(false); // the style has loaded: sources exist and can be drawn
   const following = useRef(true); // while walking: the map keeps the user in view until they pan it
   const markers = useRef<Marker[]>([]);
+  const hazardMarks = useRef<Marker[]>([]);
   const ends = useRef<Partial<Record<"origin" | "destination" | "user" | "report", Marker>>>({});
   const latest = useRef(props);
   latest.current = props;
@@ -129,7 +133,7 @@ export function MapView(props: Props) {
   useEffect(() => {
     let gone = false;
     void basemapInfo().then(({ local, maxZoom, center }) => { if (!gone) build(local ? localStyle(maxZoom) : STYLE, center ?? DC_CENTER); });
-    return () => { gone = true; map.current?.remove(); map.current = null; ready.current = false; setStyled(false); ends.current = {}; markers.current = []; };
+    return () => { gone = true; map.current?.remove(); map.current = null; ready.current = false; setStyled(false); ends.current = {}; markers.current = []; hazardMarks.current = []; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -341,6 +345,23 @@ export function MapView(props: Props) {
       return new Marker({ element: pin }).setLngLat(pl.at).addTo(m);
     });
   }, [styled, trip, props.places]);
+  // What the chosen route avoids: a label on the fastest route's stretch at each place
+  const hazardKey = (trip ? props.hazards ?? [] : []).map((h) => `${h.kind}@${h.at[0].toFixed(5)},${h.at[1].toFixed(5)}:${h.label}`).join("|");
+  useEffect(() => {
+    const m = map.current;
+    if (!styled || !m) return;
+    hazardMarks.current.forEach((mk) => mk.remove());
+    hazardMarks.current = (trip ? props.hazards ?? [] : []).map((h) => {
+      // the map places the outer element with a transform; the tag's pop-in animates its own, inside
+      const holder = document.createElement("div");
+      holder.setAttribute("aria-hidden", "true"); // the same facts are in the decision-point cards
+      holder.innerHTML = `<div class="hazard-tag ${h.kind}"><i></i><span></span></div>`;
+      holder.querySelector("span")!.textContent = h.label;
+      return new Marker({ element: holder, anchor: "bottom", offset: [0, -6] }).setLngLat(h.at).addTo(m);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [styled, hazardKey]);
+
   useEffect(() => {
     markers.current.forEach((mk, i) => mk.getElement().classList.toggle("open", i === props.openPlace));
   }, [styled, trip, props.places, props.openPlace]);
@@ -436,14 +457,14 @@ export function MapView(props: Props) {
   useEffect(dim, [props.dark]);
 
   // the user's position in view, clear of the panel (and on phones of the card above)
-  function goToUser(duration: number) {
+  function goToUser(duration: number, linear = false) {
     const m = map.current;
     const u = latest.current.user;
     if (!m || !u) return;
     const wide = window.innerWidth >= WIDE_PX;
     const side = sideCovered();
     const { top, bottom } = covered();
-    m.easeTo({ center: u, zoom: Math.max(m.getZoom(), 16.5), duration,
+    m.easeTo({ center: u, zoom: Math.max(m.getZoom(), 16.5), duration, ...(linear ? { easing: (t: number) => t } : {}),
                padding: side != null ? { left: side, top: 0, right: 0, bottom: 0 }
                       : wide ? { left: 420, top: 0, right: 0, bottom: 0 } : { left: 0, top, right: 0, bottom } });
   }
@@ -451,7 +472,7 @@ export function MapView(props: Props) {
   useEffect(() => { following.current = true; latest.current.onFollowChange?.(true); }, [props.follow]);
   const at = props.follow && props.user ? `${props.user[0].toFixed(5)},${props.user[1].toFixed(5)}` : null;
   useEffect(() => {
-    if (at && following.current) goToUser(800);
+    if (at && following.current) goToUser(props.followMs ?? 800, props.followMs != null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [at]);
   // the locate button: back to the user and, while walking, following again

@@ -1,5 +1,6 @@
 import { CONTROL, Fact, KERB, kerbs, streetName } from "./Conditions";
 import { metres } from "./geo";
+import { t } from "./i18n";
 import type { Step } from "./types";
 
 // On-screen guidance while walking: the next thing to do, how far ahead it is, and what is
@@ -38,12 +39,15 @@ const wayName = (s: string) => (s === s.toUpperCase() ? streetName(s) : s);
 
 export function stepTitle(s: Step): string {
   switch (s.type) {
-    case "turn": return `${TURNS[s.direction ?? "left"][0]}${s.onto ? ` onto ${wayName(s.onto)}` : ""}`;
-    case "cross": return s.street ? `Cross ${streetName(s.street)}` : "Cross the street";
-    case "unmapped_crossing": return "Cross at the junction";
-    case "steps": return s.escalator ? "Escalator" : "Stairs";
-    case "no_sidewalk": return "No sidewalk";
-    case "arrive": return "Your destination";
+    case "turn": {
+      const turn = t(TURNS[s.direction ?? "left"][0]);
+      return s.onto ? t("{turn} onto {street}", { turn, street: wayName(s.onto) }) : turn;
+    }
+    case "cross": return s.street ? t("Cross {street}", { street: streetName(s.street) }) : t("Cross the street");
+    case "unmapped_crossing": return t("Cross at the junction");
+    case "steps": return t(s.escalator ? "Escalator" : "Stairs");
+    case "no_sidewalk": return t("No sidewalk");
+    case "arrive": return t("Your destination");
     default: return "";
   }
 }
@@ -75,18 +79,22 @@ function Facts({ step }: { step: Step }) {
   }
   if (step.type === "steps" || step.type === "no_sidewalk") {
     const m = step.length_m != null ? `${Math.round(step.length_m)} m` : "";
-    return <ul className="facts"><Fact text={step.type === "steps" ? `${step.escalator ? "escalator" : "steps"}, ${m}` : `walk in the roadway for ${m}`} claim={step} /></ul>;
+    return <ul className="facts"><Fact text={step.type === "steps" ? `${t(step.escalator ? "escalator" : "steps")}, ${m}` : t("walk in the roadway for {m}", { m })} claim={step} /></ul>;
   }
   return null;
 }
+
+const lower = (s: string) => s.replace(/^./, (c) => c.toLowerCase());
 
 export function NextStep({ next, then }: { next: Upcoming; then: Upcoming | null }) {
   return (
     <div className="step" aria-live="polite">
       <span className="step-glyph"><Glyph step={next.step} /></span>
-      <h2>{stepTitle(next.step)}<small>{next.ahead > NOW_M ? `in ${metres(next.ahead)}` : "now"}</small></h2>
+      <h2>{stepTitle(next.step)}<small>{next.ahead > NOW_M ? t("in {d}", { d: metres(next.ahead) }) : t("now")}</small></h2>
       <Facts step={next.step} />
-      {then && <p className="then">Then {stepTitle(then.step).replace(/^./, (c) => c.toLowerCase())}{then.ahead - next.ahead > NOW_M ? ` after ${metres(then.ahead - next.ahead)}` : ""}</p>}
+      {then && <p className="then">{then.ahead - next.ahead > NOW_M
+        ? t("Then {step} after {d}", { step: lower(stepTitle(then.step)), d: metres(then.ahead - next.ahead) })
+        : t("Then {step}", { step: lower(stepTitle(then.step)) })}</p>}
     </div>
   );
 }

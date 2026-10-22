@@ -16,6 +16,7 @@ import mimetypes
 import os
 import secrets
 import threading
+from collections import OrderedDict
 from datetime import date
 from typing import Literal
 
@@ -51,6 +52,10 @@ BARRIERS_MAX_FEATURES = 5000
 REVALIDATE_PATHS = {"/", "/index.html", "/sw.js", "/manifest.webmanifest"}
 mimetypes.add_type("application/manifest+json", ".webmanifest")
 _feedback_lock = threading.Lock()
+# Recent plans, by trip and settings. The network does not change while a server runs, so the
+# same request has the same answer; a demo's example trips (warmed by `pf demo`) come back at once
+# instead of re-running a search that can take seconds (a "no route" trip tries compromises).
+PLAN_CACHE_SIZE = 64
 _basic = HTTPBasic(auto_error=False)
 
 
@@ -119,6 +124,15 @@ class BarrierReport(BaseModel):
     note: str = Field("", max_length=300)
 
 
+def _round_repr(obj) -> str:
+    """A settings object as a cache key: its fields, with floats rounded (a mix sent as 0.3333333
+    by the page and computed as 1/3 here is the same request)."""
+    import dataclasses
+
+    fields = dataclasses.asdict(obj) if dataclasses.is_dataclass(obj) else vars(obj)
+    return repr(sorted((k, round(v, 4) if isinstance(v, float) else v) for k, v in fields.items()))
+
+
 def _require_password(credentials: HTTPBasicCredentials | None = Depends(_basic)) -> None:
     expected = os.environ.get(PASSWORD_ENV)
     if not expected:
@@ -181,6 +195,8 @@ def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = N
         elevators = ElevatorNotices.from_environment()
 
     app.state.dd = state
+    plans: OrderedDict = OrderedDict()
+    plan_lock = threading.Lock()
 
     def get_planner() -> TripPlanner:
         if state["planner"] is None:  # loaded on first use so the process starts fast
@@ -308,7 +324,18 @@ def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = N
         req, mix = resolve_profile(body.profile, overrides, mix)
         pref = Preferences(w_cross=mix[0], w_slope=mix[1], w_sidewalk=mix[2], budget_s=body.budget_min * 60)
         origin, destination = (body.origin.lon, body.origin.lat), (body.destination.lon, body.destination.lat)
-        out = get_planner().plan(origin, destination, req, pref)
+        key = (tuple(round(v, 6) for v in (*origin, *destination)), _round_repr(req), _round_repr(pref))
+        with plan_lock:
+            out = plans.get(key)
+            if out is not None:
+                plans.move_to_end(key)
+        if out is None:
+            out = get_planner().plan(origin, destination, req, pref)
+            with plan_lock:
+                plans[key] = out
+                while len(plans) > PLAN_CACHE_SIZE:
+                    plans.popitem(last=False)
+        out = dict(out)  # the cached answer stays as planned; live notices are added to a copy
         if elevators is not None:
             # Metro elevators out of service at a station the trip starts or ends at. A notice
             # only: no route depends on them (see wmata.py).

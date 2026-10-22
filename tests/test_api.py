@@ -194,3 +194,19 @@ def test_barrier_report_keeps_only_place_kind_note_and_day(planner, monkeypatch,
     assert c.post("/api/report", json={"lat": 0.0, "lon": 0.0, "kind": "other"}).status_code == 422  # outside the region
     (row,) = list(csv.DictReader(api.REPORTS_FILE.open(encoding="utf-8")))
     assert set(row) == {"day", "kind", "lat", "lon", "note"} and row["kind"] == "broken_ramp" and row["note"] == "cracked, lip"
+
+
+def test_the_same_trip_is_planned_once_and_answered_from_memory_after(planner, monkeypatch):  # noqa: F811
+    """pf demo warms each example trip; when the page asks for it again it must not wait for a
+    second search. Live notices still go only on the copy that is sent."""
+    monkeypatch.delenv(api.PASSWORD_ENV, raising=False)
+    calls = []
+    real = planner.plan
+    monkeypatch.setattr(planner, "plan", lambda *a, **k: calls.append(1) or real(*a, **k))
+    c = TestClient(api.create_app(planner))
+    o, d = _lonlat(0, 0), _lonlat(215, 0)
+    first = c.post("/api/plan", json=_body(o, d)).json()
+    again = c.post("/api/plan", json=_body(o, d)).json()
+    assert len(calls) == 1 and first == again
+    c.post("/api/plan", json={**_body(o, d), "certainty": "allow_unknown"})
+    assert len(calls) == 2  # other settings, another search
