@@ -279,3 +279,36 @@ def test_frederick_county_signals_count_only_full_signals_that_osm_confirms(monk
     assert len(out) == 1 and out["STATUS"].tolist() == ["Active"] and out["APS"].isna().all()
     assert FREDERICK.sources["frederick_county_signals"].as_of == AS_OF_OSM
     assert FREDERICK.covers("signals") is None
+
+
+def test_public_builds_hold_no_internal_source():
+    """Rule 7: the public build is what gets shown outside the team, so no source marked
+    "Internal use only" may be registered in it or play a role."""
+    from pathfinder.regions import PUBLIC_DROPPED_ROLES, PUBLIC_SUFFIX, REGIONS, is_internal
+
+    publics = [r for r in REGIONS.values() if r.id.endswith(PUBLIC_SUFFIX)]
+    assert {r.id for r in publics} == {"frederick_public", "gaithersburg_public"}
+    for r in publics:
+        assert not [s.id for s in r.sources.values() if is_internal(s)]
+        assert set(r.roles.values()) <= set(r.sources)
+        assert not set(r.roles) & set(PUBLIC_DROPPED_ROLES)
+        base = REGIONS[r.id.removesuffix(PUBLIC_SUFFIX)]
+        assert r.osm == base.osm and r.boundary == base.boundary
+
+
+def test_dc_is_built_from_open_sources_only():
+    """The demo shows DC publicly, so like the public builds it may hold no internal source."""
+    from pathfinder.regions import REGIONS, is_internal
+
+    dc = REGIONS["dc"]
+    assert not [s.id for s in dc.sources.values() if is_internal(s)]
+    assert set(dc.roles.values()) <= set(dc.sources) and dc.basemap in dc.sources
+
+
+def test_change_place_link_takes_only_web_addresses(monkeypatch):
+    from pathfinder import api
+
+    monkeypatch.setenv(api.HOME_ENV, "http://127.0.0.1:8000")
+    assert api._home() == "http://127.0.0.1:8000"
+    monkeypatch.setenv(api.HOME_ENV, "javascript:alert(1)")
+    assert api._home() is None

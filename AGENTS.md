@@ -56,6 +56,8 @@ before any accessibility source was loaded (`docs/PROGRESS.md`, Decisions log).
    test, but nothing built on it is shown to anyone outside until written permission exists.
    Such sources say "Internal use only" in their license line; the barrier report and map
    name them and are marked internal while any is in use.
+   Anything shown outside the team comes from a public build (`<town>_public`, `regions.public`)
+   or an all-open region (DC); `pf demo` refuses any other.
 
 ## Repository layout
 
@@ -83,6 +85,8 @@ src/pathfinder/
                              a missing role is an empty frame, so its attributes stay unknown;
                              without a roadway inventory the streets come from OSM
   graph/enrich.py            evidence-graded attributes (crossings, kerbs, sidewalks, slope, ...)
+  regions/dc.py              Washington, DC (open data, from DistrictDirect's sources)
+  demo.py                    `pf demo`: landing page plus one server per place (DC and the public builds)
   graph/post_ada.py          post-ADA ramp rule: buildings all from 1995 on within 60 m -> ramps
                              likely (inferred); tested against Frederick's survey 2026-10-21
   graph/elevation.py         sustained slope from a 1 m bare-earth DTM (10 m fitted windows on
@@ -113,7 +117,11 @@ field/sidewalk_mapping.md    how the team tags sidewalks in OSM, and what it may
 tools/field_checks/          make_sheet.py: the field sheet from the blocked-trip worklist
 tools/post_ada/              evaluate.py: scores the post-ADA rule against a ramp survey (internal);
                              sidewalk_check.py: the blind photo test of the sidewalk rule (failed)
-tools/sidewalk_mapping/      make_worklist.py: OSM streets with no sidewalk evidence, by area (internal)
+tools/sidewalk_mapping/      make_worklist.py: OSM streets with no sidewalk evidence, by area (internal);
+                             propose.py: sidewalk tags from Mapillary photos, and the review page
+tools/demo/                  card_maps.py: the landing page's map of each place
+demo/<region>.json           example trips the app offers before anything is chosen
+web/landing/                 the demo's landing page (served by `pf demo`)
 web/                         phone web app (React + TypeScript + MapLibre GL, built with Vite)
 tests/                       unit tests (synthetic) + data invariants (marked `data`)
 reports/<region>/            generated, committed, human-readable outputs (do not hand-edit)

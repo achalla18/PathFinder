@@ -34,6 +34,7 @@ from .routing.profiles import as_json as profiles_json
 from .routing.profiles import resolve as resolve_profile
 from .routing.service import TripPlanner
 from .sources import REGION, SOURCES
+from .regions import is_internal
 from .wmata import ElevatorNotices
 
 PASSWORD_ENV = "PF_APP_PASSWORD"
@@ -109,6 +110,34 @@ def _require_password(credentials: HTTPBasicCredentials | None = Depends(_basic)
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "password required", headers={"WWW-Authenticate": "Basic"})
 
 
+HOME_ENV = "PF_HOME"
+# Example trips the page offers before anything is chosen, one file per region (demo/<region>.json):
+# [{"label": ..., "from": [lon, lat, name], "to": [lon, lat, name]}, ...]
+EXAMPLES_DIR = REPO_ROOT / "demo"
+
+
+def _examples() -> list[dict]:
+    path = EXAMPLES_DIR / f"{REGION.id}.json"
+    if not path.exists():
+        return []
+    out = []
+    for e in json.loads(path.read_text(encoding="utf-8")):
+        ends = [e.get("from"), e.get("to")]
+        if isinstance(e.get("label"), str) and all(isinstance(x, list) and len(x) == 3 for x in ends):
+            extra = {k: e[k] for k in ("profile", "certainty") if isinstance(e.get(k), str)}
+            out.append({"label": e["label"], "note": str(e.get("note", "")), **extra,
+                        "from": [float(ends[0][0]), float(ends[0][1]), str(ends[0][2])],
+                        "to": [float(ends[1][0]), float(ends[1][1]), str(ends[1][2])]})
+    return out
+
+
+def _home() -> str | None:
+    """Where "Change place" leads: the page listing every place (``PF_HOME``, set by ``pf demo``).
+    Each server serves one region, so changing place opens another server's page."""
+    url = os.environ.get(HOME_ENV, "").strip()
+    return url if url.startswith(("http://", "https://")) else None
+
+
 def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = None,
                basemap: Basemap | None = None, feedback_file=None,
                elevators: ElevatorNotices | None = None) -> FastAPI:
@@ -134,7 +163,8 @@ def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = N
         """Where the page opens and what this region can say, so one page serves any region."""
         return {"id": REGION.id, "name": REGION.name, "center": list(REGION.center), "bbox": list(REGION.bbox),
                 "profiles": profiles_json(), "transit_notices": elevators is not None,
-                "sources": {sid: s.title for sid, s in SOURCES.items()}}
+                "sources": {sid: s.title for sid, s in SOURCES.items()},
+                "public": not any(is_internal(s) for s in SOURCES.values()), "home": _home(), "examples": _examples()}
 
     @app.get("/api/health")
     def health() -> dict:

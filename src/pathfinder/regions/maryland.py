@@ -75,6 +75,36 @@ def _tracts(region_id: str, extent: tuple[float, float, float, float]) -> Source
     )
 
 
+# One dated world build; builds are kept for a limited time, so move this to a current date
+# (https://build-metadata.protomaps.dev/builds.json) when re-fetching.
+PROTOMAPS_BUILD = "https://build.protomaps.com/20261021.pmtiles"
+
+
+def _basemap(region_id: str, name: str) -> Source:
+    return Source(
+        id=f"basemap_{region_id}",
+        kind="pmtiles_extract",
+        url=PROTOMAPS_BUILD,
+        title=f"Protomaps basemap vector tiles, {name} extract (OpenStreetMap data)",
+        license="ODbL 1.0 (OpenStreetMap data) — attribution required; tileset schema by Protomaps (BSD-3)",
+        limitations="Backdrop only: nothing is routed or graded from it. Tiles over the region's box to zoom 15.",
+        verified_on=date(2026, 10, 21),
+        tags=("basemap",),
+    )
+
+
+BASEMAP_FONTS = Source(
+    id="basemap_fonts",
+    kind="glyphs",
+    url="https://protomaps.github.io/basemaps-assets/fonts",
+    title="Noto Sans map label glyphs (Protomaps basemaps-assets)",
+    license="SIL Open Font License 1.1",
+    limitations="Latin ranges only; labels in other scripts are not drawn.",
+    verified_on=date(2026, 10, 21),
+    tags=("basemap",),
+)
+
+
 def _region(region_id: str, name: str, muni: str, extent: tuple[float, float, float, float],
             center: tuple[float, float], extra: tuple[Source, ...] = (),
             roles: dict[str, str] | None = None) -> Region:
@@ -83,10 +113,11 @@ def _region(region_id: str, name: str, muni: str, extent: tuple[float, float, fl
     osm = _osm(region_id, name, extent)
     limits = _limits(region_id, name, f"MUN_NAME='{muni}'")
     tracts = _tracts(region_id, extent)
+    basemap = _basemap(region_id, name)
     return Region(
         id=region_id,
         name=name,
-        sources={s.id: s for s in (osm, limits, tracts, *extra)},
+        sources={s.id: s for s in (osm, limits, tracts, basemap, BASEMAP_FONTS, *extra)},
         osm=osm.id,
         boundary=limits.id,
         buffer_m=200.0,
@@ -97,6 +128,7 @@ def _region(region_id: str, name: str, muni: str, extent: tuple[float, float, fl
         report_district_field="GEOID",
         report_district_label="census tract",
         coverage={"planimetric": None, "signals": None},
+        basemap=basemap.id,
     )
 
 

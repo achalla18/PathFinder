@@ -799,6 +799,64 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 - Tests: 226 pass on the Frederick graph (new: field corner first and dated, radius, junction
   override, a corner answer not read as a junction, sheet validation).
 
+### 2026-10-21 — Demo for the Congressional App Challenge: DC, Gaithersburg and Frederick
+
+- **The submission is a recorded video.** `pf demo` serves a landing page on :8000 where a viewer
+  picks a place. Each card opens that place's own server (DC :8001, Gaithersburg :8002,
+  Frederick :8003); "Change place" in each app returns to the landing page (`PF_HOME`). Local only:
+  no deployment. The script is in `docs/demo_script.md`.
+- **Open data only (rule 7).**
+  - New public builds `gaithersburg_public` and `frederick_public` (`regions.public()`): every
+    source marked "Internal use only" is dropped with its roles, along with the parcels role, since
+    the post-ADA rule was tested on the city's survey.
+  - `pf demo` refuses to start if any place holds an internal source.
+- **DC added as a region** (`regions/dc.py`), from DistrictDirect's open sources (CC BY 4.0, Open
+  Data DC). Only the 2010 ramp layer needed an adapter (`roles.dc_ramps_2010`).
+  - Raw files were copied from `~/.districtdirect/data/raw`; DistrictDirect was not edited.
+  - DC passes all four coverage criteria: curb evidence 92.4%, slope verified 82.2%, sidewalk
+    evidence 74.7%, main component 97.5%
+    ([`reports/dc/phase0/coverage.md`](../reports/dc/phase0/coverage.md)).
+- **Public builds' evidence:**
+
+  | Build | Curbs | Slope | Sidewalks |
+  |---|---|---|---|
+  | Frederick | 17.1% | 95.8% | 42.2% |
+  | Gaithersburg | 18.9% | 89.4% | 47.2% |
+
+  With "Recorded or likely" evidence, most Maryland manual-wheelchair trips have no route: the
+  curbs are unrecorded. The demo's Maryland examples use "Anything not ruled out".
+- **Vector basemaps for both Maryland towns** (Protomaps build 20261021, `basemap_<town>`). They
+  replace the washed-out OSM raster fallback.
+- **App:**
+  - Example trips per place (`demo/<region>.json`, `/api/region` `examples`); an example can set the
+    profile and the evidence level.
+  - Opens on Routes when examples exist.
+  - Map motion: glide in on load, animated fit, the chosen route drawing itself in (none under
+    prefers-reduced-motion).
+  - Landing page `web/landing/` with card maps from `tools/demo/card_maps.py`.
+
+### 2026-10-21 — Sidewalk tags from street photos: 2.1 km proposed; the rest needs walking
+
+- **OSM activity page** saved by the owner: `Organised Editing/Activities/PathFinder Frederick sidewalks`
+  (hashtag `#PathFinderFrederick`). The forum post is drafted, not yet posted; no edit before a week
+  after it.
+- **Proposals** (`tools/sidewalk_mapping/propose.py`): for each street in the worklist's first 10
+  areas, Mapillary photos taken on the street looking along it, picked from each third of its
+  length, judged by the agent (`reports/frederick/sidewalk_mapping/proposals.csv`, with notes).
+  - 104 of 234 streets have such photos; 85 have them along the whole way.
+  - Clear enough to propose: **15 streets, 2.1 km** (7 `right` on one-way carriageways of divided
+    roads, 6 `no`, 2 `both`). Everything else is `unclear`: photos from before 2020, subdivisions
+    still under construction in 2024, car panoramas too small to read, photos from a side path.
+  - On divided roads the side comes from `oneway=yes` (the median is on the way's left); camera
+    headings there were unreliable.
+- **Review page** (internal, in the data dir): every proposal with its photos; approve or reject,
+  each decision tied to that exact tag and photo set (Codex review: approvals had carried over to
+  changed proposals, and street names were not escaped in the page).
+- **Not enough.** Photos cover 2.1 of the 38.4 km criterion 3 needs. The rest has to be seen on site
+  (`source=survey`).
+- Freeways and trunk ramps are now left out of the worklist: 1,060 streets, 119.0 km; 11 areas clear
+  the bar.
+
 ### 2026-10-21 — Sidewalk mapping: worklist, mapper's guide, and OSM edits reach the pipeline
 
 - **Why:** criterion 3 needs 38.4 km more street with sidewalk evidence, and the parcel rule failed.

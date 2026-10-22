@@ -130,6 +130,13 @@ def frederick_ramps(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     }, geometry=gdf.geometry.values, crs=gdf.crs).reset_index(drop=True)
 
 
+def dc_ramps_2010(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """DC's 2010 planimetric ramps -> ramps. Every record is a ramp seen on imagery; the layer
+    gives no verdict on it."""
+    return gpd.GeoDataFrame({"CAPTUREYEAR": gdf["CAPTUREYEAR"], "KERB": "ramp_present", "CHECK": None},
+                            geometry=gdf.geometry.values, crs=gdf.crs).reset_index(drop=True)
+
+
 def montgomery_signals(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """Montgomery County's signal layer -> signals. It records where signals are, nothing about
     their pedestrian features: LPI, APS, HAWK, all-pedestrian phase and recall stay null, and
@@ -208,6 +215,7 @@ ADAPTERS: dict[str, Callable[[gpd.GeoDataFrame], gpd.GeoDataFrame]] = {
     "montgomery_signals": montgomery_signals,
     "frederick_county_signals": frederick_county_signals,
     "frederick_field_checks": field_checks,
+    "sidewalk_ramps_2010": dc_ramps_2010,
 }
 
 # OSM highway values that are streets for traffic (the roadway fallback). Service roads and

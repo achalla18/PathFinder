@@ -3,8 +3,8 @@ longest first, grouped into areas a mapper can cover in one session.
 
 Criterion 3 counts a street once anything records whether it has a sidewalk, "no" included, so
 tagging ``sidewalk=*`` on an OSM street adds its whole length. One row per OSM way, because a tag
-goes on the whole way. Service roads and alleys are left out: parking aisles and lot roads
-would lift the number without helping anyone walk.
+goes on the whole way. Service roads, alleys and freeways are left out: they would lift the number without helping
+anyone walk.
 
     python tools/sidewalk_mapping/make_worklist.py    # reports/<region>/sidewalk_mapping/
 
@@ -27,12 +27,16 @@ from pathfinder.sources import REGION
 OUT = REPORTS_DIR / "sidewalk_mapping"
 AREA_M = 800.0  # an area is an 800 m grid square: a neighbourhood, about an hour on foot or on screen
 STREET_KINDS = ("street_unknown", "street_with_sidewalk", "street_no_sidewalk", "pedestrian_street")
+# Freeways and their ramps: nobody walks along them, so a sidewalk tag there helps no one
+# (Catoctin Mountain Highway, US 15, was on the first worklist).
+NOT_WALKED = ("motorway", "motorway_link", "trunk", "trunk_link")
 
 
 def main() -> None:
     full = gpd.read_parquet(GRAPH_DIR / "edges.parquet")
     e = full[~full["outside_region"].astype(bool) & full["representation"].eq("street_centerline")
-             & full["kind"].isin(STREET_KINDS) & full["sidewalk_presence_status"].eq("unknown")]
+             & full["kind"].isin(STREET_KINDS) & full["sidewalk_presence_status"].eq("unknown")
+             & ~full["highway"].isin(NOT_WALKED)]
     g = e.groupby("osm_way_id")
     ways = pd.DataFrame({"unknown_m": g["length_m"].sum(), "name": g["name"].first(), "highway": g["highway"].first()})
     geom = gpd.GeoSeries(g.apply(lambda d: d.geometry.union_all(), include_groups=False), crs=e.crs)
@@ -68,7 +72,7 @@ def main() -> None:
           "evidence depends on the City of Frederick's survey (rule 7). How to map: `field/sidewalk_mapping.md`._", "",
           f"Criterion 3 (sidewalk evidence) is {now['value_pct']}% against a {BAR['sidewalk_evidence']:.0f}% bar: "
           f"**{need_km:.1f} km** of street to record. {len(ways):,} OSM streets inside the line, "
-          f"{ways['unknown_m'].sum() / 1000:.1f} km, have no sidewalk evidence (service roads and alleys left out). "
+          f"{ways['unknown_m'].sum() / 1000:.1f} km, have no sidewalk evidence (service roads, alleys and freeways left out). "
           f"The first **{n_bar} areas** below hold enough.", "",
           f"Every way, with its edit and photo links: [`worklist.csv`](worklist.csv).", "",
           "| area | km | ways | main streets | cumulative km | map |", "|---|---|---|---|---|---|",

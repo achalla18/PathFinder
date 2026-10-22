@@ -1,4 +1,4 @@
-import { type GeoJSONSource, LngLatBounds, Map as MapLibreMap, type MapMouseEvent, Marker, prewarm, setWorkerCount, setWorkerUrl, type StyleSpecification } from "maplibre-gl";
+import { type GeoJSONSource, LngLatBounds, Map as MapLibreMap, type MapMouseEvent, Marker, prewarm, setWorkerCount, setWorkerUrl, type ExpressionSpecification, type StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 // MapLibre 6 ships its worker as a separate module; without it routes and pins (GeoJSON
 // sources) never draw, while the raster basemap still does. Bundle it and point the library at it.
@@ -60,6 +60,8 @@ const PHONE_MARGIN_PX = 28; // room around a framed trip on a phone: a numbered 
 const SIDE_MEDIA = "(orientation: landscape) and (max-height: 520px)";
 const MIN_VIEW_PX = 80; // the least map height worth framing a trip into
 const GESTURE_PX = 10; // a finger moving farther than this on the map is the user moving it, not a tap
+const REDUCED_MOTION = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+const DRAW_MS = 650; // how long a newly chosen route takes to draw itself in
 
 /** A colour moved toward white (t > 0) or toward black (t < 0); t in [-1, 1]. */
 function shade(hex: string, t: number): string {
@@ -133,7 +135,8 @@ export function MapView(props: Props) {
   function build(style: StyleSpecification, center: LonLat) {
     // pixelRatio: phone screens are 3x, but routes over washed-out tiles look the same at 2x, and
     // the map then draws under half as many pixels
-    const m = new MapLibreMap({ container: el.current!, style, center, zoom: 13, attributionControl: { compact: true },
+    // the town comes into view with a short glide in (none for anyone who asks for less motion)
+    const m = new MapLibreMap({ container: el.current!, style, center, zoom: REDUCED_MOTION ? 13 : 11.6, attributionControl: { compact: true },
                                 pixelRatio: Math.min(window.devicePixelRatio || 1, 2), fadeDuration: 150 });
     map.current = m;
     // taps must work, and routes must draw, before the basemap tiles have arrived
@@ -168,7 +171,10 @@ export function MapView(props: Props) {
     });
     for (const end of ["pointerup", "pointercancel"]) canvas.addEventListener(end, () => { down = null; });
     canvas.addEventListener("wheel", letGo, { passive: true });
-    m.once("load", view);
+    m.once("load", () => {
+      view();
+      if (!REDUCED_MOTION && latest.current.options.length === 0) m.easeTo({ zoom: 13, duration: 1800, easing: (t) => 1 - Math.pow(1 - t, 3) });
+    });
     m.once("style.load", () => {
       for (const id of ["routes", "sides", "barriers", "sidewalks"]) m.addSource(id, { type: "geojson", data: EMPTY });
       // the chosen route and the stretch still to walk are drawn with a gradient along their length
@@ -249,12 +255,32 @@ export function MapView(props: Props) {
   const line = (coordinates: LonLat[], properties: object = {}) =>
     ({ type: "Feature" as const, properties, geometry: { type: "LineString" as const, coordinates } });
   // a line's own colour, running from a lighter start to a deeper end
+  const gradient = (color: string): ExpressionSpecification =>
+    ["interpolate", ["linear"], ["line-progress"], 0, shade(color, 0.42), 0.55, color, 1, shade(color, -0.22)];
   const paint = (prefix: string, color: string) => {
     const m = map.current!;
     m.setPaintProperty(`${prefix}-glow`, "line-color", color);
-    m.setPaintProperty(`${prefix}-line`, "line-gradient",
-      ["interpolate", ["linear"], ["line-progress"], 0, shade(color, 0.42), 0.55, color, 1, shade(color, -0.22)]);
+    m.setPaintProperty(`${prefix}-line`, "line-gradient", gradient(color));
   };
+  // A newly chosen route draws itself from start to end, over its white casing.
+  const drawing = useRef(0);
+  const drawIn = (prefix: string, color: string) => {
+    cancelAnimationFrame(drawing.current);
+    if (REDUCED_MOTION) { paint(prefix, color); return; }
+    const m = map.current!;
+    m.setPaintProperty(`${prefix}-glow`, "line-color", color);
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const t = Math.min(1, (now - t0) / DRAW_MS);
+      const p = 1 - Math.pow(1 - t, 3);
+      if (!map.current?.getLayer(`${prefix}-line`)) return;
+      if (t >= 1) { paint(prefix, color); return; }
+      m.setPaintProperty(`${prefix}-line`, "line-gradient", ["case", ["<=", ["line-progress"], p], gradient(color), "rgba(0,0,0,0)"] as ExpressionSpecification);
+      drawing.current = requestAnimationFrame(step);
+    };
+    drawing.current = requestAnimationFrame(step);
+  };
+  const drawnRoute = useRef<unknown>(null);
   // the barrier map is about the city, not this trip: the trip steps aside while it is open
   const trip = props.mode !== "barriers";
   const color = (props.selectedId != null && props.colors[props.selectedId]) || USER_BLUE;
@@ -267,7 +293,11 @@ export function MapView(props: Props) {
     // a compromise route (nothing met the requirements) is shown as the chosen line, in coral
     const main = chosen?.geometry ?? (trip ? p.extraRoute : null);
     src("chosen", main ? [line(main)] : []);
-    if (main) paint("chosen", chosen ? color : CORAL);
+    if (main) {
+      if (main !== drawnRoute.current) drawIn("chosen", chosen ? color : CORAL);
+      else paint("chosen", chosen ? color : CORAL);
+    }
+    drawnRoute.current = main;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [styled, trip, props.options, props.selectedId, props.extraRoute, props.colors, color]);
 
@@ -345,7 +375,7 @@ export function MapView(props: Props) {
     const padding = side != null ? { top: PHONE_MARGIN_PX, bottom: PHONE_MARGIN_PX, left: side + PHONE_MARGIN_PX, right: PHONE_MARGIN_PX }
                   : wide ? { top: 60, bottom: 60, left: 440, right: 60 }
                          : { top: top + PHONE_MARGIN_PX, bottom: bottom + PHONE_MARGIN_PX, left: 40, right: 40 };
-    m.fitBounds(b, { padding, maxZoom: 17 });
+    m.fitBounds(b, { padding, maxZoom: 17, duration: REDUCED_MOTION ? 0 : 1100 });
   }
 
   // On a phone held sideways: how far the column of card and panel reaches into the map from

@@ -1,0 +1,235 @@
+area_rank,osm_way_id,name,highway,length_m,unknown_m,photo_ids,photo_looks,newest_photo,verdict,notes
+1,1154018683,Hillfield Drive,residential,799,799,,,,unclear,no photo on the street looking along it
+1,204194103,Rocky Springs Road,tertiary,3401,594,1177357510130481 555723903916481 7846751782057616 1019421503043710 608484188425091 9041488329262913,with@0.92 with@0.92 with@0.93 with@0.93 with@0.97 against@0.98,2024-06-19,unclear,photos do not cover the whole way
+1,1060414557,Front Shed Drive,residential,378,378,,,,unclear,no photo on the street looking along it
+1,1060414559,Double Bank Road,residential,369,369,,,,unclear,no photo on the street looking along it
+1,1060414558,Moon Shot Lane,residential,345,345,,,,unclear,no photo on the street looking along it
+1,1060414556,Bluegrass Way,residential,343,343,427635103428211 352320081238988 1383082815653678 1150029416211093 1321263952384830,against@0.00 against@0.00 with@0.00 against@0.00 against@0.00,2024-06-19,unclear,photos do not cover the whole way
+1,276664560,Yellow Springs Road,tertiary,1872,334,1269639167793418 956933369541692 3965336577036671 9522976787731098 1148367959730545 3752522415035562,against@0.05 with@0.53 against@0.62 against@0.63 with@0.63 with@0.67,2024-06-19,unclear,"first-third photo shows a field, not the street; middle third rural with no sidewalk"
+1,1205452665,Fence Buster Court,residential,236,236,,,,unclear,no photo on the street looking along it
+1,1087800792,Heartland Circle,residential,229,229,435257449312207 1611882196269793 992979908821587,with@0.09 with@0.12 with@0.96,2024-06-19,unclear,photos do not cover the whole way
+1,1060414555,Yankeeland Avenue,residential,210,210,,,,unclear,no photo on the street looking along it
+1,1205452686,Front Shed Drive,residential,195,195,,,,unclear,no photo on the street looking along it
+1,1154018677,Owl Roost Court,residential,179,179,,,,unclear,no photo on the street looking along it
+1,1205452687,Front Shed Drive,residential,178,178,,,,unclear,no photo on the street looking along it
+1,1087800791,Hillfield Drive,residential,172,172,1147125319884307 867484571934073 995202382041963 1638802360401547 2186123945100796 1319431702557984,with@0.62 with@0.90 against@0.92 with@0.93 with@0.94 against@0.94,2024-06-19,unclear,photos do not cover the whole way
+1,1087800790,Corn Crib Place,residential,171,171,3116142675228447 1158330168821622 3746578178947718 852379333426074 613389047808951 392521773220322,against@0.77 against@0.78 against@0.78 with@0.79 against@0.79 against@0.95,2024-06-19,unclear,photos do not cover the whole way
+1,1154018688,,tertiary,118,118,775953501416428 1021596329474287 1276744866809405 7801595516600000 602530348859119 3696717023956507,against@0.06 against@0.06 with@0.07 with@0.08 with@0.34 with@0.70,2024-06-19,unclear,"photos are from the shared path beside the road, not the road"
+1,1205662036,Yankeeland Avenue,residential,110,110,,,,unclear,no photo on the street looking along it
+1,1154018687,Yellow Springs Road,tertiary,98,98,1960594901056714 960437319470550 988634316384527 538593285830496 3789311204624898 321205931060456,with@0.00 against@0.34 with@0.46 against@0.46 with@0.87 with@1.00,2024-06-19,no,rural road with guardrails and a bridge; no sidewalk either side at 0-100%
+1,1205452677,Damsire Mews,residential,91,91,460623126599646 1693530998119147 1084592709780004 435521509457332 477384058075468 1121781449577648,with@0.00 against@0.66 with@0.84 with@0.85 with@0.88 with@0.89,2024-06-19,unclear,"photos are from the shared path behind the houses, not the street"
+1,11552676,Walter Martz Road,tertiary,251,56,421558260873049 1044028287334739 1818868738622242 369067052859002 608655108342890 1736314973885296,with@0.00 with@0.62 with@0.69 with@0.70 with@0.73 with@0.86,2024-06-19,unclear,"sidewalk on the left at the new end (0%), none past 60%: needs splitting"
+1,1154018691,Yellow Springs Road,tertiary,55,55,2353997461609552 1086428922930491 1413436569374620 984219983761616 1644782859717922 775022471483592,against@0.00 with@0.46 with@0.53 with@0.57 with@0.65 against@0.67,2024-06-19,right,"one-way carriageway of a divided road (median on its left): sidewalk on the outer side in photos 2-5; the camera headings here are unreliable, the side comes from oneway=yes"
+1,1154018690,Yellow Springs Road,tertiary,54,54,573541161957088 555830947300683 446072635053021 1108240910236186 1896722587466356 966294011862062,with@0.00 against@0.61 with@0.62 against@0.65 with@0.66 with@0.67,2024-06-19,unclear,"divided road: left side is grass and a fence with a path behind it, not a sidewalk at the curb; cannot call it"
+1,1154018692,Yellow Springs Road,tertiary,52,52,1166493341212497 1112696547073294 1029105208631669 968616538648898 4230872953806082 2353997461609552,with@0.00 with@0.00 against@0.00 with@0.00 against@0.57 with@1.00,2024-06-19,right,"one-way carriageway of a divided road (median on its left): sidewalk on the outer side in photos 1, 3 and 5"
+1,1154018686,Rocky Springs Road,tertiary,52,52,2919842624830152 1093778155459761 1130048314742170 1074229557784102 1487319468622766 1166493341212497,with@0.00 with@0.00 against@0.40 with@0.72 with@0.82 with@1.00,2024-06-19,unclear,"photos disagree along the way: no sidewalk at the curb at 0%, a sidewalk on the left at 72%"
+1,1154018693,Walter Martz Road,tertiary,51,51,829079129165156 1012013707147668 1140183017688679 421558260873049 594653529647183 1246947589894913,against@0.00 against@0.00 against@0.00 against@0.00 against@0.61 against@0.70,2024-06-19,right,one-way carriageway of a divided road (median on its left): sidewalk along the outer side in photos 1-2 and at the corner in 5-6; side from oneway=yes
+1,1154018694,Walter Martz Road,tertiary,48,48,1146495067070490 494293969855116 829079129165156 421558260873049 1012013707147668 1140183017688679,with@0.00 with@0.48 with@1.00 with@1.00 with@1.00 with@1.00,2024-06-19,right,one-way carriageway of a divided road (median on its left): photo 2 shows the median and an outer sidewalk; side from oneway=yes
+1,1154018685,Rocky Springs Road,tertiary,48,48,472005225521293 1481969302439368 1591497751698108 439757559055789 967653231727581 2919842624830152,with@0.04 with@0.25 with@0.33 with@0.36 with@0.41 against@1.00,2024-06-19,unclear,"most photos are from the shared path behind the fence, not the carriageway"
+1,1154018689,Yellow Springs Road,tertiary,47,47,1858148997994304 1896722587466356 1530396591214522 779982947683299 952621693581596 883821003737292,against@0.00 against@0.40 with@0.66 with@0.75 with@0.77 against@0.79,2024-06-19,unclear,outer side is grass and a fence with a path behind it (as 1154018690); remaining photos from the path
+1,387277981,Yellow Springs Road,tertiary,9,9,1321788582145914 321205931060456 566098986130504 1018874049606623 4139921386292554,against@0.00 with@0.24 against@0.42 with@1.00 against@1.00,2024-06-19,no,9 m bridge with guardrails and parapets; no sidewalk either side
+2,1173221464,Bond Street,residential,889,872,612679837791654 898144332344408 1106160541165366 577998161803435 1841736023362082 1141020041542192,with@0.23 with@0.63 with@0.83 with@0.84 with@0.93 against@0.99,2025-11-10,unclear,2024 photos show lots under construction with no sidewalk at 23% and sidewalks at the corners further on; out of date and not uniform
+2,1167895778,Carroll Walk Avenue,residential,815,815,1699907387256062 474830505633745 1662354888012686 1533195814048418 835091855308084 1684464072098054,with@0.79 with@0.80 with@0.80 with@0.82 with@0.94 with@0.99,2024-05-05,unclear,photos do not cover the whole way
+2,1167895774,Union Street,residential,723,723,549599591236885 1692086104983841 1106681887911180 1563553117611192 1839789739894129 446873878305980,against@0.02 against@0.02 against@0.18 against@0.19 against@0.19 against@0.20,2024-05-05,unclear,photos do not cover the whole way
+2,1173221463,Foundry Street,residential,648,648,696045583573655 498774535966248 2985261828287822 1579964962640466 2256202814735481 2740124209492166,with@0.00 with@0.01 with@0.08 with@0.19 with@0.19 with@0.20,2025-11-10,unclear,photos do not cover the whole way
+2,1173221466,Herringbone Way,residential,547,547,1132710298368475 1305038613941908 579359068131002 568309062798981 4126779107553602 1251205136143353,against@0.37 against@0.38 against@0.39 against@0.44 against@0.45 against@0.61,2024-05-05,unclear,photos do not cover the whole way
+2,1167895779,Tiller Street,residential,477,477,1773821846722418 1472669660067253 1150164953377112 2072673466485279 1478746416419795 597270892852429,with@0.20 with@0.35 against@0.37 with@0.37 against@0.37 with@0.37,2024-05-05,unclear,photos do not cover the whole way
+2,1173221462,Constellation Lane,residential,316,316,,,,unclear,no photo on the street looking along it
+2,1387191682,Hanson Street,residential,190,190,1620754105477903 1220819118981248,against@1.00 against@1.00,2024-05-05,unclear,photos do not cover the whole way
+2,1173221468,Amity Street,residential,177,177,,,,unclear,no photo on the street looking along it
+2,1219241511,Brandywine Street,residential,134,134,711517401476958,against@1.00,2025-11-10,unclear,photos do not cover the whole way
+2,1167895775,Brandywine Street,residential,26,3,1333429181895198 4423335514435849 24971261425850383,against@0.77 against@0.96 against@1.00,2025-11-07,unclear,car photos: a sidewalk on one side; the far side of the wide road cannot be seen
+2,1167895776,Brandywine Street,residential,23,3,1170275411222337 711517401476958,with@0.08 with@0.51,2025-11-10,unclear,car photos: a sidewalk on one side; the far side of the wide road cannot be seen
+3,1205371527,Herb Shed Lane,residential,431,431,,,,unclear,no photo on the street looking along it
+3,1246465362,Crown Point Drive,tertiary,423,423,296784696763301 437033375793480 1294465501524178 477340024945713 1134641714430530 982039636729060,with@0.19 against@0.53 against@0.56 with@0.56 against@0.69 with@0.72,2024-06-19,right,"one-way carriageway of a divided boulevard: sidewalk along the outer side at 19-72%, planted median inside with none; side from oneway=yes"
+3,1205371516,Crown Point Drive,tertiary,420,420,982039636729060 1301403110890496 502730925514791 1538291686726824 567593299575381 296784696763301,against@0.28 with@0.36 with@0.40 against@0.50 against@0.50 against@0.81,2024-06-19,right,"one-way carriageway of a divided boulevard: sidewalk along the outer side at 28-81%, planted median inside with none; side from oneway=yes"
+3,1205371524,Herb Shed Way,residential,400,400,348484638053872 1010418023526027 990095549075253 1603078977138242 412541481824250 3603703346608288,with@0.14 with@0.72 with@0.72 with@0.85 with@0.86 with@0.86,2024-06-19,unclear,photos do not cover the whole way
+3,1246465361,Willowbrook Road,tertiary,507,360,511160524589404 461299269962065 1429069254466176 367597885966708 3789279958003488 594426199671583,with@0.03 with@0.53 against@0.54 with@0.54 with@0.74 with@0.85,2024-06-19,right,"one-way carriageway of a divided road: sidewalk and fence along the outer side at 3-85%, grass median inside; side from oneway=yes"
+3,1205371531,Willowbrook Road,tertiary,506,357,3992826050975124 601240349237954 1223262468787285 1674989670032682 1945479795888310 3313297198804128,with@0.24 with@0.26 with@0.28 with@0.48 with@0.60 with@0.93,2024-06-19,unclear,"the outer side has a paved path beyond a wide verge, not clearly a sidewalk; photos 1-4 look across it"
+3,1205371530,Garden Gate Drive,residential,339,339,607143834993760 917817676992538 1096918422140688 451950817793427 1509412506315957 6842319855870465,with@0.18 with@0.35 with@0.74 with@0.75 with@0.76 with@0.92,2024-06-19,unclear,active construction in the 2024 photos: silt fence and no sidewalk on one side at 74-76%; likely changed since
+3,1205371520,Potting Shed Way,residential,332,324,276968078837057 453185837433603 2360895070910416 2831725043648074 2223165984704079 995772888602465,with@0.36 with@0.84 against@0.94 against@0.94 with@1.00 with@1.00,2024-06-19,unclear,photos do not cover the whole way
+3,1205371522,Blazing Star Street,residential,322,322,1346674463167294 1348794806287000 1153524025798704 1100761198345992 7342696565836226 819251676938095,with@0.81 with@0.87 with@0.93 with@0.93 with@0.94 with@0.94,2024-06-19,unclear,photos do not cover the whole way
+3,1205371521,Potting Shed Lane,residential,291,282,,,,unclear,no photo on the street looking along it
+3,1205371528,Broadleaf Drive,residential,191,191,796940559300291 1831911984218714 1633675160787981 799759605595222 1861223114409702 1134048667675908,with@0.14 with@0.62 with@0.64 with@0.64 with@0.66 with@0.69,2024-06-19,both,sidewalks on both sides at 14% and 62-69%
+3,1205371519,,tertiary,118,118,1008704391041171 494927549559975 2011660462612682 546800471504851 1083453176898415 1619122431996595,with@0.11 with@0.49 with@0.57 with@0.89 with@0.89 with@0.91,2024-06-19,unclear,sidewalk on one side at 11%; construction cones and a trailer at 89%; far side not seen
+3,1205371529,Pasture Rose Drive,residential,105,105,587506210350776 1092944982473725 1080816973741839 1013129089788651 2227787670948224 1576095626454953,with@0.28 with@0.39 with@0.82 with@0.84 with@0.85 with@0.88,2024-06-19,unclear,"2024 photos: silt-fenced lot with no sidewalk at 28-39%, sidewalks at 82-88%; under construction"
+3,1263707686,Crown Point Circle,residential,92,92,,,,unclear,no photo on the street looking along it
+3,1205371525,,residential,91,91,,,,unclear,no photo on the street looking along it
+3,1205371523,Blazing Star Lane,residential,91,91,626889526437936 776707368001146 396530626783976 1817431278768054 7965691770215262 1153588849715803,against@0.24 against@0.36 against@0.37 against@0.44 against@0.47 against@1.00,2024-06-19,unclear,"2024 photos: bare lots under construction, no sidewalk yet; likely changed since"
+3,1263707691,Rose Hip Drive,residential,90,90,1130180171578693 809758897787240 818136737118326 521363900230354 1291141988977659 1799461427207128,with@0.11 with@0.12 with@0.50 with@0.62 with@0.63 with@0.71,2024-06-19,unclear,"2024 photos: active construction, no sidewalk yet; likely changed since"
+3,1205371526,,residential,57,57,959018809581093 439988178800192 593309366569658 448159331430770 925267333086969 7426785400767112,against@0.12 against@0.15 against@0.18 against@0.23 against@0.51 against@1.00,2024-06-19,unclear,"2024 photos: sidewalk being built on one side only, lots bare; likely changed since"
+3,1293776353,Potting Shed Way,residential,38,38,522230533460473 1017503453451362 484980033902299 1524659358118913 482597027636659 1131291187983389,with@0.00 with@0.00 with@0.02 against@0.39 with@1.00 with@1.00,2024-06-19,unclear,short split approach to a roundabout; photos 3 and 4 disagree on which side the median is
+3,1263707698,Potting Shed Way,residential,36,36,493849449812343 1524659358118913 1621013032023530 937228477814059 3410618025896576 1642742543338074,with@0.29 with@0.51 against@0.55 with@0.86 with@1.00 with@1.00,2024-06-19,unclear,"one-way split approach: the photos put the median on the right, which contradicts the way's direction; side cannot be trusted"
+3,1263707687,Crown Point Circle,residential,23,23,,,,unclear,no photo on the street looking along it
+4,1197968609,Denali Drive,residential,564,564,,,,unclear,no photo on the street looking along it
+4,1123070959,Spruce Knob Terrace,residential,413,413,,,,unclear,no photo on the street looking along it
+4,1123070963,Clingmans Dome Drive,residential,385,385,,,,unclear,no photo on the street looking along it
+4,11541420,Backbone Way,residential,369,369,,,,unclear,no photo on the street looking along it
+4,1392090426,Humphreys Peak Court,residential,355,355,,,,unclear,no photo on the street looking along it
+4,11557559,Kemp Lane,tertiary,2059,265,,,,unclear,no photo on the street looking along it
+4,1206587705,Campbell Hill Way,residential,259,259,,,,unclear,no photo on the street looking along it
+4,1206587706,Katahdin Drive,residential,215,215,,,,unclear,no photo on the street looking along it
+4,1256358727,,residential,156,156,,,,unclear,no photo on the street looking along it
+4,1359811890,Graylock Lane,residential,153,153,,,,unclear,no photo on the street looking along it
+4,1123070961,Panorama Point Way,residential,122,122,,,,unclear,no photo on the street looking along it
+4,1417036078,Rogers Drive,residential,113,113,,,,unclear,no photo on the street looking along it
+4,1123070960,Arvon Trail,residential,92,92,,,,unclear,no photo on the street looking along it
+4,1263950216,Backbone Way,residential,84,84,,,,unclear,no photo on the street looking along it
+4,1263950213,Britton Hill Way,residential,84,84,,,,unclear,no photo on the street looking along it
+4,1206587700,Boundary Peak Terrace,residential,311,75,,,,unclear,no photo on the street looking along it
+4,1417036079,,residential,51,51,,,,unclear,no photo on the street looking along it
+4,1417037546,High Point Terrace,residential,49,49,,,,unclear,no photo on the street looking along it
+5,175817029,Progress Drive,unclassified,775,775,3798469300272275 323125142492233 627945584829755 521599655668493 1364439160601542 960443224700029,with@0.09 with@0.12 with@0.16 with@0.37 with@0.41 with@0.94,2015-05-24,unclear,"2015 photos: sidewalk on the right; the left side has a path set back across grass, not clearly a sidewalk"
+5,226860505,Precision Way,unclassified,467,467,,,,unclear,no photo on the street looking along it
+5,226860501,Spires Way,unclassified,286,286,,,,unclear,no photo on the street looking along it
+5,379688613,Monocacy Boulevard,secondary,211,211,1127517984748872 383459243166420 481328953669247 696534538432663 4744770068955399 319693453472085,against@0.32 against@0.37 against@0.57 against@0.72 against@0.73 against@0.74,2022-02-06,unclear,"photos face sideways onto one verge (grass, no sidewalk); the other side not seen"
+5,175817032,Progress Court,unclassified,203,203,,,,unclear,no photo on the street looking along it
+5,379688614,Monocacy Boulevard,secondary,198,198,345232970290833 293203725868569 3739176429521510 239808230867295 2008503315983274 334227148289881,with@0.07 with@0.17 with@0.36 with@0.77 with@0.95 with@1.00,2021-06-02,no,car photos (2021) at 7-77%: grass to the curb on both sides of a four-lane road; the walk at 95-100% belongs to the cross street
+5,440245756,Monocacy Boulevard,secondary,153,153,245441817695353 136729455512227 1124401048408333 1149063019163227 976805292941107 724147622325869,against@0.09 against@0.29 against@0.30 against@0.33 against@0.35 against@0.88,2022-02-06,unclear,photos face sideways onto one verge (grass); the other side not seen
+5,308317813,Spires Way,unclassified,153,153,,,,unclear,no photo on the street looking along it
+5,393287849,Gas House Pike,secondary,125,125,1584659539763351 4585136625144476 1366118789060820 1059992026956106 1714238383210397 1572114231127424,with@0.25 with@0.35 with@0.38 with@0.43 with@0.51 with@1.00,2026-08-09,unclear,2026 panoramas at thumbnail size: the verges cannot be read reliably
+5,393287861,Gas House Pike,secondary,113,113,1578833300286527 1551267613146745 1552349206427961 1543055700123599 1022578167309942 1688444802456903,against@0.21 against@0.41 against@0.58 against@0.74 against@0.77 against@1.00,2026-08-09,unclear,2026 panoramas at thumbnail size: the verges cannot be read reliably
+5,399953019,Progress Drive,unclassified,100,100,1686608801739346 499115161273854 927127598047870 499473118090372 788017788804048,with@0.00 with@0.27 with@0.52 with@0.76 with@0.99,2015-05-24,unclear,"photos from 2015, too old to tag today's state"
+5,393287864,Gas House Pike,secondary,89,89,1992844681417930 1911096663184369 1827309425098023 1008105788944169 983824628014829 1096985126010063,against@0.00 against@0.28 against@0.65 against@0.69 against@0.72 against@0.76,2026-08-09,unclear,2026 panoramas at thumbnail size: the verges cannot be read reliably
+5,393287851,Gas House Pike,secondary,88,88,1067827169034775 27862371570078912 1749057782890570 879791818318003 2282863102452623 1766801484771056,against@0.21 against@0.24 against@0.39 against@0.46 against@0.49 against@1.00,2026-08-09,unclear,2026 panoramas at thumbnail size: the verges cannot be read reliably
+5,399953018,Progress Drive,unclassified,85,85,796147044651523 372186450743600 145449097948969 277660434446178 649187532970335 469392694886062,against@0.23 against@0.51 against@1.00 against@1.00 against@1.00 against@1.00,2022-02-06,unclear,"photos from 2015 and 2022 at the end only; the 2022 ones show the intersection, not the street"
+5,175817031,Progress Drive,unclassified,85,85,198948061867049 814118145890482 372186450743600 796147044651523 1686608801739346,with@0.07 with@0.27 with@0.49 with@0.76 with@0.90,2015-05-24,unclear,"photos from 2015, too old to tag today's state"
+5,393287862,Gas House Pike,secondary,59,59,1687310792818828 2041295970087387 1536173951595797 2480483732455861 28892780653655589 2149292662294985,against@0.26 against@0.38 against@0.80 against@1.00 against@1.00 against@1.00,2026-08-09,unclear,2026 panoramas at thumbnail size: the verges cannot be read reliably
+5,1158622034,,secondary_link,58,58,495954434779987 320443113032895 554602788872136 785567345662990,against@0.67 against@0.68 against@0.99 with@1.00,2021-06-02,no,2021 car photos along a 58 m link: grass to the curb on both sides
+5,393287863,Gas House Pike,secondary,56,56,1035581255848363 2287131335367684 3076021345920846 1092182886471258 2098844714346927 1575532204071982,against@0.00 against@0.61 against@0.98 against@1.00 against@1.00 against@1.00,2026-08-09,unclear,2026 panoramas at thumbnail size: the verges cannot be read reliably
+5,1158622035,,secondary_link,50,50,691087828694049 1034191267440491 910515292956070 275266284615986 662762208296305 1368066930331784,with@0.00 with@0.00 with@0.00 with@0.28 with@0.36 with@0.39,2022-02-06,unclear,photos face sideways onto one verge (grass); the other side not seen
+5,175817502,Bakery Way,unclassified,49,49,488733992922394 118659767244550 1002674910647203 631888748071433 986529875403846 698525051324299,against@0.36 against@0.37 against@0.37 against@0.38 against@0.38 against@0.39,2022-02-06,unclear,photos face one corner: a sidewalk set back on one side; the other side not seen
+5,454549307,Bakery Way,unclassified,38,38,,,,unclear,no photo on the street looking along it
+5,837764263,Spires Way,unclassified,38,38,503480644413306,against@1.00,2021-06-02,unclear,one car photo; the far side not readable
+5,1013053527,Spires Way,unclassified,37,37,158842616157751,with@0.17,2015-05-24,unclear,"one photo from 2015, too old to tag today's state"
+5,379688616,Monocacy Boulevard,secondary,35,35,322521346155461 930769701056613 341921223952699 200352815031905 498563191363457 1719034228307021,with@0.00 against@0.00 with@0.22 with@0.84 with@0.88 against@0.92,2021-06-02,unclear,"2021 photos: a faint path set back on the right verge, cannot tell if it is a sidewalk"
+6,1192827838,Catoctin Mountain Highway,motorway,650,650,1795958604377054 2991014284424711 1167519098126663 1289553912942639 1585774689260223 1508818720426304,with@0.05 with@0.20 with@0.35 with@0.65 with@0.80 with@0.95,2025-11-08,unclear,US 15 motorway: not a walking street; left untagged (the worklist should not list it)
+6,307661890,East Willow Road,residential,486,486,1168362564496302 3857180547843016 2023957175006634 856138016851874 929487012469114 807082708963962,against@0.02 against@0.54 with@0.57 with@0.62 with@0.63 with@0.67,2025-11-08,unclear,"frontage road beside US 15: most photos are from the highway, not this street"
+6,1431689908,Catoctin Mountain Highway,trunk,413,413,25171345885832582 1924302801462298 681264121416419 2015409105901532 850007787546132 1344227250365464,with@0.18 with@0.30 with@0.42 with@0.77 with@0.89 with@1.00,2025-11-08,unclear,US 15 trunk: not a walking street; left untagged (the worklist should not list it)
+6,331008280,Catoctin Mountain Highway,trunk,351,351,2538525449852779 814105718157782 856138016851874 807082708963962 25278495168453645 1228169479136491,with@0.15 with@0.30 with@0.36 with@0.43 with@0.45 with@0.92,2025-11-08,unclear,US 15 trunk: not a walking street; left untagged (the worklist should not list it)
+6,591694867,,trunk_link,226,226,810892301923632 1398173634980744 727297473714536 3968910446733598 203325268720901 1484540525342665,with@0.01 with@0.04 with@0.12 with@0.24 with@0.37 with@0.92,2025-11-08,unclear,trunk_link: not a walking street; left untagged (not judged from photos)
+6,281559474,Beaver Pond Alley,residential,195,195,,,,unclear,no photo on the street looking along it
+6,198766484,,trunk_link,185,185,140775161368595 568618167447932 1260037774411805 4019601231449278 763118981013919 513373666695679,with@0.00 with@0.14 with@0.32 with@0.51 with@0.72 with@0.94,2018-08-18,unclear,trunk_link: not a walking street; left untagged (not judged from photos)
+6,1027237513,,trunk_link,159,159,156890933047719 844368764956297 1094829499206212 4026483457664113 1508818720426304 1429073051975365,with@0.21 with@0.51 with@0.60 with@0.75 with@0.80 with@0.90,2025-11-08,unclear,trunk_link: not a walking street; left untagged (not judged from photos)
+6,1181049181,Catoctin Mountain Highway,trunk,96,96,825419533310609 1167072655381586 815715384749965 1763102531009774 1622410351936277 1437898943960277,with@0.11 with@0.26 with@0.42 with@0.52 with@0.78 with@1.00,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+6,591693350,Christophers Crossing,secondary,258,82,141863137956162 766762064658130 299773275103151 183095580344373 757663848801754 958802562187737,with@0.06 against@0.17 with@0.65 with@0.82 against@0.84 against@0.90,2022-08-16,no,"one-way carriageway (2022): concrete median on its left, guardrail and grass on its right; no sidewalk at 17-90%"
+6,52960555,Timber View Court,residential,216,81,,,,unclear,no photo on the street looking along it
+6,1191230650,,trunk_link,74,74,746548566381511 455782629778060 1623310944750988 435457198360893 534269371790528 154050800101764,with@0.05 with@0.33 with@0.60 with@0.83 with@1.00 with@1.00,2022-08-16,unclear,trunk_link: not a walking street; left untagged (not judged from photos)
+6,591694864,,trunk_link,68,68,534269371790528 390685136541996 388757519871947 227186643049463 567396692028572 7902093163197592,with@0.10 with@0.48 with@0.64 with@0.92 with@1.00 with@1.00,2023-03-11,unclear,trunk_link: not a walking street; left untagged (not judged from photos)
+6,619833697,Catoctin Mountain Highway,trunk,66,66,798255946264962 1463609898259046 2436965906697242 1872915543653912 1326817888939981 770108442534855,with@0.00 with@0.00 with@0.26 with@0.39 with@1.00 with@1.00,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+6,591694863,,trunk_link,59,59,534269371790528 749121102862455 4188328111281812 2821176164846488 343031411084481 428157585743906,with@0.07 with@0.31 with@0.46 against@1.00 against@1.00 against@1.00,2022-08-16,unclear,trunk_link: not a walking street; left untagged (not judged from photos)
+6,198765498,Christophers Crossing,secondary,46,46,229095476159054 1155546571807425 138474955559873 227186643049463 567396692028572 605232321115871,with@0.00 with@0.04 with@0.26 with@0.53 with@0.82 with@1.00,2023-03-11,no,"one-way carriageway (2023): grass median on its left, grass and guardrail on its right; no sidewalk at 0-100%"
+6,991594305,Christophers Crossing,secondary,35,35,827548614510805 240541804532612,with@0.00 with@1.00,2018-08-18,unclear,"2018 photos during construction, too old"
+6,439215063,Thomas Johnson Drive,tertiary,51,26,309592261155285 280886237453216 984857122405645 509108360633489 974155859899157 4724044424352704,with@0.00 with@0.00 with@0.56 with@0.60 with@0.64 with@0.69,2022-02-06,unclear,photos are inside a wide signalised intersection; the street's sides not readable
+6,52960558,Catoctin Mountain Highway,trunk,23,23,816184774442522 820437926996608 1326817888939981 770108442534855 825419533310609 1088067803116295,with@0.00 with@0.00 with@0.00 with@0.48 with@1.00 with@1.00,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+6,1085584533,Catoctin Mountain Highway,trunk,23,23,1961688617576239 1196652388983894 837329257607883 1286642829186265 1398173634980744 810892301923632,with@0.00 with@0.03 with@0.63 with@0.92 with@1.00 with@1.00,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+6,52960559,Catoctin Mountain Highway,trunk,22,22,2015068755973749 1177948629903241 1160949802247388 522892209339821 1196652388983894 484557050792235,with@0.00 with@0.00 with@0.11 with@0.48 with@1.00 against@1.00,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+6,11553177,Malvern Way,residential,110,19,315947850050577 190130432826547,with@0.00 against@0.00,2015-05-24,unclear,photos do not cover the whole way
+6,843338443,Timber View Court,residential,17,17,,,,unclear,no photo on the street looking along it
+6,591694866,,secondary_link,17,17,2821176164846488 343031411084481 911378372869933 428157585743906 827395301221001 827202088001811,against@0.16 against@0.16 against@0.18 against@0.18 with@0.53 with@1.00,2022-02-06,unclear,17 m link inside an intersection; sides not readable
+6,281559475,Buell Drive,residential,361,17,,,,unclear,no photo on the street looking along it
+6,591693351,Christophers Crossing,secondary,26,16,1669452410174882 230613298831741 381464866474008 158483123749422 348756889930766 160676650161071,with@0.00 with@0.00 with@0.28 with@0.63 with@0.93 with@1.00,2023-03-11,unclear,"one-way bridge approach: a walk on the outer right in 2019 and a bridge walk in 2023, but the inner side is unclear"
+6,843338442,Timber View Court,residential,13,13,,,,unclear,no photo on the street looking along it
+6,1510752593,Christophers Crossing,secondary,10,10,827548614510805,with@0.17,2018-08-18,unclear,"one 2018 photo during construction, too old"
+6,387265823,Beaver Pond Alley,residential,10,10,,,,unclear,no photo on the street looking along it
+6,281559478,Rosecrans Court,residential,220,8,,,,unclear,no photo on the street looking along it
+7,399825323,Shookstown Road,tertiary,1309,532,901361991923861 600980882803833 1767788040454994 549091328293377 303881884531862 298025551861973,against@0.28 against@0.28 with@0.28 with@0.28 against@0.43 against@0.73,2023-05-17,unclear,photos mostly at one intersection (2023) and rural in 2019; the 1.3 km way is not covered uniformly
+7,11555158,Lindfield Drive,residential,377,377,,,,unclear,no photo on the street looking along it
+7,11554668,Bexhill Drive,residential,357,357,,,,unclear,no photo on the street looking along it
+7,60822704,Storrington Drive,residential,353,353,809810046885770 3411485289180938 816955506672968 243587511602056 272238355193961 1441898446552388,against@0.00 against@0.00 against@0.00 against@0.00 against@0.01 against@0.02,2023-05-17,unclear,photos do not cover the whole way
+7,60832848,Eastbourne Court,residential,310,310,,,,unclear,no photo on the street looking along it
+7,11557660,Eastbourne Terrace,residential,283,283,,,,unclear,no photo on the street looking along it
+7,11536350,Schaffer Drive,residential,665,206,256371613557046 285448813838011 175197492170776 203004622166125 718515410043423 4799796186811571,against@0.15 against@0.33 with@0.33 against@0.33 against@0.33 against@0.34,2023-05-17,unclear,photos do not cover the whole way
+7,1375526065,Atlas Drive,residential,196,196,,,,unclear,no photo on the street looking along it
+7,1375526066,Marquis Street,residential,150,150,,,,unclear,no photo on the street looking along it
+7,1562088578,Stoddert Alley,residential,103,103,,,,unclear,no photo on the street looking along it
+7,162999221,Lindfield Drive,residential,94,94,,,,unclear,no photo on the street looking along it
+7,162999220,Bexhill Drive,residential,93,93,,,,unclear,no photo on the street looking along it
+7,1375526067,Abell Alley,residential,87,87,,,,unclear,no photo on the street looking along it
+7,11558362,Bishopstone Circle,residential,223,57,,,,unclear,no photo on the street looking along it
+7,11560638,Whitestone Way,residential,114,41,,,,unclear,no photo on the street looking along it
+7,279780612,Crossbill Way,residential,116,40,,,,unclear,no photo on the street looking along it
+7,399825320,Park Ridge Drive,residential,37,37,,,,unclear,no photo on the street looking along it
+7,60832851,Eastbourne Way,residential,28,28,,,,unclear,no photo on the street looking along it
+7,220073006,Park Ridge Drive,residential,327,25,,,,unclear,no photo on the street looking along it
+7,11548255,Murdock Court,residential,123,22,,,,unclear,no photo on the street looking along it
+7,279671229,Lavenport Circle,residential,151,21,,,,unclear,no photo on the street looking along it
+7,11557347,Norwick Road,residential,98,20,,,,unclear,no photo on the street looking along it
+7,279671232,Norwick Road,residential,83,14,,,,unclear,no photo on the street looking along it
+7,399825314,Bel Aire Lane,tertiary,12,12,,,,unclear,no photo on the street looking along it
+8,443116684,Pearson Boulevard,residential,527,527,,,,unclear,no photo on the street looking along it
+8,175816002,East Willow Road,unclassified,495,495,,,,unclear,no photo on the street looking along it
+8,577572348,Homewood Circle,residential,422,422,,,,unclear,no photo on the street looking along it
+8,868992759,Pearson Boulevard,residential,391,384,,,,unclear,no photo on the street looking along it
+8,1510752597,East Willow Road,unclassified,362,362,,,,unclear,no photo on the street looking along it
+8,647809063,Homewood Drive,residential,207,207,,,,unclear,no photo on the street looking along it
+8,331008275,Catoctin Mountain Highway,trunk,139,139,1191612349495605 823197927342756 33282118898053914 851151530712976 820843827398116 1536891944320210,with@0.27 with@0.45 with@0.63 with@0.80 with@0.84 with@0.98,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+8,443119967,Homewood Lane,residential,123,123,,,,unclear,no photo on the street looking along it
+8,331008278,Catoctin Mountain Highway,trunk,121,121,1165300538354723 2049264519179806 25629730673301820 1486577482597543 1362761692169518 691735690267698,with@0.00 with@0.08 with@0.50 with@0.70 with@0.74 with@0.90,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+8,647809064,Pearson Boulevard,residential,107,107,,,,unclear,no photo on the street looking along it
+8,577572349,Homewood Drive,unclassified,88,88,,,,unclear,no photo on the street looking along it
+8,331008274,Catoctin Mountain Highway,trunk,67,67,1536891944320210 1842932119945659 25058604997166724 2393907924398797 1367745658392025 710161155461038,with@0.00 with@0.33 with@0.41 with@0.70 with@1.00 with@1.00,2025-11-08,unclear,trunk: not a walking street; left untagged (not judged from photos)
+8,577572364,,unclassified,55,55,,,,unclear,no photo on the street looking along it
+8,1223951542,,residential,54,54,,,,unclear,no photo on the street looking along it
+8,443119970,Old Barn Alley,unclassified,50,50,,,,unclear,no photo on the street looking along it
+8,882023454,,residential,47,47,,,,unclear,no photo on the street looking along it
+8,868992756,Pearson Boulevard,residential,19,19,,,,unclear,no photo on the street looking along it
+8,443121010,Willow Road,tertiary,18,18,359090406882339 1869162810281117 485198367221741 798343865404636 8767178530065888 480427814367323,against@0.00 against@0.00 with@0.00 against@0.21 against@0.48 against@0.87,2024-06-19,both,"18 m way: sidewalks on both sides in photos 1, 3, 4 and 6 (2024)"
+9,279814020,Locust Avenue,residential,480,393,,,,unclear,no photo on the street looking along it
+9,11559722,Hollyberry Way,residential,335,328,,,,unclear,no photo on the street looking along it
+9,11558599,Linden Avenue,residential,497,320,170408174965613 221455353087737 129339995851610 305919187587198 471900960898435 487699238945458,against@0.23 with@0.52 against@0.56 with@0.57 against@0.59 against@0.95,2015-05-24,unclear,"photos from 2015, too old to tag today's state"
+9,279814019,Boyers Alley,residential,255,255,,,,unclear,no photo on the street looking along it
+9,11535342,Hoke Place,residential,387,233,,,,unclear,no photo on the street looking along it
+9,11559325,Poplar Street,residential,158,158,,,,unclear,no photo on the street looking along it
+9,11551707,Rock Hill Drive,residential,129,129,,,,unclear,no photo on the street looking along it
+9,11558853,Pendleton Court,residential,111,111,,,,unclear,no photo on the street looking along it
+9,11552155,Chestnut Street,residential,217,105,,,,unclear,no photo on the street looking along it
+9,11552947,Road B,residential,94,94,,,,unclear,no photo on the street looking along it
+9,361440777,Rock Hill Drive,residential,87,87,,,,unclear,no photo on the street looking along it
+9,361440776,Rock Hill Drive,residential,86,86,,,,unclear,no photo on the street looking along it
+9,361440775,Rock Hill Drive,residential,83,83,,,,unclear,no photo on the street looking along it
+9,11554991,Oak Street,residential,82,82,,,,unclear,no photo on the street looking along it
+9,420926925,Linden Avenue,residential,146,52,766725517367107 120731180369931 1440779866338986 382847813395694 515077503334553 665982301305046,against@0.07 with@0.67 with@0.90 with@0.90 with@0.92 with@0.92,2021-12-25,unclear,photos do not cover the whole way
+9,11555834,Maple Street,residential,48,48,,,,unclear,no photo on the street looking along it
+9,11556126,Birch Street,residential,47,47,,,,unclear,no photo on the street looking along it
+9,187901635,,primary_link,38,38,753227612990207 608126244039922 533542954862944 165328279174319 1361045797746633 972531070094414,with@0.00 with@0.00 against@0.00 with@0.00 with@0.18 with@0.38,2023-03-11,unclear,dashcam photos inside a busy intersection; the link's sides not readable
+9,11560840,Greenwall Place,residential,401,26,,,,unclear,no photo on the street looking along it
+9,11561105,Carlton Place,residential,137,25,,,,unclear,no photo on the street looking along it
+9,131167179,West Thornhill Place,residential,24,24,,,,unclear,no photo on the street looking along it
+9,11540264,Hoke Place,residential,24,24,280519034261523 486792419805160 488779806055305 2708118992666407 270662168562158 356724519699312,against@0.71 against@0.86 against@1.00 against@1.00 against@1.00 against@1.00,2021-12-25,unclear,dashcam photos face the far intersection; the street's sides not readable
+9,183173599,Consett Place,residential,23,23,,,,unclear,no photo on the street looking along it
+9,642901210,Baughmans Lane,secondary,20,20,233948565198245 325561505774021 1199159877199701 201335168478785 336372324537593 944249216351211,with@0.00 with@0.00 with@0.27 with@0.68 with@1.00 with@1.00,2019-10-13,unclear,20 m turn lane inside an intersection (2019); sides not readable
+9,642901207,,primary_link,47,20,233948565198245 796193655419828 1433580487456304 952948252727229 3084814281835668 1797111620671302,with@0.00 with@0.56 with@0.71 with@0.90 with@0.93 with@1.00,2023-03-11,unclear,car photos along a busy road; the verges are not readable
+9,11552240,Auburn Place,residential,100,18,,,,unclear,no photo on the street looking along it
+9,982776840,Coats Bridge Place,residential,17,17,,,,unclear,no photo on the street looking along it
+9,183173602,Redfield Court,residential,192,17,,,,unclear,no photo on the street looking along it
+9,420926924,Baughmans Lane,secondary,16,16,665982301305046 388419203113121 3518082765181535 661998981725786 382279156495456 336372324537593,with@0.00 with@0.00 with@0.00 with@0.00 against@0.61 against@0.98,2021-12-25,unclear,16 m turn lane inside an intersection; sides not readable
+9,11560063,Tillman Place,residential,136,16,,,,unclear,no photo on the street looking along it
+9,982707905,Coats Bridge Place,residential,15,15,,,,unclear,no photo on the street looking along it
+9,420947614,Baughmans Lane,secondary,15,15,944249216351211 201335168478785 1199159877199701,against@0.00 against@0.15 against@0.67,2019-10-13,unclear,15 m turn lane inside an intersection; sides not readable
+9,11552356,Boysenberry Lane,residential,200,13,,,,unclear,no photo on the street looking along it
+9,11561393,Keswick Place,residential,121,10,,,,unclear,no photo on the street looking along it
+9,642901192,Baughmans Lane,secondary,9,9,201335168478785 944249216351211 336372324537593 382279156495456,with@0.00 with@0.27 with@0.99 with@1.00,2019-10-13,unclear,9 m turn lane inside an intersection; sides not readable
+9,11557721,East Thornhill Place,residential,102,9,,,,unclear,no photo on the street looking along it
+9,399153218,Hillcrest Drive,tertiary,586,7,,,,unclear,no photo on the street looking along it
+10,1298713324,Blacksmith Way,residential,673,673,,,,unclear,no photo on the street looking along it
+10,1392090425,Marcy Drive,residential,385,385,,,,unclear,no photo on the street looking along it
+10,1298713325,Machinist Way,residential,378,378,,,,unclear,no photo on the street looking along it
+10,1469964286,Casting Way,residential,212,212,,,,unclear,no photo on the street looking along it
+10,1392090424,Woodall Drive,residential,190,190,,,,unclear,no photo on the street looking along it
+10,1417036082,Marcy Drive,residential,91,91,,,,unclear,no photo on the street looking along it
+10,1392090427,,residential,93,84,,,,unclear,no photo on the street looking along it
+10,1417040482,Elevation Road,residential,84,84,,,,unclear,no photo on the street looking along it
+10,1298713322,Iron Forge Road,residential,84,84,,,,unclear,no photo on the street looking along it
+10,1298713323,Iron Forge Road,residential,84,84,,,,unclear,no photo on the street looking along it
+10,1298713329,Iron Forge Road,residential,77,77,,,,unclear,no photo on the street looking along it
+10,1472416640,Peak Place,residential,76,76,,,,unclear,no photo on the street looking along it
+10,1472416639,Elevation Road,residential,75,75,,,,unclear,no photo on the street looking along it
+10,1472416638,Chisel Way,residential,73,73,,,,unclear,no photo on the street looking along it
+10,1472416642,Damascus Alley,residential,66,66,,,,unclear,no photo on the street looking along it
+10,1417036080,,residential,65,65,,,,unclear,no photo on the street looking along it
+10,1472416641,Hammer Drive,residential,64,64,,,,unclear,no photo on the street looking along it
+10,1469964285,Mandrel Lane,residential,63,63,,,,unclear,no photo on the street looking along it
+10,1417040481,Carbon Lane,residential,62,62,,,,unclear,no photo on the street looking along it
+10,1298713327,Bolster Plate Alley,residential,52,52,,,,unclear,no photo on the street looking along it
+10,455164023,Shookstown Road,tertiary,4952,10,500585407760749 181302510518482 1633397023533188 208004884206217 786748988897686 290285569451404,against@0.09 against@0.65 against@0.80 against@0.83 against@0.83 against@0.85,2017-03-25,unclear,"5 km rural road, photos from 2017: too old, and most of the way is outside the city"

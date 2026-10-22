@@ -32,6 +32,8 @@ def main(argv: list[str] | None = None) -> None:
     s = sub.add_parser("serve", help="run the web app's API (and the built web app, if present)")
     s.add_argument("--host", default="127.0.0.1", help="non-local hosts need PF_APP_PASSWORD set")
     s.add_argument("--port", type=int, default=8000)
+    d = sub.add_parser("demo", help="landing page to choose DC, Gaithersburg or Frederick, with each place's app (local)")
+    d.add_argument("--no-browser", action="store_true", help="do not open the browser")
     r = sub.add_parser("route", help="plan and explain one trip; prints JSON")
     # lat,lon (as copied from a map): DC longitudes are negative and would parse as options
     r.add_argument("origin", help="lat,lon")
@@ -102,6 +104,10 @@ def main(argv: list[str] | None = None) -> None:
         from .api import serve
 
         serve(args.host, args.port)
+    elif args.cmd == "demo":
+        from .demo import run
+
+        run(open_browser=not args.no_browser)
     elif args.cmd == "route":
         import json
 

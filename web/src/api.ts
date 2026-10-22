@@ -77,6 +77,22 @@ export async function profiles(): Promise<Profile[]> {
   }
 }
 
+/** This server's town and the other towns' servers the page can switch to. */
+/** A ready-made trip the page offers before anything is chosen: [lon, lat, name] at each end. */
+export interface Example {
+  label: string; note: string; from: [number, number, string]; to: [number, number, string];
+  profile?: string; certainty?: "verified_only" | "allow_likely" | "allow_unknown";
+}
+export async function townInfo(): Promise<{ name: string; home: string | null; examples: Example[] }> {
+  try {
+    const r = await (await fetch("/api/region")).json();
+    return { name: String(r.name ?? ""), home: typeof r.home === "string" ? r.home : null,
+             examples: Array.isArray(r.examples) ? (r.examples as Example[]) : [] };
+  } catch {
+    return { name: "", home: null, examples: [] };
+  }
+}
+
 /** Recorded barriers and unrecorded places in a map view. */
 export async function barriersIn(bbox: [number, number, number, number], signal?: AbortSignal): Promise<Barriers> {
   const res = await get(`/api/barriers?bbox=${bbox.map((v) => v.toFixed(5)).join(",")}`, { signal });

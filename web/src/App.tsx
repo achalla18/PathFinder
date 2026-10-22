@@ -1,5 +1,5 @@
 import { Component, lazy, type ReactNode, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchProfiles } from "./api";
+import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchProfiles, townInfo, type Example } from "./api";
 import { BARRIER_COLORS, ESTIMATED_SIDEWALK_COLOR, LEGEND } from "./barrierStyle";
 import { Conditions, Fact, streetName } from "./Conditions";
 import { Feedback } from "./Feedback";
@@ -153,6 +153,14 @@ function useDarkTheme(): boolean {
 export function App() {
   const dark = useDarkTheme();
   const online = useOnline();
+  const [townName, setTownName] = useState("");
+  const [home, setHome] = useState<string | null>(null);
+  const [examples, setExamples] = useState<Example[]>([]);
+  // with example trips to offer and nothing chosen yet, open on the tab that shows them
+  useEffect(() => { void townInfo().then((t) => {
+    setTownName(t.name); setHome(t.home); setExamples(t.examples);
+    if (t.examples.length && !tripFromHash().to) setTab((cur) => (cur === "priorities" ? "routes" : cur));
+  }); }, []);
   const painted = useAfterFirstPaint();
   const [MapView, setMapView] = useState(loadMap);
   const [profileList, setProfileList] = useState<Profile[]>(cachedProfiles);
@@ -527,7 +535,10 @@ export function App() {
       <div className="side">
       {!walking && (
         <header ref={topEl} className={destination ? "top compact" : "top"}>
-          <div className="brand"><span className="mark" aria-hidden="true" />PathFinder<small>curbs, slopes and sidewalks, as recorded</small></div>
+          <div className="brand"><span className="mark" aria-hidden="true" />PathFinder
+            {home ? <a className="town" href={home} title="Choose another place">{townName || "Change place"} <span aria-hidden="true">▾</span></a>
+                  : <small>{townName || "curbs, slopes and sidewalks, as recorded"}</small>}
+          </div>
           <SearchBox kind="start" placeholder="Where from?" near={user}
                      label={pinnedOrigin ? pinnedOrigin.label : user ? "My location" : ""}
                      active={tapSets === "origin"} onFocus={() => setTapSets("origin")}
@@ -648,6 +659,26 @@ export function App() {
               {feedback !== "closed" && <Feedback walked={feedback === "after-walk"} onClose={() => setFeedback("closed")} />}
               {!plan && busy && <div className="skeleton" aria-label="Finding routes"><i /><i /><i /></div>}
               {!plan && !busy && <p className="empty">{ready ? "Ready when you are." : "Choose where from and where to, by searching above or tapping the map."}</p>}
+              {!plan && !busy && !destination && examples.length > 0 && (
+                <div className="examples">
+                  <h3>Try an example</h3>
+                  {examples.map((e) => (
+                    <button key={e.label} className="example" onClick={() => {
+                      const p = profileList.find((x) => x.id === e.profile);
+                      if (p) {
+                        setSettings((s) => ({ ...s, profile: p.id, stepFree: p.requirements.step_free, maxGrade: p.requirements.max_grade_pct,
+                                              certainty: e.certainty ?? p.requirements.certainty, cross: p.mix.cross, slope: p.mix.slope, sidewalk: p.mix.sidewalk }));
+                      }
+                      clearPlan();
+                      setPinnedOrigin({ at: [e.from[0], e.from[1]], label: e.from[2] });
+                      setDestination({ at: [e.to[0], e.to[1]], label: e.to[2] });
+                      setTapSets("destination");
+                    }}>
+                      <b>{e.label}</b>{e.note && <span>{e.note}</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
               {plan && <Results plan={plan} options={options} total={all.length} selected={selected} colors={colors} bestId={bestId}
                                 feltTotal={feltTotal} feltSaved={feltSaved}
                                 onSelect={(id) => { setSelected(id); setOpenPlace(null); }}
