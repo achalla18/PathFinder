@@ -339,7 +339,8 @@ input[type="range"] { width: 100%; accent-color: var(--ink); margin: 2px 0 0; }
 .legend-list li.unknown i { opacity: 0.6; }
 .legend-list b { margin-left: auto; font-variant-numeric: tabular-nums; }
 .internal { border-left: 3px solid var(--cross); padding-left: 10px; }
-.brand .town { margin-left: auto; font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--ink); background: transparent; text-decoration: none;
+.brand .place-menu { margin-left: auto; position: relative; }
+.brand .town { font: inherit; font-size: 0.85rem; font-weight: 600; color: var(--ink); background: transparent; text-decoration: none;
   border: 1px solid var(--line-strong); border-radius: 8px; padding: 3px 6px; }
 .examples { margin-top: 10px; }
 .examples h3 { margin: 0 0 6px; }
@@ -362,3 +363,13 @@ input[type="range"] { width: 100%; accent-color: var(--ink); margin: 2px 0 0; }
 :where(button, a, input, textarea, select, summary, [tabindex]):focus-visible { outline: 3px solid var(--sidewalk); outline-offset: 2px; }
 .search:focus-within { box-shadow: 0 0 0 3px var(--sidewalk); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+.brand .town { cursor: pointer; }
+.place-list { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; min-width: 210px; display: flex; flex-direction: column;
+  padding: 6px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+.place-list a { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 10px 12px; border-radius: 10px;
+  color: var(--ink); text-decoration: none; font-size: 0.95rem; font-weight: 650; }
+.place-list a:hover { background: var(--surface-2); }
+.place-list a.here { background: var(--surface-2); }
+.place-list a small { font-weight: 500; color: var(--muted); font-size: 0.78rem; }
+.place-list a.all { border-top: 1px solid var(--line); border-radius: 0 0 10px 10px; margin-top: 4px; color: var(--muted); font-weight: 600; }

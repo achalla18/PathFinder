@@ -128,6 +128,7 @@ def _require_password(credentials: HTTPBasicCredentials | None = Depends(_basic)
 
 
 HOME_ENV = "PF_HOME"
+PLACES_ENV = "PF_PLACES"  # every place's server, for the page's place menu (set by `pf demo`)
 # Example trips the page offers before anything is chosen, one file per region (demo/<region>.json):
 # [{"label": ..., "from": [lon, lat, name], "to": [lon, lat, name]}, ...]
 EXAMPLES_DIR = REPO_ROOT / "demo"
@@ -146,6 +147,17 @@ def _examples() -> list[dict]:
                         "from": [float(ends[0][0]), float(ends[0][1]), str(ends[0][2])],
                         "to": [float(ends[1][0]), float(ends[1][1]), str(ends[1][2])]})
     return out
+
+
+def _places() -> list[dict]:
+    """The places the page can switch to directly: [{"name", "url"}] from ``PF_PLACES``. Anything
+    that is not a web address is dropped."""
+    try:
+        items = json.loads(os.environ.get(PLACES_ENV, "") or "[]")
+    except ValueError:
+        return []
+    return [{"name": str(i["name"]), "url": i["url"]} for i in items if isinstance(i, dict) and isinstance(i.get("name"), str)
+            and isinstance(i.get("url"), str) and i["url"].startswith(("http://", "https://"))]
 
 
 def _home() -> str | None:
@@ -181,7 +193,7 @@ def create_app(planner: TripPlanner | None = None, places: PlaceIndex | None = N
         return {"id": REGION.id, "name": REGION.name, "center": list(REGION.center), "bbox": list(REGION.bbox),
                 "profiles": profiles_json(), "transit_notices": elevators is not None,
                 "sources": {sid: s.title for sid, s in SOURCES.items()},
-                "public": not any(is_internal(s) for s in SOURCES.values()), "home": _home(), "examples": _examples()}
+                "public": not any(is_internal(s) for s in SOURCES.values()), "home": _home(), "places": _places(), "examples": _examples()}
 
     @app.get("/api/health")
     def health() -> dict:

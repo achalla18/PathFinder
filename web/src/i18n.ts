@@ -58,6 +58,8 @@ const ES: Record<string, string> = {
   "curbs, slopes and sidewalks, as recorded": "bordillos, pendientes y aceras, según los registros",
   "Choose another place": "Elegir otro lugar",
   "Change place": "Cambiar de lugar",
+  "you are here": "está aquí",
+  "All places": "Todos los lugares",
   "Where from?": "¿Desde dónde?",
   "Where to?": "¿Adónde?",
   "My location": "Mi ubicación",

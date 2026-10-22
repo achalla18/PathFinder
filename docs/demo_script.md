@@ -19,7 +19,7 @@ public builds of Gaithersburg and Frederick.
 
 | # | Time | On screen | Say (suggested) |
 |---|---|---|---|
-| 1 | 0:00–0:20 | Landing page; the cards rise in and the evidence bars fill; the headline under the title | "In Frederick, PathFinder can give a wheelchair user a route for only 3 of every 100 trips with every curb recorded or likely passable. In Washington, 65. For people who use a wheelchair, a walker or a stroller, the fastest route often isn't one they can take." |
+| 1 | 0:00–0:20 | Landing page; the cards rise in and the evidence bars fill (the number is said, not shown) | "In Frederick, PathFinder can give a wheelchair user a route for only 3 of every 100 trips with every curb recorded or likely passable. In Washington, 65. For people who use a wheelchair, a walker or a stroller, the fastest route often isn't one they can take." |
 | 2 | 0:20–0:35 | Point at the three cards and the bars: DC 92% curb evidence, Frederick 17% | "It works anywhere the data exists. Washington publishes its sidewalks and curb ramps; in Maryland's 6th district, most of it has never been recorded." |
 | 3 | 0:35–1:05 | Click **Washington, DC**. The map glides in. Click **Gallery Place to Ford's Theatre**. The routes draw in. | "Here's a manual-wheelchair trip downtown. PathFinder finds several routes and recommends the one with the easiest crossings, for the same eight minutes." |
 | 4 | 1:05–1:20 | Open **What matters**: the profiles, then drag the point in the triangle | "Everyone's needs differ. Pick how you get around, then drag toward what matters most: crossings, slope or sidewalks." |
@@ -29,7 +29,7 @@ public builds of Gaithersburg and Frederick.
 | 8 | 2:30–2:45 | Click **Start walking** with `?demo` in the address (see below) | "Then step-by-step guidance along the way." |
 | 8b | (optional, 10 s) | Turn on Windows Narrator (Ctrl+Win+Enter), click an example: it reads "13 routes found. Selected: Best fit, 23 min." | "And it works with a screen reader." |
 | 8c | (optional, 10 s) | Click **ES** in the header: the whole app switches to Spanish | "Frederick has a large Spanish-speaking community, so PathFinder speaks Spanish too." |
-| 9 | 2:45–3:00 | Back on the landing page; scroll to "The data gap in Maryland's 6th district" | "The gap can be closed. A community mapping campaign in OpenStreetMap can record Frederick's sidewalks street by street, and every tag makes PathFinder better for everyone." |
+| 9 | 2:45–3:00 | Back on the landing page (place menu → All places); hold on the three cards and their bars | "The gap can be closed. A community mapping campaign in OpenStreetMap can record Frederick's sidewalks street by street, and every tag makes PathFinder better for everyone." |
 
 **Simulated walk (shot 8):** add `?demo` before the `#`, for example
 `http://127.0.0.1:8003/?demo#from=…`. The blue dot then moves along the route on its own. Without

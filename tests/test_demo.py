@@ -82,11 +82,3 @@ def test_reports_become_unanswered_field_sheet_rows_once():
     assert rows["place"].tolist() == mod.rows(reports)["place"].tolist()  # same report, same place: added once
     assert "bins" in rows["notes"].iat[1]
 
-
-def test_landing_page_reads_the_wheelchair_trip_share_from_the_trip_experiment(tmp_path, monkeypatch):
-    out = tmp_path / "reports" / "somewhere" / "phase0"
-    out.mkdir(parents=True)
-    (out / "crux_summary.json").write_text(json.dumps({"profiles": {"stepfree_likely": {"n": 276, "feasible_pct": 12.3}}}))
-    monkeypatch.setattr(demo, "REPO_ROOT", tmp_path)
-    assert demo.wheelchair_trips("somewhere") == {"planned_pct": 12.3, "trips": 276}
-    assert demo.wheelchair_trips("nowhere") is None

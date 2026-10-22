@@ -92,13 +92,15 @@ export interface Example {
   profile?: string; certainty?: "verified_only" | "allow_likely" | "allow_unknown";
   label_es?: string; note_es?: string;
 }
-export async function townInfo(): Promise<{ name: string; home: string | null; examples: Example[] }> {
+export interface PlaceLink { name: string; url: string }
+export async function townInfo(): Promise<{ name: string; home: string | null; places: PlaceLink[]; examples: Example[] }> {
   try {
     const r = await (await fetch("/api/region")).json();
     return { name: String(r.name ?? ""), home: typeof r.home === "string" ? r.home : null,
+             places: Array.isArray(r.places) ? (r.places as PlaceLink[]) : [],
              examples: Array.isArray(r.examples) ? (r.examples as Example[]) : [] };
   } catch {
-    return { name: "", home: null, examples: [] };
+    return { name: "", home: null, places: [], examples: [] };
   }
 }
 

@@ -1,5 +1,5 @@
 import { Component, lazy, type ReactNode, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchProfiles, type ReportKind, sendReport, townInfo, type Example } from "./api";
+import { barriersIn, basemapInfo, cachedProfiles, planTrip, profiles as fetchProfiles, type ReportKind, sendReport, townInfo, type Example, type PlaceLink } from "./api";
 import { BARRIER_COLORS, ESTIMATED_SIDEWALK_COLOR, LEGEND } from "./barrierStyle";
 import { Conditions, Fact, streetName } from "./Conditions";
 import { Feedback } from "./Feedback";
@@ -159,10 +159,11 @@ export function App() {
   const [report, setReport] = useState<ReportDraft | null>(null);
   const [townName, setTownName] = useState("");
   const [home, setHome] = useState<string | null>(null);
+  const [placeLinks, setPlaceLinks] = useState<PlaceLink[]>([]);
   const [examples, setExamples] = useState<Example[]>([]);
   // with example trips to offer and nothing chosen yet, open on the tab that shows them
   useEffect(() => { void townInfo().then((t) => {
-    setTownName(t.name); setHome(t.home); setExamples(t.examples);
+    setTownName(t.name); setHome(t.home); setPlaceLinks(t.places); setExamples(t.examples);
     if (t.examples.length && !tripFromHash().to) setTab((cur) => (cur === "priorities" ? "routes" : cur));
   }); }, []);
   const painted = useAfterFirstPaint();
@@ -542,7 +543,7 @@ export function App() {
       {!walking && (
         <header ref={topEl} className={destination ? "top compact" : "top"}>
           <div className="brand"><span className="mark" aria-hidden="true" />PathFinder
-            {home ? <a className="town" href={home + (language === "es" ? "?lang=es" : "")} title={t("Choose another place")}>{townName || t("Change place")} <span aria-hidden="true">▾</span></a>
+            {home || placeLinks.length ? <PlaceMenu current={townName} places={placeLinks} home={home} lang={language} />
                   : <small>{townName || t("curbs, slopes and sidewalks, as recorded")}</small>}
             <button className="lang" onClick={() => setLang(language === "es" ? "en" : "es")} lang={language === "es" ? "en" : "es"}
                     aria-label={language === "es" ? "Switch to English" : "Cambiar a español"}>{language === "es" ? "EN" : "ES"}</button>
@@ -720,6 +721,39 @@ export function App() {
 }
 
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** The town name in the header opens a menu of every place, so another city is one click away
+ *  (each place has its own server, so a choice opens that server's page). */
+function PlaceMenu({ current, places, home, lang }: { current: string; places: PlaceLink[]; home: string | null; lang: string }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
+  const suffix = lang === "es" ? "?lang=es" : "";
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: Event) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") { setOpen(false); box.current?.querySelector("button")?.focus(); } };
+    document.addEventListener("pointerdown", away); document.addEventListener("keydown", esc);
+    return () => { document.removeEventListener("pointerdown", away); document.removeEventListener("keydown", esc); };
+  }, [open]);
+  const here = (name: string) => current.startsWith(name.split(",")[0]);
+  return (
+    <div className="place-menu" ref={box}>
+      <button className="town" aria-haspopup="true" aria-expanded={open} onClick={() => setOpen((o) => !o)}
+              title={t("Choose another place")}>
+        {current || t("Change place")} <span aria-hidden="true">▾</span>
+      </button>
+      {open && (
+        <nav className="place-list" aria-label={t("Choose another place")}>
+          {places.map((p) => (
+            <a key={p.url} href={p.url + suffix} aria-current={here(p.name) ? "page" : undefined}
+               className={here(p.name) ? "here" : undefined}>{p.name}{here(p.name) && <small>{t("you are here")}</small>}</a>
+          ))}
+          {home && <a className="all" href={home + suffix}>{t("All places")}</a>}
+        </nav>
+      )}
+    </div>
+  );
+}
 
 /** Text colour for a label on a route-coloured button: white or ink, whichever reads better. */
 function textOn(hex: string): string {

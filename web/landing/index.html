@@ -77,21 +77,12 @@ a.card:focus-visible { box-shadow: 0 0 0 3px var(--sidewalk), var(--shadow); out
 .legend { font-size: 0.8rem; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; margin: 0 0 10px; }
 .legend i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
 
-section.gap { border-top: 1px solid var(--line); padding: 32px 0; display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; }
-@media (max-width: 920px) { section.gap { grid-template-columns: 1fr; } }
-section.gap h3, section.gap .h3 { margin: 0 0 8px; font-size: 1.25rem; letter-spacing: -0.01em; }
-section.gap p { margin: 0 0 10px; color: var(--ink-2); }
 footer { border-top: 1px solid var(--line); padding: 18px 0 40px; font-size: 0.8rem; color: var(--muted); }
 .err { color: var(--cross-text); }
 .top-row { display: flex; align-items: center; justify-content: space-between; }
 .lang { font: inherit; font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--line-strong);
   background: var(--surface); color: var(--ink); cursor: pointer; }
 .lang:focus-visible { outline: 3px solid var(--sidewalk); outline-offset: 2px; }
-.stat { display: flex; align-items: baseline; gap: 10px; padding: 10px 12px; border-radius: 14px; background: var(--surface-2); }
-.stat b { font-size: 1.9rem; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
-.stat span { font-size: 0.86rem; color: var(--ink-2); }
-.headline { margin: 14px 0 0; font-size: clamp(1rem, 1.5vw, 1.15rem); font-weight: 600; max-width: 62ch; }
-.headline b { color: var(--cross-text); }
 </style>
 </head>
 <body>
@@ -103,7 +94,6 @@ footer { border-top: 1px solid var(--line); padding: 18px 0 40px; font-size: 0.8
     </div>
     <h1 data-i18n="h1"></h1>
     <p class="lede" data-i18n="lede"></p>
-    <p class="headline" id="headline" aria-live="polite"></p>
     <p class="pick" data-i18n="pick"></p>
   </div>
 </header>
@@ -116,17 +106,6 @@ footer { border-top: 1px solid var(--line); padding: 18px 0 40px; font-size: 0.8
   </p>
   <div class="cards" id="cards"></div>
 
-  <section class="gap">
-    <div>
-      <h2 class="h3" data-i18n="gap_h"></h2>
-      <p data-i18n="gap_p1"></p>
-      <p data-i18n="gap_p2"></p>
-    </div>
-    <div>
-      <h2 class="h3" data-i18n="honest_h"></h2>
-      <p data-i18n="honest_p"></p>
-    </div>
-  </section>
 </main>
 
 <footer>
@@ -139,34 +118,20 @@ const TEXT = {
     h1: 'Walking routes that know about <span class="c">curbs</span>, <span class="s">slopes</span> and <span class="w">sidewalks</span>.',
     lede: "For people who use a wheelchair, a walker, a cane or a stroller, the fastest route is often not one they can take. PathFinder plans around missing curb ramps, steep grades and streets without sidewalks, and says plainly what nobody has recorded yet.",
     pick: "Choose a place", key: "Map key", sidewalk_recorded: "sidewalk recorded", nothing_recorded: "nothing recorded", curb_recorded: "curb recorded",
-    gap_h: "The data gap in Maryland's 6th district",
-    gap_p1: "Washington publishes its sidewalks, curb ramps and signals as open data, so PathFinder can plan with confidence there. Gaithersburg and Frederick have no open inventory yet: the bars show how much of each town is still unrecorded.",
-    gap_p2: "That gap can be closed by the community. A mapping campaign in OpenStreetMap, starting in Frederick, records sidewalks street by street, and every tag reaches PathFinder with the next data refresh.",
-    honest_h: "Honest about what it knows",
-    honest_p: "Every curb, slope and sidewalk carries its source and date. Where nothing is recorded, PathFinder says so instead of guessing, and you choose how much uncertainty you accept.",
     footer: "Map data © OpenStreetMap contributors (ODbL) · Washington, DC data: Open Data DC (CC BY 4.0) · Project Sidewalk (CC0) · Terrain: USGS 3DEP, MD iMAP and DC LiDAR · U.S. Census Bureau · Basemap: Protomaps",
     toggle: "Español", toggle_label: "Cambiar a español",
     rows: ["Curb evidence", "Slope measured", "Sidewalk evidence"], md6: "Maryland's 6th district", open: "Where the data is open",
     go: "Open navigation →", open_for: (n) => `Open PathFinder for ${n}`, alt: (n) => `Walkways of ${n}, coloured by what is recorded`,
-    stat: "of every 100 wheelchair trips can be routed with every curb recorded or likely passable",
-    headline: (fr, ga, dc) => `Of every 100 trips by manual wheelchair, PathFinder can route <b>${fr}</b> in Frederick and <b>${ga}</b> in Gaithersburg with every curb recorded or likely passable. In Washington, <b>${dc}</b>.`,
     error: 'The places could not be loaded. Is <code>pf demo</code> running?',
   },
   es: {
     h1: 'Rutas a pie que conocen los <span class="c">bordillos</span>, las <span class="s">pendientes</span> y las <span class="w">aceras</span>.',
     lede: "Para quien usa silla de ruedas, andador, bastón o cochecito, la ruta más rápida muchas veces no es una que pueda tomar. PathFinder planifica evitando rampas que faltan, cuestas empinadas y calles sin aceras, y dice claramente lo que nadie ha registrado todavía.",
     pick: "Elija un lugar", key: "Leyenda del mapa", sidewalk_recorded: "acera registrada", nothing_recorded: "nada registrado", curb_recorded: "bordillo registrado",
-    gap_h: "La falta de datos en el 6.º distrito de Maryland",
-    gap_p1: "Washington publica sus aceras, rampas y semáforos como datos abiertos, así que PathFinder puede planificar allí con confianza. Gaithersburg y Frederick aún no tienen un inventario abierto: las barras muestran cuánto de cada ciudad sigue sin registrar.",
-    gap_p2: "Esa falta la puede cubrir la comunidad. Una campaña de mapeo en OpenStreetMap, empezando por Frederick, registra las aceras calle por calle, y cada etiqueta llega a PathFinder con la siguiente actualización de datos.",
-    honest_h: "Honesto sobre lo que sabe",
-    honest_p: "Cada bordillo, pendiente y acera lleva su fuente y su fecha. Donde no hay nada registrado, PathFinder lo dice en vez de adivinar, y usted elige cuánta incertidumbre acepta.",
     footer: "Datos del mapa © colaboradores de OpenStreetMap (ODbL) · Datos de Washington, DC: Open Data DC (CC BY 4.0) · Project Sidewalk (CC0) · Terreno: USGS 3DEP, MD iMAP y LiDAR de DC · Oficina del Censo de EE. UU. · Mapa base: Protomaps",
     toggle: "English", toggle_label: "Switch to English",
     rows: ["Datos de bordillos", "Pendiente medida", "Datos de aceras"], md6: "6.º distrito de Maryland", open: "Donde los datos son abiertos",
     go: "Abrir la navegación →", open_for: (n) => `Abrir PathFinder para ${n}`, alt: (n) => `Caminos de ${n}, coloreados según lo registrado`,
-    stat: "de cada 100 trayectos en silla de ruedas tienen una ruta con todos los bordillos registrados o probablemente accesibles",
-    headline: (fr, ga, dc) => `De cada 100 trayectos en silla de ruedas manual, PathFinder puede trazar <b>${fr}</b> en Frederick y <b>${ga}</b> en Gaithersburg con todos los bordillos registrados o probablemente accesibles. En Washington, <b>${dc}</b>.`,
     error: 'No se pudieron cargar los lugares. ¿Está en marcha <code>pf demo</code>?',
   },
 };
@@ -184,10 +149,6 @@ function render() {
   const btn = document.getElementById("lang");
   btn.textContent = T.toggle; btn.setAttribute("aria-label", T.toggle_label); btn.lang = lang === "es" ? "en" : "es";
   if (!places) return;
-  const pct = (id) => places.find((p) => p.id === id)?.wheelchair?.planned_pct;
-  const fr = pct("frederick_public"), ga = pct("gaithersburg_public"), dc = pct("dc");
-  document.getElementById("headline").innerHTML = fr != null && ga != null && dc != null
-    ? T.headline(Math.round(fr), Math.round(ga), Math.round(dc)) : "";
   const suffix = lang === "es" ? "?lang=es" : "";
   document.getElementById("cards").innerHTML = places.map((p) => `
     <a class="card" href="${esc(p.url + suffix)}" aria-label="${esc(T.open_for(p.name))}">
@@ -196,7 +157,6 @@ function render() {
       <div class="body">
         <h2>${esc(p.name)}</h2>
         <p>${esc(lang === "es" ? p.blurb_es : p.blurb)}</p>
-        ${p.wheelchair ? `<div class="stat"><b>${Math.round(p.wheelchair.planned_pct)}</b><span>${T.stat}</span></div>` : ""}
         <div class="bars">${KEYS.map((k, i) => {
           const v = p.evidence[k];
           const text = v == null ? "–" : Math.round(v) + "%";

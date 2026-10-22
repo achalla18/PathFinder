@@ -813,6 +813,8 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 
   - The Maryland runs reuse each town's own trip sample, so the numbers compare.
   - Shown on the landing page (headline and one stat per card) from `crux_summary.json`.
+  - Taken off the landing page later the same day (owner: it added little on screen); kept in
+    `docs/demo_script.md` as the opening line.
   - The first run ran out of memory beside the demo servers; it was rerun with `--workers 1`.
 - **Accessibility:** axe-core (WCAG 2.1 A/AA) finds no violations on the landing page or in any app
   state checked. Fixes:

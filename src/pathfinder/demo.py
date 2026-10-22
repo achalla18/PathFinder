@@ -70,26 +70,9 @@ def evidence(region_id: str) -> dict[str, float | None]:
     return {"curbs": val("1"), "slope": val("2"), "sidewalks": val("3")}
 
 
-# The trip-sample experiment's manual-wheelchair scenario (pf crux): step-free, at most 8.33%
-# sustained grade, curbs recorded or likely. Its share of sampled trips with a route is the
-# accessibility bar's criterion 4.
-WHEELCHAIR_SCENARIO = "stepfree_likely"
-
-
-def wheelchair_trips(region_id: str) -> dict | None:
-    """Of the sampled trips in a place, how many a manual wheelchair user can be given a route
-    for on recorded or likely curbs; None until ``pf crux`` has run there."""
-    path = REPO_ROOT / "reports" / region_id / "phase0" / "crux_summary.json"
-    if not path.exists():
-        return None
-    s = json.loads(path.read_text(encoding="utf-8"))
-    p = s.get("profiles", {}).get(WHEELCHAIR_SCENARIO)
-    return {"planned_pct": p["feasible_pct"], "trips": p["n"]} if p else None
-
-
 def places_json() -> list[dict]:
     return [{"id": p.region, "name": p.name, "url": p.url, "md6": p.md6, "blurb": p.blurb, "blurb_es": p.blurb_es,
-             "image": f"img/{p.region}.png", "evidence": evidence(p.region), "wheelchair": wheelchair_trips(p.region)}
+             "image": f"img/{p.region}.png", "evidence": evidence(p.region)}
             for p in PLACES]
 
 
@@ -151,7 +134,8 @@ def run(open_browser: bool = True) -> None:
     procs = []
     try:
         for p in PLACES:
-            env = {**os.environ, "PF_REGION": p.region, "PF_HOME": home}
+            env = {**os.environ, "PF_REGION": p.region, "PF_HOME": home,
+                   "PF_PLACES": json.dumps([{"name": q.name, "url": q.url} for q in PLACES])}
             procs.append(subprocess.Popen([sys.executable, "-m", "pathfinder.cli", "serve", "--port", str(p.port)], env=env))
         for p in PLACES:
             _wait(p.url, procs)

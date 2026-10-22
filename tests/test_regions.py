@@ -312,3 +312,15 @@ def test_change_place_link_takes_only_web_addresses(monkeypatch):
     assert api._home() == "http://127.0.0.1:8000"
     monkeypatch.setenv(api.HOME_ENV, "javascript:alert(1)")
     assert api._home() is None
+
+
+def test_place_menu_takes_only_web_addresses(monkeypatch):
+    import json
+
+    from pathfinder import api
+
+    monkeypatch.setenv(api.PLACES_ENV, json.dumps([{"name": "Frederick", "url": "http://127.0.0.1:8003/"},
+                                                   {"name": "Bad", "url": "javascript:alert(1)"}, {"url": "http://x/"}]))
+    assert api._places() == [{"name": "Frederick", "url": "http://127.0.0.1:8003/"}]
+    monkeypatch.setenv(api.PLACES_ENV, "not json")
+    assert api._places() == []
