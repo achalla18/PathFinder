@@ -24,15 +24,15 @@ Three user-controlled dimensions: **crossings & curbs, slope, sidewalk**. Refocu
 removed.
 
 PathFinder began on 2026-10-15 as a copy of DistrictDirect (the owner's DC navigator,
-`C:\dev\DistrictDirect`), with a region layer added so the pipeline runs per Maryland town.
+a separate local checkout), with a region layer added so the pipeline runs per Maryland town.
 It is a **separate app**: own repo, package (`pathfinder`), command (`pf`), venv, data folder
 and env vars (`PF_*`). Never edit DistrictDirect for PathFinder work. DistrictDirect's plan
 and progress log are kept for reference in `docs/reference/`; the rules and methods there
 were checked on DC and carry over, the DC numbers do not.
 
 Plan: `docs/PLAN.md` — read it before making product or modeling decisions. Current phase:
-**C — Maryland sources, accessibility first** (elevation, then curb ramps), each inspected on
-imagery before a region names it. The accessibility product has its own go/no-go bar, fixed
+**C — Maryland sources, accessibility first**, with sidewalks, elevation, and source-specific
+curb evidence registered; see the progress log for dated results. The accessibility product has its own go/no-go bar, fixed
 before any accessibility source was loaded (`docs/PROGRESS.md`, Decisions log).
 
 ## Non-negotiable product rules
@@ -90,7 +90,7 @@ src/pathfinder/
   graph/post_ada.py          post-ADA ramp rule: buildings all from 1995 on within 60 m -> ramps
                              likely (inferred); tested against Frederick's survey 2026-10-21
   graph/elevation.py         sustained slope from a 1 m bare-earth DTM (10 m fitted windows on
-                             three parallel lines); none registered for MD yet
+                             three parallel lines); registered per Maryland pilot
   routing/cost.py            requirements + "felt minutes" penalty tables (PENALTIES); the
                              three dimensions cross (crossings & curbs) / slope / sidewalk
   routing/profiles.py        mobility profiles: starting requirements and mix, overridable
@@ -130,10 +130,10 @@ reports/<region>/            generated, committed, human-readable outputs (do no
 
 ## Environment and commands
 
-- Repo: `C:\dev\PathFinder`, moved out of OneDrive (`Desktop\CongoApp`) on 2026-10-19 so sync
-  cannot touch git internals. Large data still never goes here. Venv: `C:\Users\arjun\.venvs\pathfinder`
-  (it has no pip of its own). Install:
-  `py -m pip --python C:/Users/arjun/.venvs/pathfinder/Scripts/python.exe install -e ".[dev]"`.
+- Setup: follow the cross-platform virtual environment steps in `README.md`. Install with
+  `python -m pip install -e ".[dev]"` in the activated environment. Large data stays outside
+  the repository. `.env.example` selects a public region for handoffs; the code default
+  remains the internal Gaithersburg pilot for compatibility.
 - Data directory: `PF_DATA_DIR`, default `~/.pathfinder/data`. Each region has
   `<data>/regions/<id>/` (raw, interim, graph, analysis); the statewide Geofabrik extract
   that every town is cut from lives once in `<data>/shared/`.
@@ -158,7 +158,7 @@ reports/<region>/            generated, committed, human-readable outputs (do no
   ```
   A change to `build.py` needs `pf build-graph` onward; a change to `enrich.py`,
   `elevation.py` or the cost model needs `pf enrich` onward and `pf crux --fresh`.
-- Web app: `cd web && npm install`, then `npm run dev` (page on :5173, proxies /api to
+- Web app: `cd web && npm ci`, then `npm run dev` (page on :5173, proxies /api to
   `pf serve`) or `npm run build` (output in `web/dist`, served by `pf serve`); `node_modules`
   is git-ignored. Tabs: What matters (profile, triangle, requirements), Routes,
   Barriers (the city map for the current view). The dark theme follows the phone's setting. `pf serve`
@@ -329,5 +329,16 @@ issues and Next steps. Numbers only from generated reports; never delete history
 
 ## Git
 
-- Its own repository (not DistrictDirect's). Commit only when asked; no remote yet.
+- Repository: `https://github.com/achalla18/PathFinder`. Keep cleanup work on a branch and
+  open a pull request for review. Commit only when asked. Do not merge or publish the private
+  repository without authorization.
 - Don't commit data, venvs, or secrets (`.env`).
+
+
+## Source handoff
+
+README.md, CONTRIBUTING.md, and docs/{ARCHITECTURE,DATA,DEMO}.md are the reviewer-facing
+guides. `.gitattributes` excludes internal pilot reports and historical working notes from
+source ZIPs, while preserving those files and their history in Git. Add new internal report
+paths to the export exclusions. Public region names reflect registry filtering, not a blanket
+license grant. Keep the repository private; use the filtered source archive for a handoff.

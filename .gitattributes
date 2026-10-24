@@ -1,0 +1,14 @@
+# Keep source handoff archives focused on the app and shareable evidence.
+# These rules affect git archive / GitHub source ZIPs, not clones or repository history.
+/AGENTS.md export-ignore
+/CLAUDE.md export-ignore
+/.github export-ignore
+/.gitattributes export-ignore
+/docs/PLAN.md export-ignore
+/docs/PROGRESS.md export-ignore
+/docs/reference export-ignore
+/docs/briefs export-ignore
+/docs/demo_script.md export-ignore
+/reports/frederick export-ignore
+/reports/gaithersburg export-ignore
+/field/sidewalk_mapping.md export-ignore

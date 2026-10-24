@@ -17,7 +17,7 @@ See "How to update" at the bottom.
 | **Product** | **City accessibility app** (refocused 2026-10-15): step-free routes from mobility profiles first, plus a city barrier map. Dimensions: crossings & curbs / slope / sidewalk |
 | **Phase** | C — Maryland sources, accessibility first: sidewalks, elevation (both towns), curb ramps and sidewalk condition and width (Frederick), signal locations (both towns) sidewalks from the surveys (both towns) and the post-ADA ramp rule (Frederick) in. Frederick passes 4 of 5 accessibility criteria, Gaithersburg 3 of 5 |
 | **Next** | Frederick clears criterion 4 (52.2%, 2026-10-21) and is 3.2 points short of criterion 3 (sidewalk evidence), which needs mapping: a parcel-age sidewalk rule failed its bar (62.7% right in street photos, 2026-10-21). The City of Frederick allows internal use only (2026-10-20), so Phase E (testers) cannot see anything built on the city's data. Data requests: SHA's ADA inventory (state-road curb cuts and pedestrian signals, internal only) and a Gaithersburg ramp inventory, neither published; signals with pedestrian features (APS, LPI) are open in neither town. Frederick's sidewalk evidence (56.8%) needs mapping beyond the survey |
-| **Repo** | `C:\dev\PathFinder` (moved out of OneDrive 2026-10-19), its own git repository; no remote |
+| **Repo** | `https://github.com/achalla18/PathFinder` (private); source handoff archives filter internal working material |
 | **Tests** | 229 pass on each town's graph (unit and data-invariant; 1 skipped by design), 2026-10-21 |
 
 ### Key metrics over time
@@ -65,6 +65,22 @@ network inside the city line, as the other criteria do.
 ---
 
 ## Timeline
+
+### 2026-10-24 — Source handoff cleanup
+
+- Replaced the stale README with a project overview, supported pilot scope, cross-platform
+  installation, public-region preparation, web build instructions, and troubleshooting links.
+- Added architecture, data/attribution, demo, and contributing guides; added a credential-free
+  environment example, Node version hint, editor conventions, and Python/web CI checks.
+- Added Git archive exclusions for internal pilot outputs and working notes. Files and research
+  history remain tracked; full repository access is still private.
+- Updated agent setup guidance to remove machine-specific paths. No routing, graph, or evidence
+  rules changed, and no scientific metrics were regenerated. Existing research decisions,
+  open issues, and next steps remain unchanged.
+- Local validation: 228 tests passed, 15 data-dependent tests skipped without a built graph;
+  the TypeScript and Vite production build passed. Real-region pipeline validation still
+  requires prepared external data.
+
 
 ### 2026-10-15 — PathFinder created from DistrictDirect
 
@@ -1185,3 +1201,4 @@ first, and folded crossings into accessibility, removing after-dark and crime.
 - Record product/technical choices in the **Decisions log** with the reason.
 - Update **Current status**, **Key metrics**, **Open issues** and **Next steps**.
 - Never delete history; correct mistakes with a new dated note.
+
