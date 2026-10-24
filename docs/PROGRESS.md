@@ -77,6 +77,9 @@ network inside the city line, as the other criteria do.
 - Updated agent setup guidance to remove machine-specific paths. No routing, graph, or evidence
   rules changed, and no scientific metrics were regenerated. Existing research decisions,
   open issues, and next steps remain unchanged.
+- Fresh-install CI exposed four signal-enrichment failures with pandas 3. Constrained
+  pandas to >=2.2,<3, matching the implementation's supported dtype behavior; no
+  routing or evidence rules were changed.
 - Local validation: 228 tests passed, 15 data-dependent tests skipped without a built graph;
   the TypeScript and Vite production build passed. Real-region pipeline validation still
   requires prepared external data.
