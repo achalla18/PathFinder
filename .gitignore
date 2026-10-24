@@ -41,3 +41,13 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+
+# Local recordings, evaluation exports, and tool caches
+walk-*.json
+*.tsbuildinfo
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+*.pth
+*.pt
